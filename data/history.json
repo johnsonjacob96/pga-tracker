@@ -6,15 +6,15 @@
         {
           "name": "Masters",
           "teams": [
-            { "owner": "Emery",   "alias": "Mr. May",      "score": -8,  "players": ["Scottie", "Straka", "Willy Z", "Day", "Clark"] },
-            { "owner": "Kellen",  "alias": "Mr. Marshall", "score": -23, "players": ["Bryson", "Conners", "Viktor", "Finau", "Rose"] },
-            { "owner": "Jacob",   "alias": "Mr. Bean",     "score": -13, "winnerBonus": true, "players": ["Rory", "Lowry", "Hatton", "Cam Smith", "DJ"] },
-            { "owner": "Garrett", "alias": "Mr. Kuntz",    "score": 6,   "mc": true, "players": ["Brooks", "Spieth", "Henley", "Keegan", "Berger"] },
-            { "owner": "Austin",  "alias": "Mr. Shanks",   "score": -10, "players": ["Aberg", "Niemann", "Bhatia", "Harman", "English"] },
-            { "owner": "Miles",   "alias": "Mo Lester",    "score": 2,   "players": ["Rahm", "Cantlay", "Fitz", "Young", "Josele Ballester"] },
-            { "owner": "Jared",   "alias": "Mr. Taco",     "score": -14, "players": ["Morikawa", "Tommy", "McIntyre", "Reed", "McNealy"] },
-            { "owner": "Dylan",   "alias": "Mr. Cyc",      "score": 2,   "players": ["Hideki", "MWL", "T. Kim", "Phil", "An"] },
-            { "owner": "Alex",    "alias": "Mr. Magoo",    "score": -3,  "players": ["Xander", "JT", "Scott", "Sahith", "Burns"] }
+            { "owner": "Emery",   "score": -8,  "players": ["Scottie", "Straka", "Willy Z", "Day", "Clark"] },
+            { "owner": "Kellen",  "score": -23, "players": ["Bryson", "Conners", "Viktor", "Finau", "Rose"] },
+            { "owner": "Jacob",   "score": -13, "winnerBonus": true, "players": ["Rory", "Lowry", "Hatton", "Cam Smith", "DJ"] },
+            { "owner": "Garrett", "score": 6,   "mc": true, "players": ["Brooks", "Spieth", "Henley", "Keegan", "Berger"] },
+            { "owner": "Austin",  "score": -10, "players": ["Aberg", "Niemann", "Bhatia", "Harman", "English"] },
+            { "owner": "Miles",   "score": 2,   "players": ["Rahm", "Cantlay", "Fitz", "Young", "Josele Ballester"] },
+            { "owner": "Jared",   "score": -14, "players": ["Morikawa", "Tommy", "McIntyre", "Reed", "McNealy"] },
+            { "owner": "Dylan",   "score": 2,   "players": ["Hideki", "MWL", "T. Kim", "Phil", "An"] },
+            { "owner": "Alex",    "score": -3,  "players": ["Xander", "JT", "Scott", "Sahith", "Burns"] }
           ],
           "winner": "Rory McIlroy",
           "winnerPickedBy": "Jacob"
