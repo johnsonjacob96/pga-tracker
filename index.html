@@ -72,14 +72,124 @@
     margin-bottom: 10px;
     padding: 12px 16px;
     border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.1s;
   }
+  .team:hover { background: #fcfaf2; }
   .team.leader { border-left-color: var(--green); background: #fdfaf0; }
+  .team.leader:hover { background: #faf6e8; }
   .team-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     margin-bottom: 8px;
     gap: 12px;
+    user-select: none;
+  }
+  .expand-indicator {
+    color: var(--gold-dark);
+    margin-right: 8px;
+    transition: transform 0.15s ease;
+    display: inline-block;
+    font-size: 11px;
+  }
+  .team.expanded .expand-indicator { transform: rotate(90deg); }
+  .scorecards {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    display: none;
+  }
+  .team.expanded .scorecards { display: block; }
+  .scorecard {
+    margin-bottom: 14px;
+    background: #fbfaf3;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .scorecard:last-child { margin-bottom: 0; }
+  .scorecard-header {
+    background: var(--green);
+    color: var(--cream);
+    padding: 6px 12px;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .scorecard-name { font-weight: bold; letter-spacing: 0.5px; }
+  .scorecard-meta {
+    color: var(--gold);
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+  }
+  .scorecard-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scorecard table {
+    border-collapse: collapse;
+    font-family: "Courier New", monospace;
+    font-size: 11px;
+    width: 100%;
+    min-width: 560px;
+  }
+  .scorecard th, .scorecard td {
+    padding: 4px 4px;
+    text-align: center;
+    border: 1px solid var(--border);
+    min-width: 22px;
+  }
+  .scorecard th {
+    background: var(--cream-dark);
+    color: var(--text);
+    font-weight: bold;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  .scorecard .row-label {
+    background: var(--cream-dark);
+    font-weight: bold;
+    text-align: left;
+    padding: 4px 8px;
+    min-width: 32px;
+  }
+  .scorecard .par-row { background: #f5efe0; color: #6a5e3a; }
+  .scorecard .par-row td { border-color: var(--border); }
+  .scorecard .tot { background: var(--cream-dark); font-weight: bold; }
+  .scorecard .h-eagle { background: #f59e0b; color: white; font-weight: bold; }
+  .scorecard .h-birdie { background: #fee2e2; color: var(--red); font-weight: bold; }
+  .scorecard .h-bogey { background: #dbeafe; color: #1e40af; }
+  .scorecard .h-double { background: #93c5fd; color: #1e3a8a; font-weight: bold; }
+  .scorecard .pending { color: #bbb; }
+  .scorecard-mc {
+    padding: 10px 14px;
+    text-align: center;
+    color: var(--red);
+    font-style: italic;
+    font-size: 12px;
+    background: #fef2f2;
+  }
+  .scorecard-legend {
+    padding: 6px 12px;
+    font-size: 10px;
+    color: var(--grey);
+    background: #f9f7ea;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .scorecard-legend .swatch {
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+    margin-right: 3px;
+    border-radius: 2px;
+    font-weight: bold;
   }
   .team-name-wrap { display: flex; align-items: baseline; gap: 10px; }
   .rank {
@@ -194,6 +304,7 @@
 </div>
 <main id="content"></main>
 <div class="legend">
+  <span><strong>Tap any team for hole-by-hole scorecards →</strong></span><br>
   <span>● = counting score</span> ·
   <span>grey = bench (made cut)</span> ·
   <span style="text-decoration: line-through; color: var(--red);">red = missed cut</span> ·
@@ -297,22 +408,46 @@ async function fetchScores() {
   const competition = event.competitions?.[0];
   if (!competition) throw new Error("No competition data");
 
+  const competitors = competition.competitors || [];
   const players = {};
-  for (const comp of competition.competitors || []) {
+  for (const comp of competitors) {
     const name = comp.athlete?.fullName || comp.athlete?.displayName;
     if (!name) continue;
     const score = parseScore(comp.score);
     const linescores = comp.linescores || [];
     const statusName = comp.status?.type?.name || "";
-    // Made cut signals: has 3+ rounds of scores, or status indicates active weekend play
     const madeCut = linescores.length >= 3 ||
                     statusName === "STATUS_ACTIVE" ||
                     /STATUS_END_PERIOD/.test(statusName) && linescores.length >= 3;
-    // Missed cut signal: only 2 rounds played and not currently active
-    players[normalize(name)] = { name, score, madeCut, linescoresLen: linescores.length };
+    players[normalize(name)] = { name, score, madeCut, linescores };
   }
 
-  return { event: event.name, status: event.status, players };
+  const pars = derivePars(competitors);
+  return { event: event.name, status: event.status, players, pars };
+}
+
+function derivePars(competitors) {
+  const counts = {};
+  for (const c of competitors) {
+    const r1 = c.linescores?.[0]?.linescores || [];
+    for (const h of r1) {
+      const rel = h.scoreType?.displayValue;
+      if (!rel) continue;
+      const relNum = rel === "E" ? 0 : parseInt(rel, 10);
+      if (isNaN(relNum) || h.value == null) continue;
+      const par = h.value - relNum;
+      if (par < 3 || par > 5) continue;
+      counts[h.period] = counts[h.period] || {};
+      counts[h.period][par] = (counts[h.period][par] || 0) + 1;
+    }
+  }
+  const pars = [];
+  for (let i = 1; i <= 18; i++) {
+    const c = counts[i] || {};
+    const best = Object.entries(c).sort((a, b) => b[1] - a[1])[0];
+    pars.push(best ? parseInt(best[0], 10) : 4);
+  }
+  return pars;
 }
 
 function computeStandings(data) {
@@ -328,9 +463,9 @@ function computeStandings(data) {
     const teamPlayers = roster.map(rosterName => {
       const found = players[normalize(rosterName)];
       if (!found) {
-        return { name: rosterName, score: null, madeCut: false, notFound: true };
+        return { name: rosterName, score: null, madeCut: false, notFound: true, linescores: [] };
       }
-      return { name: rosterName, score: found.score, madeCut: found.madeCut };
+      return { name: rosterName, score: found.score, madeCut: found.madeCut, linescores: found.linescores };
     });
 
     const sortedMadeCut = teamPlayers
@@ -356,15 +491,134 @@ function computeStandings(data) {
   });
 
   teams.sort((a, b) => a.total - b.total);
-  return { teams, penalty, worstMadeCut };
+  return { teams, penalty, worstMadeCut, pars: data.pars };
+}
+
+const expandedTeams = new Set();
+let lastState = null;
+
+function toggleTeam(name) {
+  if (expandedTeams.has(name)) expandedTeams.delete(name);
+  else expandedTeams.add(name);
+  if (lastState) render(lastState);
+}
+
+function scoreCell(strokes, par) {
+  if (strokes == null) return '<td class="pending">—</td>';
+  const rel = strokes - par;
+  let cls = "";
+  if (rel <= -2) cls = "h-eagle";
+  else if (rel === -1) cls = "h-birdie";
+  else if (rel === 1) cls = "h-bogey";
+  else if (rel >= 2) cls = "h-double";
+  return `<td class="${cls}">${strokes}</td>`;
+}
+
+function renderScorecard(player, pars) {
+  const linescores = player.linescores || [];
+
+  if (player.notFound) {
+    return `<div class="scorecard"><div class="scorecard-header"><span class="scorecard-name">${player.name}</span><span class="scorecard-meta">not found in ESPN data</span></div></div>`;
+  }
+  if (linescores.length === 0) {
+    return `<div class="scorecard"><div class="scorecard-header"><span class="scorecard-name">${player.name}</span></div><div class="scorecard-mc">No rounds played yet</div></div>`;
+  }
+
+  const frontPar = pars.slice(0, 9).reduce((a, b) => a + b, 0);
+  const backPar = pars.slice(9).reduce((a, b) => a + b, 0);
+  const totalPar = frontPar + backPar;
+
+  const holeHeader = `<tr><th class="row-label">Hole</th>${[...Array(9)].map((_, i) => `<th>${i + 1}</th>`).join("")}<th class="tot">Out</th>${[...Array(9)].map((_, i) => `<th>${i + 10}</th>`).join("")}<th class="tot">In</th><th class="tot">Tot</th></tr>`;
+  const parRow = `<tr class="par-row"><td class="row-label">Par</td>${pars.slice(0, 9).map(p => `<td>${p}</td>`).join("")}<td class="tot">${frontPar}</td>${pars.slice(9).map(p => `<td>${p}</td>`).join("")}<td class="tot">${backPar}</td><td class="tot">${totalPar}</td></tr>`;
+
+  const roundRows = [];
+  for (let r = 0; r < linescores.length; r++) {
+    const round = linescores[r];
+    const holes = round.linescores || [];
+    if (holes.length === 0 && (!round.displayValue || round.displayValue === "-")) continue;
+
+    const byHole = {};
+    for (const h of holes) byHole[h.period] = h;
+
+    const cells = [];
+    let frontStrokes = 0, frontDone = 0;
+    for (let h = 1; h <= 9; h++) {
+      const hole = byHole[h];
+      if (hole && hole.value != null) {
+        cells.push(scoreCell(hole.value, pars[h - 1]));
+        frontStrokes += hole.value;
+        frontDone++;
+      } else {
+        cells.push('<td class="pending">—</td>');
+      }
+    }
+    cells.push(`<td class="tot">${frontDone > 0 ? frontStrokes : "—"}</td>`);
+
+    let backStrokes = 0, backDone = 0;
+    for (let h = 10; h <= 18; h++) {
+      const hole = byHole[h];
+      if (hole && hole.value != null) {
+        cells.push(scoreCell(hole.value, pars[h - 1]));
+        backStrokes += hole.value;
+        backDone++;
+      } else {
+        cells.push('<td class="pending">—</td>');
+      }
+    }
+    cells.push(`<td class="tot">${backDone > 0 ? backStrokes : "—"}</td>`);
+
+    const totDone = frontDone + backDone;
+    const rTo = round.displayValue && round.displayValue !== "-" ? round.displayValue : "";
+    const totCell = totDone > 0
+      ? `${frontStrokes + backStrokes}${rTo ? ` <span style="color:var(--gold-dark);">(${rTo})</span>` : ""}`
+      : "—";
+    cells.push(`<td class="tot">${totCell}</td>`);
+
+    const label = totDone < 18 && r === linescores.length - 1 && totDone > 0
+      ? `R${r + 1}*`
+      : `R${r + 1}`;
+    roundRows.push(`<tr><td class="row-label">${label}</td>${cells.join("")}</tr>`);
+  }
+
+  if (roundRows.length === 0) {
+    return `<div class="scorecard"><div class="scorecard-header"><span class="scorecard-name">${player.name}</span><span class="scorecard-meta">${fmtScore(player.score)}</span></div><div class="scorecard-mc">Hasn't teed off yet</div></div>`;
+  }
+
+  const mcNote = !player.madeCut && linescores.length === 2
+    ? `<div class="scorecard-mc">Missed cut</div>`
+    : "";
+
+  return `
+    <div class="scorecard">
+      <div class="scorecard-header">
+        <span class="scorecard-name">${player.name}</span>
+        <span class="scorecard-meta">${fmtScore(player.score)}</span>
+      </div>
+      <div class="scorecard-table-wrap">
+        <table>
+          <thead>${holeHeader}${parRow}</thead>
+          <tbody>${roundRows.join("")}</tbody>
+        </table>
+      </div>
+      ${mcNote}
+      <div class="scorecard-legend">
+        <span><span class="swatch" style="background:#f59e0b;color:white;">3</span>eagle+</span>
+        <span><span class="swatch" style="background:#fee2e2;color:var(--red);">3</span>birdie</span>
+        <span><span class="swatch">4</span>par</span>
+        <span><span class="swatch" style="background:#dbeafe;color:#1e40af;">5</span>bogey</span>
+        <span><span class="swatch" style="background:#93c5fd;color:#1e3a8a;">6</span>double+</span>
+      </div>
+    </div>`;
 }
 
 function render(state) {
-  const { teams, penalty } = state;
+  lastState = state;
+  const { teams, penalty, pars } = state;
   const content = document.getElementById("content");
   content.innerHTML = teams.map((team, idx) => {
     const rank = idx + 1;
     const isLeader = idx === 0;
+    const isExpanded = expandedTeams.has(team.teamName);
     const players = team.players.map(p => {
       const short = SHORT_NAMES[p.name] || p.name;
       let cls = "player";
@@ -389,16 +643,20 @@ function render(state) {
         ).join("")
       : "";
 
+    const scorecards = team.players.map(p => renderScorecard(p, pars)).join("");
+
     return `
-      <div class="team${isLeader ? " leader" : ""}">
+      <div class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" onclick="toggleTeam('${team.teamName}')">
         <div class="team-header">
           <div class="team-name-wrap">
+            <span class="expand-indicator">▶</span>
             <span class="rank">${rank}.</span>
             <span class="team-name">${team.teamName}</span>
           </div>
           <div class="team-total">${fmtScore(team.total)}</div>
         </div>
         <div class="players">${players}${penaltyHtml}</div>
+        <div class="scorecards" onclick="event.stopPropagation()">${scorecards}</div>
       </div>
     `;
   }).join("");
