@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>History · Locks of the Day Majors Draft</title>
+<style>
+  :root {
+    --cream: #f5efe0;
+    --cream-dark: #ebe3cf;
+    --gold: #c9a04e;
+    --gold-dark: #8e6e2c;
+    --green: #1d3d2c;
+    --green-light: #2d5a42;
+    --red: #a02828;
+    --grey: #888;
+    --text: #2a2417;
+    --border: #d9cfb5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  nav {
+    background: var(--green);
+    padding: 8px 16px;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    border-bottom: 1px solid var(--gold-dark);
+  }
+  nav a {
+    color: var(--cream);
+    text-decoration: none;
+    padding: 6px 16px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  nav a:hover { color: var(--gold); }
+  nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+  header {
+    background: var(--green);
+    color: var(--cream);
+    padding: 20px 16px 18px;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: normal;
+  }
+  header h1 strong { color: var(--gold); font-weight: bold; }
+  header .sub {
+    font-size: 12px;
+    color: var(--gold);
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .year-tabs {
+    background: var(--cream-dark);
+    padding: 10px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .year-tab {
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--green);
+    padding: 6px 14px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    font-size: 13px;
+    transition: background 0.1s;
+  }
+  .year-tab:hover { background: #fdfaf0; }
+  .year-tab.active {
+    background: var(--gold);
+    color: var(--green);
+    border-color: var(--gold-dark);
+  }
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  h2.section-title {
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 6px;
+    margin: 24px 0 12px;
+  }
+  h2.section-title:first-child { margin-top: 0; }
+  .champion-banner {
+    background: var(--green);
+    color: var(--cream);
+    padding: 16px;
+    text-align: center;
+    border-radius: 3px;
+    margin-bottom: 16px;
+    border: 2px solid var(--gold);
+  }
+  .champion-banner .label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .champion-banner .name {
+    font-size: 24px;
+    color: var(--gold);
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+  .champion-banner .score {
+    font-family: "Courier New", monospace;
+    color: var(--cream);
+    margin-top: 4px;
+    font-size: 13px;
+  }
+  .cumulative {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--gold);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .cum-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .cum-table th, .cum-table td {
+    padding: 8px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .cum-table th {
+    background: var(--green);
+    color: var(--cream);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cum-table .owner-cell {
+    text-align: left;
+    padding-left: 14px;
+    font-weight: bold;
+    color: var(--green);
+    font-size: 14px;
+  }
+  .cum-table .rank-cell {
+    width: 32px;
+    font-weight: bold;
+    color: var(--gold-dark);
+  }
+  .cum-table .total-cell {
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--green);
+    background: #fdfaf0;
+  }
+  .cum-table .score-cell {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+  }
+  .cum-table .score-cell.no-data { color: #ccc; }
+  .cum-table tr.leader td.total-cell {
+    background: var(--gold);
+    color: var(--green);
+  }
+  .event {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--green);
+    margin-bottom: 12px;
+    padding: 12px 16px;
+    border-radius: 2px;
+  }
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .event-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--green);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .event-winner {
+    font-size: 11px;
+    color: var(--gold-dark);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .event-teams {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 4px 12px;
+    font-size: 13px;
+  }
+  .event-team {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px dotted #eee;
+  }
+  .event-team .et-name { font-weight: bold; }
+  .event-team .et-score { font-family: "Courier New", monospace; font-weight: bold; }
+  .event-team.winner-team .et-name { color: var(--gold-dark); }
+  .event-team.winner-team .et-name::after { content: " 🏆"; }
+  .event-rosters {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    font-size: 11px;
+    color: var(--grey);
+    display: none;
+  }
+  .event.show-rosters .event-rosters { display: block; }
+  .event-roster { padding: 3px 0; }
+  .event-roster strong { color: var(--green); }
+  .toggle-rosters {
+    background: none;
+    border: none;
+    color: var(--gold-dark);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-top: 6px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .toggle-rosters:hover { color: var(--green); }
+  .event-note {
+    font-size: 11px;
+    color: var(--grey);
+    font-style: italic;
+    margin-top: 8px;
+  }
+  .alias { color: var(--grey); font-weight: normal; font-size: 11px; }
+  footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--grey);
+    padding: 16px;
+    letter-spacing: 1px;
+  }
+  @media (max-width: 600px) {
+    header h1 { font-size: 17px; letter-spacing: 2px; }
+    .cum-table { font-size: 11px; }
+    .cum-table th, .cum-table td { padding: 6px 4px; }
+    .cum-table .owner-cell { padding-left: 8px; font-size: 12px; }
+    .cum-table .total-cell { font-size: 13px; }
+    .event-title { font-size: 13px; }
+    .year-tab { font-size: 12px; padding: 5px 10px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="./">Live</a>
+  <a href="./season.html">2026 Season</a>
+  <a href="./history.html" class="active">History</a>
+</nav>
+<header>
+  <h1>Majors Draft <strong>History</strong></h1>
+  <div class="sub">Locks of the Day · 2017 – 2025</div>
+</header>
+<div class="year-tabs" id="year-tabs"></div>
+<main id="content"></main>
+<footer>Some early years incomplete · Rosters reflect picks as originally written</footer>
+
+<script>
+const EVENT_ORDER = ["Masters", "PGA Championship", "US Open", "Open Championship"];
+const SHORT_EVENT = { "Masters": "Masters", "PGA Championship": "PGA", "US Open": "U.S. Open", "Open Championship": "The Open" };
+
+const fmtScore = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return "—";
+  if (n === 0) return "E";
+  return n > 0 ? `+${n}` : `${n}`;
+};
+
+let HISTORY = null;
+let CURRENT_YEAR = null;
+
+function sortEventsChronologically(events) {
+  // Standard order Masters → PGA → US Open → Open. 2020 had odd ordering (Masters in Nov), preserve JSON order for that year.
+  const standardOrder = ["Masters", "PGA Championship", "US Open", "Open Championship"];
+  return events.slice().sort((a, b) => {
+    const ai = standardOrder.indexOf(a.name);
+    const bi = standardOrder.indexOf(b.name);
+    return ai - bi;
+  });
+}
+
+function computeYearCumulative(year) {
+  const owners = {};
+  for (const event of year.events) {
+    for (const team of event.teams) {
+      if (team.score === null || team.score === undefined) continue;
+      if (!owners[team.owner]) owners[team.owner] = { owner: team.owner, total: 0, scores: {} };
+      owners[team.owner].scores[event.name] = team.score;
+      owners[team.owner].total += team.score;
+    }
+  }
+  return Object.values(owners).sort((a, b) => a.total - b.total);
+}
+
+function getAliasForOwner(year, owner) {
+  // Look across events for any alias used for this owner this year
+  for (const event of year.events) {
+    for (const team of event.teams) {
+      if (team.owner === owner && team.alias && team.alias !== team.owner) {
+        return team.alias;
+      }
+    }
+  }
+  return null;
+}
+
+function renderCumulative(year) {
+  const cum = computeYearCumulative(year);
+  if (cum.length === 0) {
+    return `<p style="color:var(--grey);font-style:italic;text-align:center;padding:16px;">Scores not on file for this year.</p>`;
+  }
+  const eventNames = sortEventsChronologically(year.events).map(e => e.name);
+  const eventHeads = eventNames.map(e => `<th>${SHORT_EVENT[e] || e}</th>`).join("");
+  const body = cum.map((r, i) => {
+    const scoreCells = eventNames.map(e => {
+      const s = r.scores[e];
+      if (s === undefined) return '<td class="score-cell no-data">—</td>';
+      return `<td class="score-cell">${fmtScore(s)}</td>`;
+    }).join("");
+    return `
+      <tr${i === 0 ? ' class="leader"' : ""}>
+        <td class="rank-cell">${i + 1}</td>
+        <td class="owner-cell">${r.owner}</td>
+        ${scoreCells}
+        <td class="total-cell">${fmtScore(r.total)}</td>
+      </tr>
+    `;
+  }).join("");
+  return `
+    <div class="cumulative">
+      <table class="cum-table">
+        <thead><tr><th>#</th><th class="owner-cell">Owner</th>${eventHeads}<th>Total</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderChampion(year) {
+  const cum = computeYearCumulative(year);
+  const champ = year.champion || (cum.length > 0 ? cum[0].owner : null);
+  if (!champ) return "";
+  const champRow = cum.find(r => r.owner === champ);
+  const score = champRow ? fmtScore(champRow.total) : "";
+  return `
+    <div class="champion-banner">
+      <div class="label">${year.year} Year-Long Champion</div>
+      <div class="name">${champ}</div>
+      ${score ? `<div class="score">${score} across ${champRow ? Object.keys(champRow.scores).length : 0} events</div>` : ""}
+    </div>
+  `;
+}
+
+function renderEvent(event) {
+  const teams = (event.teams || []).slice().sort((a, b) => {
+    if (a.score === null || a.score === undefined) return 1;
+    if (b.score === null || b.score === undefined) return -1;
+    return a.score - b.score;
+  });
+
+  const rows = teams.map((t, i) => {
+    const alias = t.alias && t.alias !== t.owner ? ` <span class="alias">(${t.alias})</span>` : "";
+    const flags = [];
+    if (t.winnerBonus) flags.push("***");
+    if (t.mc) flags.push("*");
+    if (t.doubleMc) flags.push("**");
+    const flagStr = flags.length ? ` <span style="color:var(--red);">${flags.join("")}</span>` : "";
+    const isWinner = i === 0 && t.score !== null && t.score !== undefined;
+    return `
+      <div class="event-team${isWinner ? " winner-team" : ""}">
+        <span class="et-name">${t.owner}${alias}${flagStr}</span>
+        <span class="et-score">${fmtScore(t.score)}</span>
+      </div>
+    `;
+  }).join("");
+
+  const rosters = teams.map(t => `
+    <div class="event-roster"><strong>${t.owner}:</strong> ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>
+  `).join("");
+
+  const winnerLine = event.winner
+    ? `<div class="event-winner">Winner: ${event.winner}${event.winnerPickedBy ? ` (picked by ${event.winnerPickedBy})` : ""}</div>`
+    : "";
+
+  const note = event.note ? `<div class="event-note">${event.note}</div>` : "";
+
+  return `
+    <div class="event">
+      <div class="event-header">
+        <div class="event-title">${event.name === "Open Championship" ? "The Open" : event.name}</div>
+        ${winnerLine}
+      </div>
+      <div class="event-teams">${rows}</div>
+      <button class="toggle-rosters" onclick="this.closest('.event').classList.toggle('show-rosters'); this.textContent = this.closest('.event').classList.contains('show-rosters') ? 'Hide rosters' : 'Show rosters';">Show rosters</button>
+      <div class="event-rosters">${rosters}</div>
+      ${note}
+    </div>
+  `;
+}
+
+function selectYear(yearNum) {
+  CURRENT_YEAR = yearNum;
+  document.querySelectorAll(".year-tab").forEach(t => {
+    t.classList.toggle("active", parseInt(t.dataset.year, 10) === yearNum);
+  });
+  const year = HISTORY.years.find(y => y.year === yearNum);
+  if (!year) return;
+
+  const content = document.getElementById("content");
+  const eventsHtml = sortEventsChronologically(year.events).map(renderEvent).join("");
+
+  content.innerHTML = `
+    ${renderChampion(year)}
+    <h2 class="section-title">${year.year} Standings</h2>
+    ${renderCumulative(year)}
+    <h2 class="section-title">${year.year} Events</h2>
+    ${eventsHtml}
+  `;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderTabs() {
+  const tabs = document.getElementById("year-tabs");
+  const years = HISTORY.years.map(y => y.year).sort((a, b) => b - a);
+  tabs.innerHTML = years.map(y => `<button class="year-tab" data-year="${y}" onclick="selectYear(${y})">${y}</button>`).join("");
+}
+
+async function init() {
+  try {
+    const res = await fetch("./data/history.json");
+    if (!res.ok) throw new Error(`Could not load history (${res.status})`);
+    HISTORY = await res.json();
+    renderTabs();
+    const latest = Math.max(...HISTORY.years.map(y => y.year));
+    selectYear(latest);
+  } catch (e) {
+    document.getElementById("content").innerHTML = `<div style="background:#fee;border:1px solid var(--red);padding:14px;border-radius:4px;color:var(--red);">${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
