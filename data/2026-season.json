@@ -1,0 +1,97 @@
+{
+  "year": 2026,
+  "owners": {
+    "Emery": "Fern",
+    "Austin": "Troop",
+    "Miles": "Ram",
+    "Jacob": "Bean",
+    "Kellen": "Money",
+    "Garrett": "Gary",
+    "Jared": "Taco",
+    "Dylan": "Cyc",
+    "Alex": "Mags"
+  },
+  "events": [
+    {
+      "name": "Masters",
+      "month": "April",
+      "complete": true,
+      "winner": "Rory McIlroy",
+      "winnerPickedBy": "Emery",
+      "teams": [
+        {
+          "owner": "Emery",
+          "teamName": "Fern",
+          "score": -25,
+          "winnerBonus": true,
+          "players": ["Rory McIlroy", "Brooks Koepka", "Chris Gotterup", "Jason Day", "Sam Stevens"]
+        },
+        {
+          "owner": "Austin",
+          "teamName": "Troop",
+          "score": -24,
+          "players": ["Xander Schauffele", "Robert MacIntyre", "Jake Knapp", "Sam Burns", "Daniel Berger"]
+        },
+        {
+          "owner": "Jacob",
+          "teamName": "Bean",
+          "score": -19,
+          "players": ["Scottie Scheffler", "Si Woo Kim", "Tyrrell Hatton", "Sepp Straka", "Nicolai Hojgaard"]
+        },
+        {
+          "owner": "Miles",
+          "teamName": "Ram",
+          "score": -19,
+          "players": ["Matt Fitzpatrick", "Justin Rose", "Patrick Reed", "Adam Scott", "Fang (am)"]
+        },
+        {
+          "owner": "Kellen",
+          "teamName": "Money",
+          "score": -18,
+          "players": ["Jon Rahm", "Russell Henley", "Viktor Hovland", "Corey Conners", "Maverick McNealy"]
+        },
+        {
+          "owner": "Garrett",
+          "teamName": "Gary",
+          "score": -16,
+          "players": ["Ludvig Aberg", "Jordan Spieth", "J.J. Spaun", "Shane Lowry", "Max Homa"]
+        },
+        {
+          "owner": "Jared",
+          "teamName": "Taco",
+          "score": -15,
+          "players": ["Cameron Young", "Tommy Fleetwood", "Patrick Cantlay", "Jacob Bridgeman", "Gary Woodland"]
+        },
+        {
+          "owner": "Dylan",
+          "teamName": "Cyc",
+          "score": -11,
+          "players": ["Collin Morikawa", "Hideki Matsuyama", "Min Woo Lee", "Sungjae Im", "FIFA (am)"]
+        },
+        {
+          "owner": "Alex",
+          "teamName": "Mags",
+          "score": 8,
+          "players": ["Bryson DeChambeau", "Akshay Bhatia", "Justin Thomas", "Marco Penge", "Ben Griffin"]
+        }
+      ]
+    },
+    {
+      "name": "PGA Championship",
+      "month": "May",
+      "live": true,
+      "complete": false,
+      "note": "Live scores tracked at /index.html — see roster there"
+    },
+    {
+      "name": "US Open",
+      "month": "June",
+      "complete": false
+    },
+    {
+      "name": "Open Championship",
+      "month": "July",
+      "complete": false
+    }
+  ]
+}

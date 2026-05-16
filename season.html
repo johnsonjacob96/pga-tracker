@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 Season · Locks of the Day Majors Draft</title>
+<style>
+  :root {
+    --cream: #f5efe0;
+    --cream-dark: #ebe3cf;
+    --gold: #c9a04e;
+    --gold-dark: #8e6e2c;
+    --green: #1d3d2c;
+    --green-light: #2d5a42;
+    --red: #a02828;
+    --grey: #888;
+    --text: #2a2417;
+    --border: #d9cfb5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  nav {
+    background: var(--green);
+    padding: 8px 16px;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    border-bottom: 1px solid var(--gold-dark);
+  }
+  nav a {
+    color: var(--cream);
+    text-decoration: none;
+    padding: 6px 16px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  nav a:hover { color: var(--gold); }
+  nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+  header {
+    background: var(--green);
+    color: var(--cream);
+    padding: 20px 16px 18px;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: normal;
+  }
+  header h1 strong { color: var(--gold); font-weight: bold; }
+  header .sub {
+    font-size: 12px;
+    color: var(--gold);
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .status-bar {
+    background: var(--cream-dark);
+    padding: 10px 16px;
+    font-size: 12px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: #5a4f30;
+  }
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  h2.section-title {
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--green);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 6px;
+    margin: 24px 0 12px;
+  }
+  h2.section-title:first-child { margin-top: 0; }
+  .cumulative {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--gold);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .cum-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .cum-table th, .cum-table td {
+    padding: 8px 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .cum-table th {
+    background: var(--green);
+    color: var(--cream);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 6px;
+  }
+  .cum-table .owner-cell {
+    text-align: left;
+    padding-left: 14px;
+  }
+  .cum-table .owner-name {
+    font-weight: bold;
+    color: var(--green);
+    font-size: 14px;
+    letter-spacing: 0.5px;
+  }
+  .cum-table .team-tag {
+    display: inline-block;
+    margin-left: 6px;
+    color: var(--gold-dark);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .cum-table .rank-cell {
+    width: 36px;
+    font-weight: bold;
+    color: var(--gold-dark);
+  }
+  .cum-table .total-cell {
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--green);
+    background: #fdfaf0;
+  }
+  .cum-table .score-cell {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+  .cum-table .score-cell.pending { color: #bbb; }
+  .cum-table .score-cell.live {
+    color: var(--red);
+    font-weight: bold;
+  }
+  .cum-table tr.leader td.total-cell {
+    background: var(--gold);
+    color: var(--green);
+  }
+  .cum-table tr:hover td:not(.total-cell):not(.rank-cell) { background: #fafaf0; }
+
+  .event {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--gold);
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    border-radius: 2px;
+  }
+  .event.live { border-left-color: var(--red); }
+  .event.complete { border-left-color: var(--green); background: #fdfaf0; }
+  .event.upcoming { opacity: 0.7; }
+  .event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .event-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--green);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .event-meta {
+    font-size: 11px;
+    color: var(--gold-dark);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .event-meta.live-tag {
+    background: var(--red);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 2px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .event-meta.final-tag {
+    background: var(--green);
+    color: var(--gold);
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+  .event-teams {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px 12px;
+    font-size: 13px;
+  }
+  .event-team {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dotted #eee;
+  }
+  .event-team .et-name { font-weight: bold; }
+  .event-team .et-score { font-family: "Courier New", monospace; font-weight: bold; }
+  .event-team.winner .et-name { color: var(--gold-dark); }
+  .event-team.winner .et-name::after { content: " 🏆"; }
+  .event-rosters {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+    font-size: 11px;
+    color: var(--grey);
+    display: none;
+  }
+  .event.show-rosters .event-rosters { display: block; }
+  .event-roster {
+    padding: 4px 0;
+  }
+  .event-roster strong { color: var(--green); }
+  .toggle-rosters {
+    background: none;
+    border: none;
+    color: var(--gold-dark);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 4px 0;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .toggle-rosters:hover { color: var(--green); }
+  .upcoming-msg {
+    text-align: center;
+    color: var(--grey);
+    font-style: italic;
+    padding: 12px;
+    font-size: 13px;
+  }
+  footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--grey);
+    padding: 16px;
+    letter-spacing: 1px;
+  }
+  @media (max-width: 600px) {
+    header h1 { font-size: 17px; letter-spacing: 2px; }
+    .cum-table { font-size: 11px; }
+    .cum-table th, .cum-table td { padding: 6px 4px; }
+    .cum-table .owner-cell { padding-left: 8px; }
+    .cum-table .owner-name { font-size: 12px; }
+    .cum-table .team-tag { display: block; margin-left: 0; font-size: 9px; }
+    .cum-table .total-cell { font-size: 14px; }
+    .event-title { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a href="./">Live</a>
+  <a href="./season.html" class="active">2026 Season</a>
+  <a href="./history.html">History</a>
+</nav>
+<header>
+  <h1>2026 <strong>Season</strong></h1>
+  <div class="sub">Locks of the Day · Majors Draft</div>
+</header>
+<div class="status-bar" id="status">Loading...</div>
+<main id="content"></main>
+<footer>Cumulative across all 4 majors · Lowest total wins · Live data refreshes every 60s</footer>
+
+<script>
+const PGA_TEAMS = {
+  Fern:  ["Scottie Scheffler", "Chris Gotterup", "Tyrrell Hatton", "Keegan Bradley", "Sungjae Im"],
+  Troop: ["Cameron Young", "Rickie Fowler", "J.J. Spaun", "Harris English", "Ben Griffin"],
+  Ram:   ["Jon Rahm", "Min Woo Lee", "Adam Scott", "Alex Fitzpatrick", "Maverick McNealy"],
+  Bean:  ["Rory McIlroy", "Russell Henley", "Viktor Hovland", "Shane Lowry", "Austin Smotherman"],
+  Money: ["Xander Schauffele", "Patrick Cantlay", "Jordan Spieth", "Sam Burns", "Hideki Matsuyama"],
+  Gary:  ["Bryson DeChambeau", "Justin Thomas", "Patrick Reed", "Sam Stevens", "Max Homa"],
+  Taco:  ["Ludvig Aberg", "Justin Rose", "Robert MacIntyre", "Sepp Straka", "Matt McCarty"],
+  Cyc:   ["Brooks Koepka", "Collin Morikawa", "Si Woo Kim", "Akshay Bhatia", "Gary Woodland"],
+  Mags:  ["Matt Fitzpatrick", "Tommy Fleetwood", "Nicolai Hojgaard", "Kristoffer Reitan", "Jason Day"]
+};
+
+const EVENT_KEYS = ["Masters", "PGA Championship", "US Open", "Open Championship"];
+
+const normalize = (s) =>
+  s.normalize("NFD")
+   .replace(/[̀-ͯ]/g, "")
+   .replace(/ø/g, "o").replace(/Ø/g, "O")
+   .replace(/[.\s'-]/g, "")
+   .toLowerCase();
+
+const fmtScore = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return "—";
+  if (n === 0) return "E";
+  return n > 0 ? `+${n}` : `${n}`;
+};
+
+function parseScore(raw) {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === "number") return raw;
+  const s = String(raw).trim();
+  if (s === "" || s === "—") return null;
+  if (s === "E") return 0;
+  if (s.startsWith("+")) return parseInt(s.slice(1), 10);
+  return parseInt(s, 10);
+}
+
+async function fetchLivePGA() {
+  try {
+    const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard");
+    if (!res.ok) throw new Error(`ESPN ${res.status}`);
+    const data = await res.json();
+    const event = (data.events || []).find(e => /PGA Championship/i.test(e.name));
+    if (!event) return null;
+    const competition = event.competitions?.[0];
+    if (!competition) return null;
+
+    const players = {};
+    for (const comp of competition.competitors || []) {
+      const name = comp.athlete?.fullName || comp.athlete?.displayName;
+      if (!name) continue;
+      const score = parseScore(comp.score);
+      const linescores = comp.linescores || [];
+      const madeCut = linescores.length >= 3;
+      players[normalize(name)] = { name, score, madeCut };
+    }
+
+    const madeCutScores = Object.values(players)
+      .filter(p => p.madeCut && p.score !== null)
+      .map(p => p.score);
+    const worstMadeCut = madeCutScores.length ? Math.max(...madeCutScores) : 0;
+    const penalty = worstMadeCut + 2;
+
+    const teamScores = {};
+    for (const [teamName, roster] of Object.entries(PGA_TEAMS)) {
+      const teamPlayers = roster.map(rn => {
+        const f = players[normalize(rn)];
+        return f ? { score: f.score, madeCut: f.madeCut } : { score: null, madeCut: false };
+      });
+      const sorted = teamPlayers.filter(p => p.madeCut && p.score !== null).sort((a, b) => a.score - b.score);
+      let total = 0;
+      for (let i = 0; i < Math.min(3, sorted.length); i++) total += sorted[i].score;
+      total += Math.max(0, 3 - sorted.length) * penalty;
+      teamScores[teamName] = total;
+    }
+
+    return {
+      status: event.status?.type?.description || "In Progress",
+      complete: event.status?.type?.completed === true,
+      teamScores
+    };
+  } catch (e) {
+    console.error("Live PGA fetch failed:", e);
+    return null;
+  }
+}
+
+async function loadSeason() {
+  const res = await fetch("./data/2026-season.json");
+  if (!res.ok) throw new Error("Could not load season data");
+  return res.json();
+}
+
+function teamScoreForOwner(seasonData, eventName, owner) {
+  const event = seasonData.events.find(e => e.name === eventName);
+  if (!event || !event.teams) return null;
+  const team = event.teams.find(t => t.owner === owner);
+  return team ? team.score : null;
+}
+
+function computeCumulative(seasonData, livePGA) {
+  const owners = Object.entries(seasonData.owners).map(([owner, teamName]) => {
+    const scores = {};
+    for (const evKey of EVENT_KEYS) {
+      if (evKey === "PGA Championship" && livePGA) {
+        scores[evKey] = livePGA.teamScores[teamName] ?? null;
+      } else {
+        scores[evKey] = teamScoreForOwner(seasonData, evKey, owner);
+      }
+    }
+    const total = Object.values(scores).reduce((sum, s) => sum + (s ?? 0), 0);
+    return { owner, teamName, scores, total };
+  });
+  owners.sort((a, b) => a.total - b.total);
+  return owners;
+}
+
+function renderCumulative(rows, livePGA) {
+  const eventHeads = EVENT_KEYS.map(e => {
+    const short = e === "PGA Championship" ? "PGA" : e === "Open Championship" ? "Open" : e === "US Open" ? "U.S." : e;
+    return `<th>${short}</th>`;
+  }).join("");
+  const body = rows.map((r, i) => {
+    const scoreCells = EVENT_KEYS.map(e => {
+      const s = r.scores[e];
+      if (s === null) return '<td class="score-cell pending">—</td>';
+      const isLive = e === "PGA Championship" && livePGA && !livePGA.complete;
+      return `<td class="score-cell${isLive ? " live" : ""}">${fmtScore(s)}</td>`;
+    }).join("");
+    return `
+      <tr${i === 0 ? ' class="leader"' : ""}>
+        <td class="rank-cell">${i + 1}</td>
+        <td class="owner-cell">
+          <span class="owner-name">${r.owner}</span>
+          <span class="team-tag">${r.teamName}</span>
+        </td>
+        ${scoreCells}
+        <td class="total-cell">${fmtScore(r.total)}</td>
+      </tr>
+    `;
+  }).join("");
+  return `
+    <div class="cumulative">
+      <table class="cum-table">
+        <thead><tr><th>#</th><th class="owner-cell">Owner</th>${eventHeads}<th>Total</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderEvent(event, livePGA, ownerMap) {
+  if (!event.complete && !(event.name === "PGA Championship" && livePGA)) {
+    return `
+      <div class="event upcoming">
+        <div class="event-header">
+          <div class="event-title">${event.name === "Open Championship" ? "The Open" : event.name}</div>
+          <div class="event-meta">${event.month}</div>
+        </div>
+        <div class="upcoming-msg">Not started — picks haven't been made yet</div>
+      </div>
+    `;
+  }
+
+  let teams = [];
+  let isLive = false;
+  let isFinal = false;
+  let winnerLabel = "";
+
+  if (event.name === "PGA Championship" && livePGA) {
+    isLive = !livePGA.complete;
+    isFinal = livePGA.complete;
+    teams = Object.entries(livePGA.teamScores)
+      .map(([teamName, score]) => {
+        const owner = Object.entries(ownerMap).find(([o, t]) => t === teamName)?.[0] || "?";
+        return { owner, teamName, score };
+      })
+      .sort((a, b) => a.score - b.score);
+  } else {
+    isFinal = true;
+    teams = (event.teams || []).slice().sort((a, b) => a.score - b.score);
+    winnerLabel = event.winner ? ` · won by ${event.winner} (picked by ${event.winnerPickedBy})` : "";
+  }
+
+  const rows = teams.map((t, i) => `
+    <div class="event-team${i === 0 ? " winner" : ""}">
+      <span class="et-name">${t.owner} <span style="color:var(--grey);font-weight:normal;">· ${t.teamName}</span></span>
+      <span class="et-score">${fmtScore(t.score)}</span>
+    </div>
+  `).join("");
+
+  const rosters = event.teams ? event.teams.slice().sort((a, b) => a.score - b.score).map(t => `
+    <div class="event-roster"><strong>${t.owner}:</strong> ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>
+  `).join("") : "";
+
+  const eventClass = isLive ? "event live" : (isFinal ? "event complete" : "event");
+  const tag = isLive
+    ? `<div class="event-meta live-tag">● Live</div>`
+    : (isFinal ? `<div class="event-meta final-tag">Final${winnerLabel}</div>` : `<div class="event-meta">${event.month}</div>`);
+
+  const rosterToggle = event.teams && event.teams.length
+    ? `<button class="toggle-rosters" onclick="this.closest('.event').classList.toggle('show-rosters'); this.textContent = this.closest('.event').classList.contains('show-rosters') ? 'Hide rosters' : 'Show rosters';">Show rosters</button>`
+    : (isLive ? `<a href="./" style="color:var(--gold-dark);font-size:11px;text-transform:uppercase;letter-spacing:1px;text-decoration:none;">View live scorecards →</a>` : "");
+
+  return `
+    <div class="${eventClass}">
+      <div class="event-header">
+        <div>
+          <div class="event-title">${event.name === "Open Championship" ? "The Open" : event.name}</div>
+          <div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;">${event.month}</div>
+        </div>
+        ${tag}
+      </div>
+      <div class="event-teams">${rows}</div>
+      <div style="margin-top:10px;">${rosterToggle}</div>
+      <div class="event-rosters">${rosters}</div>
+    </div>
+  `;
+}
+
+async function render() {
+  const status = document.getElementById("status");
+  const content = document.getElementById("content");
+  try {
+    const seasonData = await loadSeason();
+    status.textContent = "Loading live PGA Championship scores...";
+    const livePGA = await fetchLivePGA();
+
+    const cumulative = computeCumulative(seasonData, livePGA);
+    const cumHtml = renderCumulative(cumulative, livePGA);
+    const eventsHtml = seasonData.events.map(e => renderEvent(e, livePGA, seasonData.owners)).join("");
+
+    content.innerHTML = `
+      <h2 class="section-title">Cumulative Standings</h2>
+      ${cumHtml}
+      <h2 class="section-title">Events</h2>
+      ${eventsHtml}
+    `;
+
+    const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const liveBit = livePGA ? `PGA Championship · ${livePGA.status}` : "PGA Championship · live data unavailable";
+    status.textContent = `${liveBit} · Updated ${now}`;
+  } catch (e) {
+    status.textContent = `Error: ${e.message}`;
+    content.innerHTML = `<div style="background:#fee;border:1px solid var(--red);padding:14px;border-radius:4px;color:var(--red);">${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+render();
+setInterval(render, 60000);
+</script>
+</body>
+</html>

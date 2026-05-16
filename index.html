@@ -26,6 +26,26 @@
     line-height: 1.4;
     min-height: 100vh;
   }
+  nav {
+    background: var(--green);
+    padding: 8px 16px;
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    border-bottom: 1px solid var(--gold-dark);
+  }
+  nav a {
+    color: var(--cream);
+    text-decoration: none;
+    padding: 6px 16px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  nav a:hover { color: var(--gold); }
+  nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
   header {
     background: var(--green);
     color: var(--cream);
@@ -294,6 +314,11 @@
 </style>
 </head>
 <body>
+<nav>
+  <a href="./" class="active">Live</a>
+  <a href="./season.html">2026 Season</a>
+  <a href="./history.html">History</a>
+</nav>
 <header>
   <h1>2026 <strong>PGA Championship</strong></h1>
   <div class="sub">Friends Draft · Best 3 Scores</div>

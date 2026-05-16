@@ -1,0 +1,422 @@
+{
+  "years": [
+    {
+      "year": 2025,
+      "champion": "Kellen",
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Emery",   "alias": "Mr. May",      "score": -8,  "players": ["Scottie", "Straka", "Willy Z", "Day", "Clark"] },
+            { "owner": "Garrett", "alias": "Mr. Marshall", "score": -23, "players": ["Bryson", "Conners", "Viktor", "Finau", "Rose"] },
+            { "owner": "Jacob",   "alias": "Mr. Bean",     "score": -13, "winnerBonus": true, "players": ["Rory", "Lowry", "Hatton", "Cam Smith", "DJ"] },
+            { "owner": "Kellen",  "alias": "Mr. Kuntz",    "score": 6,   "mc": true, "players": ["Brooks", "Spieth", "Henley", "Keegan", "Berger"] },
+            { "owner": "Austin",  "alias": "Mr. Shanks",   "score": -10, "players": ["Aberg", "Niemann", "Bhatia", "Harman", "English"] },
+            { "owner": "Miles",   "alias": "Mo Lester",    "score": 2,   "players": ["Rahm", "Cantlay", "Fitz", "Young", "Josele Ballester"] },
+            { "owner": "Jared",   "alias": "Mr. Taco",     "score": -14, "players": ["Morikawa", "Tommy", "McIntyre", "Reed", "McNealy"] },
+            { "owner": "Dylan",   "alias": "Mr. Cyc",      "score": 2,   "players": ["Hideki", "MWL", "T. Kim", "Phil", "An"] },
+            { "owner": "Alex",    "alias": "Mr. Magoo",    "score": -3,  "players": ["Xander", "JT", "Scott", "Sahith", "Burns"] }
+          ],
+          "winner": "Rory McIlroy",
+          "winnerPickedBy": "Jacob"
+        },
+        {
+          "name": "PGA Championship",
+          "teams": [
+            { "owner": "Kellen",  "alias": "Kellen", "score": -10, "winnerBonus": true, "players": ["Scottie", "Hatton", "Conners", "Im", "Smith"] },
+            { "owner": "Jared",   "alias": "Jared",  "score": 18,  "mc": true,  "players": ["Rory", "Straka", "Rose", "McNealy", "DJ"] },
+            { "owner": "Jacob",   "alias": "Bean",   "score": 1,   "players": ["Bryson", "Lowry", "Day", "T Kim", "Rai"] },
+            { "owner": "Austin",  "alias": "Troop",  "score": 17,  "mc": true, "players": ["Morikawa", "Hideki", "MWL", "Henley", "Scott"] },
+            { "owner": "Emery",   "alias": "Fern",   "score": -4,  "players": ["JT", "Tommy", "Clark", "Finau", "Fitz"] },
+            { "owner": "Alex",    "alias": "Mags",   "score": 8,   "players": ["Xander", "Cantlay", "Mitchell", "Bobby Mac", "Sam"] },
+            { "owner": "Dylan",   "alias": "Cyc",    "score": 1,   "players": ["Aberg", "Viktor", "Rasmus", "Nicolai", "Olesen"] },
+            { "owner": "Miles",   "alias": "Ram",    "score": -5,  "players": ["Rahm", "Niemann", "Will Z", "Homa", "Young"] },
+            { "owner": "Garrett", "alias": "Gary",   "score": 30,  "doubleMc": true, "players": ["Brooks", "Spieth", "Reed", "Bhatia", "Berger"] }
+          ],
+          "winner": "Scottie Scheffler",
+          "winnerPickedBy": "Kellen"
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Kellen",  "alias": "Kellen", "score": 12, "players": ["Scheff", "Henley", "Spieth", "Day", "Young"] },
+            { "owner": "Miles",   "alias": "Miles",  "score": 29, "players": ["Rory", "Cantlay", "Sepp", "Fitz", "Pendrith"] },
+            { "owner": "Emery",   "alias": "Emery",  "score": 17, "players": ["Bryson", "Brooks", "Hatton", "Reed", "Novak"] },
+            { "owner": "Jacob",   "alias": "Bean",   "score": 2,  "winnerBonus": true, "players": ["Rahm", "Hovland", "Burns", "English", "Spaun"] },
+            { "owner": "Dylan",   "alias": "Cyc",    "score": 32, "players": ["Morikawa", "Hideki", "Si Woo", "Im", "MWL"] },
+            { "owner": "Alex",    "alias": "Mags",   "score": 33, "mc": true, "players": ["Aberg", "Lowry", "Akshay", "Scott", "Bobby Mac"] },
+            { "owner": "Austin",  "alias": "Troop",  "score": 24, "players": ["Xander", "Niemann", "Keegan", "Rai", "Cam Smith"] },
+            { "owner": "Jared",   "alias": "Taco",   "score": 44, "mc": true, "players": ["JT", "Fleetwood", "Rose", "Mav", "Sam"] },
+            { "owner": "Garrett", "alias": "Gary",   "score": 29, "players": ["Conners", "Griffin", "Berger", "Finau", "Gary"] }
+          ],
+          "winner": "J.J. Spaun",
+          "winnerPickedBy": "Jacob"
+        },
+        {
+          "name": "Open Championship",
+          "teams": [
+            { "owner": "Jacob",   "alias": "Jacob",  "score": -17, "players": ["Scottie", "Straka", "Scott", "Spaun", "Smith"] },
+            { "owner": "Kellen",  "alias": "Kellen", "score": -4,  "players": ["Rahm", "Niemann", "Spieth", "Day", "Finau"] },
+            { "owner": "Emery",   "alias": "Emery",  "score": -22, "players": ["Rory", "Fitz", "Rose", "Mav", "Im"] },
+            { "owner": "Austin",  "alias": "Austin", "score": -9,  "players": ["Bryson", "JT", "Keegan", "Hideki", "Detry"] },
+            { "owner": "Miles",   "alias": "Miles",  "score": -4,  "mc": true, "players": ["Xander", "Hatton", "Cantlay", "Young", "Fang"] },
+            { "owner": "Garrett", "alias": "Gary",   "score": 6,   "mc": true, "players": ["Morikawa", "Brooks", "Conners", "Rai", "Pendrith"] },
+            { "owner": "Dylan",   "alias": "Dylan",  "score": -13, "players": ["Lowry", "Reed", "English", "Gotterup", "Phil"] },
+            { "owner": "Alex",    "alias": "Alex",   "score": -17, "players": ["Aberg", "B Mac", "Fox", "Burns", "N. Hoigaard"] },
+            { "owner": "Jared",   "alias": "Jared",  "score": -14, "players": ["Tommy", "Viktor", "Henley", "Griffin", "Clark"] }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Emery",   "score": -18, "winnerBonus": true, "players": ["Scheffler", "Clark", "Homa", "Rickie", "Hatton"] },
+            { "owner": "Garrett", "score": 12,  "players": ["Brooks", "Harman", "Morikawa", "Theegala", "Conners"] },
+            { "owner": "Jared",   "score": 15,  "players": ["Rory", "Niemann", "Finau", "Lowry", "Henley"] },
+            { "owner": "Jacob",   "score": 18,  "players": ["Rahm", "Spieth", "Cantlay", "JT", "Day"] },
+            { "owner": "Dylan",   "score": 25,  "players": ["Phil", "Hideki", "Reed", "Louis", "Tiger"] },
+            { "owner": "Kellen",  "score": -8,  "players": ["Viktor", "Cam Smith", "Bryson", "Fleetwood", "Min Woo"] },
+            { "owner": "Austin",  "score": -4,  "players": ["Xander", "Aberg", "DJ", "Adam", "Sergio"] },
+            { "owner": "Miles",   "score": 4,   "players": ["Willy Z", "Cam Young", "Fitz", "Akshay", "Lamprecht"] }
+          ],
+          "winner": "Scottie Scheffler",
+          "winnerPickedBy": "Emery"
+        },
+        {
+          "name": "PGA Championship",
+          "teams": [
+            { "owner": "Emery",   "score": -43, "players": ["Scheff", "Hovland", "Clark", "Theegala", "Im"] },
+            { "owner": "Kellen",  "score": -29, "players": ["Koepka", "Fleetwood", "Cam Young", "Hatton", "Finau"] },
+            { "owner": "Austin",  "score": -21, "players": ["Rory", "Cam Smith", "DJ", "Fowler", "Scott"] },
+            { "owner": "Miles",   "score": -27, "players": ["Rahm", "Zalatoris", "Niemann", "Lowry", "Spieth"] },
+            { "owner": "Garrett", "score": -29, "players": ["Homa", "Cantlay", "Harman", "Bradley", "Conners"] },
+            { "owner": "Jared",   "score": -22, "mc": true, "players": ["Aberg", "Bryson", "JT", "Fitz", "Mitchell"] },
+            { "owner": "Jacob",   "score": -48, "doubleMc": true, "winnerBonus": true, "players": ["Xander", "Morikawa", "Day", "Hideki", "Tom Kim"] },
+            { "owner": "Dylan",   "score": -13, "players": ["Tiger", "Phil", "Reed", "Gooch", "Woodland"] }
+          ],
+          "winner": "Xander Schauffele",
+          "winnerPickedBy": "Jacob"
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Jacob",   "score": 18,  "players": ["Scheffler", "Clark", "Hideki", "DJ", "Day"] },
+            { "owner": "Emery",   "score": -13, "players": ["Rory", "Cantlay", "Finau", "Lowry", "Min Woo"] },
+            { "owner": "Kellen",  "score": 0,   "winnerBonus": true, "players": ["Bryson", "Cam Smith", "Fleetwood", "Hatton", "Bradley"] },
+            { "owner": "Garrett", "score": 13,  "players": ["Brooks", "Theegala", "Spieth", "Glover", "Conners"] },
+            { "owner": "Miles",   "score": 34,  "mc": true, "players": ["Xander", "An", "Fitz", "Willy Z", "Im"] },
+            { "owner": "Jared",   "score": 17,  "players": ["Morikawa", "Aberg", "JT", "Cam Young", "Noren"] },
+            { "owner": "Austin",  "score": 28,  "mc": true, "players": ["Homa", "Hovland", "Tom Kim", "Burns", "Colin Prater"] },
+            { "owner": "Dylan",   "score": 51,  "doubleMc": true, "players": ["Tiger", "Phil", "Reed", "Scott", "Woodland"] }
+          ],
+          "winner": "Bryson DeChambeau",
+          "winnerPickedBy": "Kellen"
+        },
+        {
+          "name": "Open Championship",
+          "teams": [
+            { "owner": "Emery",   "score": -6, "players": ["Scheffler", "Cam Young", "Lowry", "DJ", "Im"] },
+            { "owner": "Kellen",  "score": 35, "mc": true, "players": ["Bryson", "Cam Smith", "Finau", "Niemann", "Noren"] },
+            { "owner": "Garrett", "score": 11, "players": ["Morikawa", "Cantlay", "Theegala", "Homa", "Straka"] },
+            { "owner": "Jared",   "score": 41, "mc": true, "players": ["Rory", "Tom Kim", "Harman", "JT", "Bhatia"] },
+            { "owner": "Jacob",   "score": 14, "players": ["Aberg", "Bob Mac", "Scott", "Spieth", "MW Lee"] },
+            { "owner": "Austin",  "score": 5,  "players": ["Xander", "Tommy", "Rai", "Conners", "Thompson"] },
+            { "owner": "Miles",   "score": 10, "players": ["Brooks", "Hatton", "Zal", "Fitz", "Rose"] },
+            { "owner": "Dylan",   "score": 22, "players": ["Rahm", "Viktor", "Hideki", "Louis", "Phil"] }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "champion": "Emery",
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Jacob",   "score": -14, "players": ["Scottie", "DJ", "Koepka", "Lowry", "Conners"] },
+            { "owner": "Kellen",  "score": -4,  "players": ["Rory", "Cantlay", "Fitzpatrick", "Fleetwood", "Louis"] },
+            { "owner": "Emery",   "score": -23, "winnerBonus": true, "players": ["Rahm", "Finau", "Young", "Tom Kim", "Sungjae"] },
+            { "owner": "Austin",  "score": 3,   "players": ["Homa", "Cam Smith", "Hovland", "Adam", "Bryson"] },
+            { "owner": "Garrett", "score": -11, "players": ["Spieth", "Bennett", "Day", "Niemann", "Gooch"] },
+            { "owner": "Jared",   "score": -11, "players": ["JT", "Morikawa", "Hideki", "Burns", "Theegala"] },
+            { "owner": "Dylan",   "score": -19, "players": ["Tiger", "Xander", "Si Woo", "Reed", "Phil"] }
+          ],
+          "winner": "Jon Rahm",
+          "winnerPickedBy": "Emery"
+        },
+        {
+          "name": "PGA Championship",
+          "teams": [
+            { "owner": "Emery",   "score": 21,  "mc": true, "players": ["Scheffler", "Fitz", "Young", "Niemann", "Theegala"] },
+            { "owner": "Dylan",   "score": 5,   "players": ["Rahm", "Hovland", "Hideki", "Phil", "Woodland"] },
+            { "owner": "Jacob",   "score": 6,   "players": ["Rory", "DJ", "Day", "Rose", "T Kim"] },
+            { "owner": "Jared",   "score": 43,  "mc": true, "players": ["JT", "Homa", "Im", "Fowler", "Clark"] },
+            { "owner": "Garrett", "score": -10, "winnerBonus": true, "players": ["Brooks", "Spieth", "Reed", "Gooch", "Conners"] },
+            { "owner": "Kellen",  "score": 2,   "players": ["Xander", "Morikawa", "Smith", "Hatton", "Scott"] },
+            { "owner": "Austin",  "score": 16,  "players": ["Cantlay", "Finau", "Burns", "Fleetwood", "Sam Stevens"] }
+          ],
+          "winner": "Brooks Koepka",
+          "winnerPickedBy": "Garrett"
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Garrett", "score": 5,   "players": ["Brooks", "Finau", "Young", "Conners", "Davis"] },
+            { "owner": "Kellen",  "score": -7,  "players": ["Rahm", "C Smith", "Hatton", "Reed", "Bradley"] },
+            { "owner": "Dylan",   "score": 1,   "players": ["Hovland", "Fitz", "Hideki", "Phil", "Theegala"] },
+            { "owner": "Jacob",   "score": -9,  "players": ["Scottie", "Homa", "DJ", "Lowry", "Scott"] },
+            { "owner": "Austin",  "score": -10, "players": ["Rory", "Cantlay", "Bryson", "Day", "Burns"] },
+            { "owner": "Emery",   "score": -20, "winnerBonus": true, "players": ["JT", "Morikawa", "Im", "Fowler", "Clark"] },
+            { "owner": "Jared",   "score": -4,  "players": ["Xander", "Spieth", "Rose", "Fleetwood", "Sam"] }
+          ],
+          "winner": "Wyndham Clark",
+          "winnerPickedBy": "Emery"
+        },
+        {
+          "name": "Open Championship",
+          "teams": [
+            { "owner": "Emery",   "score": 1,   "players": ["Scheffler", "Fitz", "Finau", "Burns", "Im"] },
+            { "owner": "Austin",  "score": -6,  "players": ["Rory", "Hatton", "Cantlay", "Clark", "Scott"] },
+            { "owner": "Jacob",   "score": 1,   "mc": true, "players": ["Rahm", "DJ", "Lowry", "T Kim", "Keegan"] },
+            { "owner": "Kellen",  "score": 3,   "players": ["Cam Smith", "Morikawa", "Bryson", "Cam Young", "Phil"] },
+            { "owner": "Jared",   "score": -11, "players": ["Brooks", "Fleetwood", "Homa", "Hideki", "McCarthy"] },
+            { "owner": "Dylan",   "score": 2,   "players": ["Hovland", "Rickie", "Rose", "Gooch", "Woodland"] },
+            { "owner": "Garrett", "score": -1,  "players": ["Spieth", "Xander", "JT", "Reed", "Conners"] }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Kellen",  "score": 15,  "players": ["Rahm", "Xander", "Zalatoris", "Scott", "Hatton"] },
+            { "owner": "Dylan",   "score": 39,  "players": ["Tiger", "Bryson", "Louis", "Woodland", "Si Woo Kim"] },
+            { "owner": "Jacob",   "score": -4,  "players": ["DJ", "Rory", "Hideki", "Fleetwood", "Higgs"] },
+            { "owner": "Emery",   "score": 2,   "players": ["Morikawa", "Hovland", "Berger", "Casey", "Fitzpatrick"] },
+            { "owner": "Jared",   "score": 11,  "players": ["JT", "Spieth", "Niemann", "Reed", "Wolff"] },
+            { "owner": "Garrett", "score": 10,  "players": ["Brooks", "Cantlay", "Finau", "Homa", "Conners"] },
+            { "owner": "Austin",  "score": -10, "winnerBonus": true, "players": ["Scottie", "Cam Smith", "Burns", "Horschel", "Ancer"] }
+          ],
+          "winner": "Scottie Scheffler",
+          "winnerPickedBy": "Austin"
+        },
+        {
+          "name": "PGA Championship",
+          "teams": [
+            { "owner": "Austin",  "score": 30,  "players": ["Scottie", "Hideki", "Burns", "Berger", "Scott"] },
+            { "owner": "Jacob",   "score": -10, "players": ["JT", "Hovland", "Niemann", "Fitzpatrick", "Higgs"] },
+            { "owner": "Emery",   "score": 15,  "players": ["Rahm", "DJ", "Horschel", "Louis", "Hatton"] },
+            { "owner": "Garrett", "score": 7,   "players": ["Morikawa", "Xander", "Brooks", "Finau", "Reed"] },
+            { "owner": "Jared",   "score": 26,  "players": ["Spieth", "Cantlay", "Lowry", "Conners", "Wolff"] },
+            { "owner": "Kellen",  "score": -2,  "players": ["Cam", "Rory", "Homa", "Sungjae", "Day"] },
+            { "owner": "Dylan",   "score": 0,   "players": ["Tiger", "Zalatoris", "Woodland", "Hughes", "Gooch"] }
+          ]
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Jacob",   "score": 7,  "players": ["JT", "Fitzpatrick", "Niemann", "Fleetwood", "Varner"] },
+            { "owner": "Kellen",  "score": 4,  "players": ["Rory", "Xander", "DJ", "Lowry", "Im"] },
+            { "owner": "Dylan",   "score": 16, "players": ["Scottie", "Homa", "Brooks", "Louis", "Gooch"] },
+            { "owner": "Garrett", "score": 14, "players": ["Morikawa", "Zalatoris", "Finau", "Conners", "Na"] },
+            { "owner": "Emery",   "score": 19, "players": ["Rahm", "Burns", "Horschel", "Phil", "Hatton"] },
+            { "owner": "Jared",   "score": 25, "players": ["Cam", "Spieth", "Cameron Young", "Hideki", "Pereira"] },
+            { "owner": "Austin",  "score": 25, "players": ["Cantlay", "Hovland", "Bryson", "Berger", "Sam Stevens"] }
+          ]
+        },
+        {
+          "name": "Open Championship",
+          "teams": [
+            { "owner": "Kellen",  "score": -41, "players": ["Rory", "Lowry", "Fleetwood", "Im", "Conners"] },
+            { "owner": "Jacob",   "score": -29, "players": ["JT", "DJ", "Koepka", "Bryson", "Woodland"] },
+            { "owner": "Garrett", "score": -11, "players": ["Scottie", "Cantlay", "Homa", "Na", "Berger"] },
+            { "owner": "Dylan",   "score": -22, "players": ["Xander", "Morikawa", "Hideki", "Louis", "Scott"] },
+            { "owner": "Emery",   "score": -39, "players": ["Cam Smith", "Rahm", "Burns", "Finau", "Varner"] },
+            { "owner": "Austin",  "score": -35, "players": ["Fitz", "Hovland", "Niemann", "Hatton", "Molinari"] },
+            { "owner": "Jared",   "score": -39, "players": ["Spieth", "Zalatoris", "Rose", "Tiger", "Cameron Young"] }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Jacob",   "score": 1,  "players": ["DJ", "Berger", "Rose", "Champ", "Todd"] },
+            { "owner": "Kellen",  "score": -2, "players": ["Bryson", "Webb", "Casey", "Scheffler", "Horschel"] },
+            { "owner": "Alex",    "score": 12, "players": ["JT", "Westwood", "Scheffler", "Fritelli", "Streb"] },
+            { "owner": "Jared",   "score": 4,  "players": ["Rahm", "Cantlay", "Cam Smith", "Day", "Wolff"] },
+            { "owner": "Dylan",   "score": -2, "players": ["Morikawa", "Hovland", "Hatton", "Sergio", "Woodland"] },
+            { "owner": "Austin",  "score": -3, "players": ["Reed", "Rory", "A Scott", "Phil", "Bubba"] },
+            { "owner": "Garrett", "score": -5, "players": ["Brooks", "Spieth", "Ancer", "Louis", "Stenson"] },
+            { "owner": "Emery",   "score": -8, "players": ["Xander", "Finau", "Im", "Fleetwood", "Fitzpatrick"] }
+          ]
+        },
+        {
+          "name": "PGA Championship",
+          "teams": [
+            { "owner": "Emery",   "score": -3,  "players": ["DJ", "Webb", "Cam Smith", "Rose", "Louis"] },
+            { "owner": "Garrett", "score": 20,  "players": ["JT", "Cantlay", "Zalatoris", "Wolff", "Harman"] },
+            { "owner": "Austin",  "score": 26,  "players": ["Rory", "Hideki", "Fleetwood", "Scott", "Ryan Palmer"] },
+            { "owner": "Kellen",  "score": -5,  "players": ["Rahm", "Berger", "Scheffler", "Casey", "Lowry"] },
+            { "owner": "Dylan",   "score": -14, "players": ["Bryson", "Brooks", "Ancer", "Woodland", "Phil"] },
+            { "owner": "Jacob",   "score": 0,   "players": ["Spieth", "Hovland", "Sam Burns", "Im", "Harry Higgs"] },
+            { "owner": "Jared",   "score": 17,  "players": ["Xander", "Reed", "Hatton", "Bubba", "Sergio"] },
+            { "owner": "Alex",    "score": 3,   "players": ["Morikawa", "Finau", "Leishman", "Homa", "Kokrak"] }
+          ]
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Dylan",   "score": 9,  "players": ["Bryson", "Phil", "Louis", "Homa", "Champ"] },
+            { "owner": "Kellen",  "score": -5, "players": ["Rahm", "Zalatoris", "Scheffler", "Im", "Fleetwood"] },
+            { "owner": "Emery",   "score": 28, "players": ["Koepka", "Finau", "Webb", "Fitzpatrick", "Horschel"] },
+            { "owner": "Jacob",   "score": 2,  "players": ["DJ", "Hideki", "Hatton", "Lowry", "English"] },
+            { "owner": "Alex",    "score": 28, "players": ["JT", "Hovland", "Leishman", "Sucher", "Nienaber"] },
+            { "owner": "Jared",   "score": 6,  "players": ["Xander", "Rory", "Cam Smith", "Gary", "Higgo"] },
+            { "owner": "Garrett", "score": 3,  "players": ["Spieth", "Reed", "Kokrak", "Ancer", "Grace"] },
+            { "owner": "Austin",  "score": -4, "players": ["Morikawa", "Cantlay", "Berger", "Casey", "Scott"] }
+          ]
+        },
+        {
+          "name": "Open Championship",
+          "teams": [
+            { "owner": "Kellen",  "score": -20, "players": ["Rahm", "Fleetwood", "Scheffler", "Grace", "Zalatoris"] },
+            { "owner": "Austin",  "score": -4,  "players": ["JT", "Hatton", "Fitzpatrick", "Scott", "Min Woo"] },
+            { "owner": "Jacob",   "score": -17, "players": ["Koepka", "Bryson", "Finau", "Rose", "Sergio"] },
+            { "owner": "Garrett", "score": -4,  "players": ["Xander", "Cantlay", "Cam Smith", "Westwood", "Rickie"] },
+            { "owner": "Jared",   "score": -19, "players": ["Spieth", "Reed", "Lowry", "English", "Niemann"] },
+            { "owner": "Dylan",   "score": -7,  "players": ["Rory", "Phil", "Webb", "Gary", "Poulter"] },
+            { "owner": "Emery",   "score": -24, "players": ["Hovland", "Louis", "Berger", "Ancer", "Pan"] },
+            { "owner": "Alex",    "score": -30, "players": ["Morikawa", "DJ", "Casey", "Thomson", "Palmer"] }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "events": [
+        {
+          "name": "PGA Championship",
+          "teams": [
+            { "owner": "Garrett", "score": 21,  "players": ["Koepka", "Kuchar", "Rickie", "Molinari", "Westwood"] },
+            { "owner": "Kellen",  "score": -22, "players": ["JT", "Reed", "Fleetwood", "Kisner", "Wolff"] },
+            { "owner": "Jared",   "score": -5,  "players": ["Rahm", "Cantlay", "Gary", "Fitzpatrick", "Reavie"] },
+            { "owner": "Austin",  "score": -30, "players": ["Bryson", "Scott", "Rose", "Casey", "Hadwin"] },
+            { "owner": "Jacob",   "score": -20, "players": ["Rory", "Morikawa", "Hovland", "Sergio", "Sabbatini"] },
+            { "owner": "Alex",    "score": -25, "players": ["DJ", "Berger", "Leishman", "Hatton", "Champ"] },
+            { "owner": "Dylan",   "score": -19, "players": ["Tiger", "Xander", "Spieth", "Day", "Phil"] },
+            { "owner": "Emery",   "score": -13, "players": ["Webb", "Finau", "Louis", "Lowry", "Na"] }
+          ]
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Austin",  "score": 46, "players": ["DJ", "Tiger", "Adam", "Kisner", "Leishman"] },
+            { "owner": "Alex",    "score": 24, "players": ["Rahm", "Cantlay", "Im", "Champ", "Zalatoris"] },
+            { "owner": "Kellen",  "score": 21, "players": ["JT", "Reed", "Rose", "Hideki", "Lowry"] },
+            { "owner": "Jacob",   "score": 12, "players": ["Morikawa", "Berger", "Hovland", "Louis", "English"] },
+            { "owner": "Dylan",   "score": 33, "players": ["Webb", "Gary", "Wolff", "Si Woo", "Ben An"] },
+            { "owner": "Emery",   "score": 60, "players": ["Rory", "Fleetwood", "Na", "Hatton", "Streelman"] },
+            { "owner": "Jared",   "score": 22, "players": ["Xander", "Day", "Todd", "Ancer", "Casey"] },
+            { "owner": "Garrett", "score": 14, "players": ["Finau", "Bryson", "Rickie", "Phil", "Fitz"] }
+          ]
+        },
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Jacob",   "score": -31, "players": ["DJ", "Day", "Reed", "Molinari", "Scheffler"] },
+            { "owner": "Garrett", "score": -23, "players": ["Koepka", "Finau", "Fleetwood", "Champ", "Fitzpatrick"] },
+            { "owner": "Kellen",  "score": -21, "players": ["Bryson", "Wolff", "Webb", "Louis", "Im"] },
+            { "owner": "Jared",   "score": -29, "players": ["Rahm", "Cantlay", "Hideki", "Rose", "Ancer"] },
+            { "owner": "Alex",    "score": -21, "players": ["JT", "Xander", "Casey", "Spieth", "Kokrak"] },
+            { "owner": "Dylan",   "score": -14, "players": ["Rory", "Tiger", "Bubba", "Gary", "Phil"] },
+            { "owner": "Austin",  "score": -10, "players": ["Morikawa", "Scott", "Hatton", "Rickie", "Lowry"] }
+          ],
+          "note": "2020 Masters played in November due to COVID; no Open Championship that year"
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Garrett", "score": -28, "players": ["DJ", "Finau", "Reed", "Kisner", "Oosthuizen"] },
+            { "owner": "Kellen",  "score": -35, "players": ["Tiger", "Tommy", "Day", "Kuchar", "Leishman"] },
+            { "owner": "Alex",    "score": -22, "players": ["Rory", "Koepka", "Spieth", "Grace", "Aphibarnrat"] },
+            { "owner": "Austin",  "score": -16, "players": ["Rose", "Bryson", "Scott", "Phil", "Henrik"] },
+            { "owner": "Jacob",   "score": -24, "players": ["Rahm", "Molinari", "Casey", "Hideki", "Sergio"] },
+            { "owner": "Jared",   "score": -32, "players": ["Rickie", "JT", "Bubba", "Xander", "Cantlay"] }
+          ],
+          "note": "PGA Championship draft for 2019 not in records"
+        },
+        {
+          "name": "US Open",
+          "teams": [
+            { "owner": "Kellen",  "score": -4,  "players": ["Tiger", "Molinari", "Bryson", "Phil", "Kisner"] },
+            { "owner": "Jared",   "score": -21, "players": ["DJ", "Spieth", "Day", "Kuchar", "Woodland"] },
+            { "owner": "Garrett", "score": -20, "players": ["Koepka", "Xander", "Finau", "Webb", "Leishman"] },
+            { "owner": "Jacob",   "score": -18, "players": ["Rory", "JT", "Scott", "Rahm", "Casey"] },
+            { "owner": "Austin",  "score": -10, "players": ["Cantlay", "Rose", "Rickie", "Fleetwood", "Furyk"] }
+          ]
+        },
+        {
+          "name": "Open Championship",
+          "teams": [
+            { "owner": "Jared",   "score": -8,  "players": ["Brooks", "Xander", "Stenson", "Spieth", "Casey"] },
+            { "owner": "Garrett", "score": -14, "players": ["DJ", "JT", "Kuchar", "Finau", "Reed"] },
+            { "owner": "Jacob",   "score": 19,  "players": ["Rory", "Rahm", "Scott", "Day", "Woodland"] },
+            { "owner": "Austin",  "score": 4,   "players": ["Tiger", "Fleetwood", "Bryson", "Cantlay", "Phil"] },
+            { "owner": "Kellen",  "score": -9,  "players": ["Molinari", "Rose", "Rickie", "Louis", "Leishman"] }
+          ]
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Jacob",   "score": -21, "players": ["JT", "Phil", "Stenson", "Woodland (MC)", "Leishman"] },
+            { "owner": "Kellen",  "score": -17, "players": ["Tiger", "Rahm", "Day", "Fleetwood", "Li"] },
+            { "owner": "Garrett", "score": -45, "players": ["Spieth", "Rickie", "Koepka (MC)", "Reed", "ZJ"] },
+            { "owner": "Carro",   "score": -24, "players": ["Rory", "Rose", "Bubba", "Noren", "Pieters"] },
+            { "owner": "Shanks",  "score": -17, "players": ["Casey", "Bryson", "Sergio (MC)", "Louie", "Hoffman"] },
+            { "owner": "Jared",   "score": -10, "players": ["DJ", "Scott", "Kuchar", "Hideki", "Xander"] }
+          ],
+          "note": "Other 2018 majors (PGA, US Open, Open) not in records"
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "events": [
+        {
+          "name": "Masters",
+          "teams": [
+            { "owner": "Jacob",   "score": null, "players": ["DJ", "Rose", "Garcia", "Casey", "Woodland"] },
+            { "owner": "Kellen",  "score": null, "players": ["Spieth", "Matsuyama", "Reed", "Phil", "Hatton"] },
+            { "owner": "Austin",  "score": null, "players": ["Rory", "Rahm", "Els", "Thomas", "Kayley"] },
+            { "owner": "Garrett", "score": null, "players": ["Day", "Fowler", "Snedeker", "Bubba", "Louis"] },
+            { "owner": "Jared",   "score": null, "players": ["Stenson", "Scott", "Kuchar", "Walker", "Berger"] },
+            { "owner": "Carro",   "score": null, "players": ["Koepka", "Grillo", "Pieters", "Leishman", "Fitzpatrick"] }
+          ],
+          "note": "Scores not in records — only rosters captured"
+        }
+      ]
+    }
+  ]
+}
