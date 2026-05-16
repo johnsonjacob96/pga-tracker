@@ -336,16 +336,19 @@ function computeYearCumulative(year) {
   return Object.values(owners).sort((a, b) => a.total - b.total);
 }
 
-function getAliasForOwner(year, owner) {
-  // Look across events for any alias used for this owner this year
-  for (const event of year.events) {
-    for (const team of event.teams) {
-      if (team.owner === owner && team.alias && team.alias !== team.owner) {
-        return team.alias;
-      }
+function getPrimaryName(year, owner) {
+  // Prefer the team alias used in PGA / US Open / Open (these tend to be the canonical team name)
+  // Fall back to Masters alias, then owner name
+  const events = year.events;
+  for (const evName of ["PGA Championship", "US Open", "Open Championship", "Masters"]) {
+    const ev = events.find(e => e.name === evName);
+    if (!ev) continue;
+    const team = ev.teams.find(t => t.owner === owner);
+    if (team && team.alias && team.alias !== team.owner) {
+      return team.alias;
     }
   }
-  return null;
+  return owner;
 }
 
 function renderCumulative(year) {
@@ -356,6 +359,8 @@ function renderCumulative(year) {
   const eventNames = sortEventsChronologically(year.events).map(e => e.name);
   const eventHeads = eventNames.map(e => `<th>${SHORT_EVENT[e] || e}</th>`).join("");
   const body = cum.map((r, i) => {
+    const primary = getPrimaryName(year, r.owner);
+    const showOwner = primary !== r.owner;
     const scoreCells = eventNames.map(e => {
       const s = r.scores[e];
       if (s === undefined) return '<td class="score-cell no-data">—</td>';
@@ -364,7 +369,7 @@ function renderCumulative(year) {
     return `
       <tr${i === 0 ? ' class="leader"' : ""}>
         <td class="rank-cell">${i + 1}</td>
-        <td class="owner-cell">${r.owner}</td>
+        <td class="owner-cell">${primary}${showOwner ? ` <span class="alias">${r.owner}</span>` : ""}</td>
         ${scoreCells}
         <td class="total-cell">${fmtScore(r.total)}</td>
       </tr>
@@ -382,15 +387,18 @@ function renderCumulative(year) {
 
 function renderChampion(year) {
   const cum = computeYearCumulative(year);
-  const champ = year.champion || (cum.length > 0 ? cum[0].owner : null);
-  if (!champ) return "";
-  const champRow = cum.find(r => r.owner === champ);
-  const score = champRow ? fmtScore(champRow.total) : "";
+  if (cum.length === 0) return "";
+  // Champion is always the lowest cumulative score (golf: low wins)
+  const champRow = cum[0];
+  const owner = champRow.owner;
+  const primary = getPrimaryName(year, owner);
+  const showOwner = primary !== owner;
+  const score = fmtScore(champRow.total);
   return `
     <div class="champion-banner">
       <div class="label">${year.year} Year-Long Champion</div>
-      <div class="name">${champ}</div>
-      ${score ? `<div class="score">${score} across ${champRow ? Object.keys(champRow.scores).length : 0} events</div>` : ""}
+      <div class="name">${primary}${showOwner ? ` <span style="color:var(--cream);font-weight:normal;font-size:14px;letter-spacing:1px;">· ${owner}</span>` : ""}</div>
+      <div class="score">${score} across ${Object.keys(champRow.scores).length} events</div>
     </div>
   `;
 }
@@ -403,7 +411,8 @@ function renderEvent(event) {
   });
 
   const rows = teams.map((t, i) => {
-    const alias = t.alias && t.alias !== t.owner ? ` <span class="alias">(${t.alias})</span>` : "";
+    const primary = t.alias || t.owner;
+    const showOwner = primary !== t.owner;
     const flags = [];
     if (t.winnerBonus) flags.push("***");
     if (t.mc) flags.push("*");
@@ -412,15 +421,17 @@ function renderEvent(event) {
     const isWinner = i === 0 && t.score !== null && t.score !== undefined;
     return `
       <div class="event-team${isWinner ? " winner-team" : ""}">
-        <span class="et-name">${t.owner}${alias}${flagStr}</span>
+        <span class="et-name">${primary}${showOwner ? ` <span class="alias">${t.owner}</span>` : ""}${flagStr}</span>
         <span class="et-score">${fmtScore(t.score)}</span>
       </div>
     `;
   }).join("");
 
-  const rosters = teams.map(t => `
-    <div class="event-roster"><strong>${t.owner}:</strong> ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>
-  `).join("");
+  const rosters = teams.map(t => {
+    const primary = t.alias || t.owner;
+    const showOwner = primary !== t.owner;
+    return `<div class="event-roster"><strong>${primary}</strong>${showOwner ? ` <span style="color:var(--grey);">(${t.owner})</span>` : ""}: ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>`;
+  }).join("");
 
   const winnerLine = event.winner
     ? `<div class="event-winner">Winner: ${event.winner}${event.winnerPickedBy ? ` (picked by ${event.winnerPickedBy})` : ""}</div>`

@@ -427,8 +427,8 @@ function renderCumulative(rows, livePGA) {
       <tr${i === 0 ? ' class="leader"' : ""}>
         <td class="rank-cell">${i + 1}</td>
         <td class="owner-cell">
-          <span class="owner-name">${r.owner}</span>
-          <span class="team-tag">${r.teamName}</span>
+          <span class="owner-name">${r.teamName}</span>
+          <span class="team-tag">${r.owner}</span>
         </td>
         ${scoreCells}
         <td class="total-cell">${fmtScore(r.total)}</td>
@@ -480,13 +480,13 @@ function renderEvent(event, livePGA, ownerMap) {
 
   const rows = teams.map((t, i) => `
     <div class="event-team${i === 0 ? " winner" : ""}">
-      <span class="et-name">${t.owner} <span style="color:var(--grey);font-weight:normal;">· ${t.teamName}</span></span>
+      <span class="et-name">${t.teamName} <span style="color:var(--grey);font-weight:normal;">· ${t.owner}</span></span>
       <span class="et-score">${fmtScore(t.score)}</span>
     </div>
   `).join("");
 
   const rosters = event.teams ? event.teams.slice().sort((a, b) => a.score - b.score).map(t => `
-    <div class="event-roster"><strong>${t.owner}:</strong> ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>
+    <div class="event-roster"><strong>${t.teamName}</strong> <span style="color:var(--grey);">(${t.owner}):</span> ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>
   `).join("") : "";
 
   const eventClass = isLive ? "event live" : (isFinal ? "event complete" : "event");
