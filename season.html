@@ -357,6 +357,18 @@ async function fetchLivePGA() {
     const worstMadeCut = madeCutScores.length ? Math.max(...madeCutScores) : 0;
     const penalty = worstMadeCut + 2;
 
+    const completed = event.status?.type?.completed === true;
+    let winner = null;
+    if (completed) {
+      const finishers = (competition.competitors || [])
+        .filter(c => (c.linescores || []).length === 4)
+        .map(c => ({ name: c.athlete?.fullName || c.athlete?.displayName, score: parseScore(c.score) }))
+        .filter(c => c.name && c.score !== null)
+        .sort((a, b) => a.score - b.score);
+      if (finishers.length) winner = finishers[0].name;
+    }
+    const winnerNorm = winner ? normalize(winner) : null;
+
     const teamScores = {};
     for (const [teamName, roster] of Object.entries(PGA_TEAMS)) {
       const teamPlayers = roster.map(rn => {
@@ -367,12 +379,17 @@ async function fetchLivePGA() {
       let total = 0;
       for (let i = 0; i < Math.min(3, sorted.length); i++) total += sorted[i].score;
       total += Math.max(0, 3 - sorted.length) * penalty;
+      // Apply winner bonus if event complete and this team drafted the winner
+      if (winnerNorm && roster.some(rn => normalize(rn) === winnerNorm)) {
+        total -= 3;
+      }
       teamScores[teamName] = total;
     }
 
     return {
       status: event.status?.type?.description || "In Progress",
-      complete: event.status?.type?.completed === true,
+      complete: completed,
+      winner,
       teamScores
     };
   } catch (e) {

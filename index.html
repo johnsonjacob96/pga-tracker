@@ -448,7 +448,17 @@ async function fetchScores() {
   }
 
   const pars = derivePars(competitors);
-  return { event: event.name, status: event.status, players, pars };
+  const completed = event.status?.type?.completed === true;
+  let winner = null;
+  if (completed) {
+    const finishers = competitors
+      .filter(c => (c.linescores || []).length === 4)
+      .map(c => ({ name: c.athlete?.fullName || c.athlete?.displayName, score: parseScore(c.score) }))
+      .filter(c => c.name && c.score !== null)
+      .sort((a, b) => a.score - b.score);
+    if (finishers.length) winner = finishers[0].name;
+  }
+  return { event: event.name, status: event.status, players, pars, completed, winner };
 }
 
 function derivePars(competitors) {
@@ -522,11 +532,21 @@ function computeStandings(data) {
       return aScore - bScore;
     });
 
-    return { teamName, players: displayPlayers, total, penaltyCount };
+    // Apply winner bonus when tournament is complete and this team drafted the winner
+    let winnerBonus = false;
+    if (data.completed && data.winner) {
+      const winnerNorm = normalize(data.winner);
+      if (roster.some(rn => normalize(rn) === winnerNorm)) {
+        total -= 3;
+        winnerBonus = true;
+      }
+    }
+
+    return { teamName, players: displayPlayers, total, penaltyCount, winnerBonus };
   });
 
   teams.sort((a, b) => a.total - b.total);
-  return { teams, penalty, worstMadeCut, pars: data.pars };
+  return { teams, penalty, worstMadeCut, pars: data.pars, completed: data.completed, winner: data.winner };
 }
 
 const expandedTeams = new Set();
@@ -680,13 +700,15 @@ function render(state) {
 
     const scorecards = team.players.map(p => renderScorecard(p, pars)).join("");
 
+    const winnerTag = team.winnerBonus ? ` <span style="background:var(--gold);color:var(--green);padding:1px 5px;border-radius:2px;font-size:9px;letter-spacing:1px;font-weight:bold;">WINNER -3</span>` : "";
+
     return `
       <div class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" data-team="${team.teamName}">
         <div class="team-header">
           <div class="team-name-wrap">
             <span class="expand-indicator">▶</span>
             <span class="rank">${rank}.</span>
-            <span class="team-name">${team.teamName}</span>
+            <span class="team-name">${team.teamName}</span>${winnerTag}
           </div>
           <div class="team-total">${fmtScore(team.total)}</div>
         </div>
@@ -716,7 +738,8 @@ async function refresh() {
     render(state);
     const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     const eventStatus = data.status?.type?.description || data.status?.type?.shortDetail || "";
-    status.textContent = `${eventStatus} · Penalty: ${fmtScore(state.penalty)} · Updated ${now}`;
+    const winnerBit = state.winner ? ` · Winner: ${state.winner} (-3 bonus applied)` : "";
+    status.textContent = `${eventStatus} · Penalty: ${fmtScore(state.penalty)}${winnerBit} · Updated ${now}`;
   } catch (e) {
     status.textContent = `Error: ${e.message}`;
     console.error(e);
