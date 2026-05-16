@@ -336,9 +336,13 @@ function computeYearCumulative(year) {
   return Object.values(owners).sort((a, b) => a.total - b.total);
 }
 
+const OWNER_NICKNAMES = {
+  Kellen: "Money"
+};
+
 function getPrimaryName(year, owner) {
-  // Prefer the team alias used in PGA / US Open / Open (these tend to be the canonical team name)
-  // Fall back to Masters alias, then owner name
+  // Prefer the team alias used in PGA / US Open / Open (these tend to be the canonical team name for that year)
+  // Then fall back to Masters alias, then to the owner's persistent nickname, then to owner name
   const events = year.events;
   for (const evName of ["PGA Championship", "US Open", "Open Championship", "Masters"]) {
     const ev = events.find(e => e.name === evName);
@@ -348,7 +352,13 @@ function getPrimaryName(year, owner) {
       return team.alias;
     }
   }
-  return owner;
+  return OWNER_NICKNAMES[owner] || owner;
+}
+
+function getEventPrimary(team) {
+  // For per-event team rows: use event alias if set, else owner nickname, else owner name
+  if (team.alias && team.alias !== team.owner) return team.alias;
+  return OWNER_NICKNAMES[team.owner] || team.owner;
 }
 
 function renderCumulative(year) {
@@ -411,7 +421,7 @@ function renderEvent(event) {
   });
 
   const rows = teams.map((t, i) => {
-    const primary = t.alias || t.owner;
+    const primary = getEventPrimary(t);
     const showOwner = primary !== t.owner;
     const flags = [];
     if (t.winnerBonus) flags.push("***");
@@ -428,7 +438,7 @@ function renderEvent(event) {
   }).join("");
 
   const rosters = teams.map(t => {
-    const primary = t.alias || t.owner;
+    const primary = getEventPrimary(t);
     const showOwner = primary !== t.owner;
     return `<div class="event-roster"><strong>${primary}</strong>${showOwner ? ` <span style="color:var(--grey);">(${t.owner})</span>` : ""}: ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>`;
   }).join("");
