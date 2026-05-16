@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 PGA Championship · Friends Draft</title>
+<style>
+  :root {
+    --cream: #f5efe0;
+    --cream-dark: #ebe3cf;
+    --gold: #c9a04e;
+    --gold-dark: #8e6e2c;
+    --green: #1d3d2c;
+    --green-light: #2d5a42;
+    --red: #a02828;
+    --grey: #888;
+    --text: #2a2417;
+    --border: #d9cfb5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  header {
+    background: var(--green);
+    color: var(--cream);
+    padding: 22px 16px 18px;
+    text-align: center;
+    border-bottom: 4px solid var(--gold);
+  }
+  header h1 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: normal;
+  }
+  header h1 strong { color: var(--gold); font-weight: bold; }
+  header .sub {
+    font-size: 12px;
+    color: var(--gold);
+    margin-top: 6px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .status-bar {
+    background: var(--cream-dark);
+    padding: 10px 16px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    color: #5a4f30;
+  }
+  .status-bar #status { flex: 1; }
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 14px;
+  }
+  .team {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--gold);
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    border-radius: 2px;
+  }
+  .team.leader { border-left-color: var(--green); background: #fdfaf0; }
+  .team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    gap: 12px;
+  }
+  .team-name-wrap { display: flex; align-items: baseline; gap: 10px; }
+  .rank {
+    color: var(--gold-dark);
+    font-weight: bold;
+    font-size: 14px;
+    min-width: 24px;
+  }
+  .team-name {
+    font-size: 19px;
+    font-weight: bold;
+    color: var(--green);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .team-total {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: "Courier New", monospace;
+    color: var(--green);
+  }
+  .players {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    font-size: 13.5px;
+  }
+  .player {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .player .pscore { font-family: "Courier New", monospace; font-size: 12.5px; }
+  .player.counting { font-weight: bold; color: var(--text); }
+  .player.counting::before {
+    content: "●";
+    color: var(--gold);
+    font-size: 9px;
+    margin-right: 3px;
+  }
+  .player.bench { color: var(--grey); }
+  .player.missed-cut { color: var(--red); text-decoration: line-through; opacity: 0.75; }
+  .player.penalty {
+    color: var(--red);
+    font-style: italic;
+    font-weight: bold;
+  }
+  .player.penalty::before {
+    content: "⚠";
+    margin-right: 3px;
+    font-style: normal;
+  }
+  .error {
+    background: #fef2f2;
+    border: 1px solid var(--red);
+    padding: 14px;
+    margin: 16px;
+    border-radius: 4px;
+    color: var(--red);
+    font-family: monospace;
+    font-size: 13px;
+  }
+  button {
+    background: var(--gold);
+    color: var(--green);
+    border: none;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 2px;
+    letter-spacing: 1px;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+  button:hover { background: var(--gold-dark); color: white; }
+  .legend {
+    font-size: 11px;
+    color: var(--grey);
+    text-align: center;
+    padding: 16px;
+    margin: 0 auto;
+    max-width: 900px;
+    line-height: 1.8;
+  }
+  .legend span { white-space: nowrap; margin: 0 6px; }
+  footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--grey);
+    padding: 12px;
+    letter-spacing: 1px;
+  }
+  @media (max-width: 600px) {
+    header h1 { font-size: 17px; letter-spacing: 2px; }
+    .team-name { font-size: 16px; }
+    .team-total { font-size: 18px; }
+    .players { font-size: 12.5px; gap: 4px 10px; }
+    main { padding: 10px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>2026 <strong>PGA Championship</strong></h1>
+  <div class="sub">Friends Draft · Best 3 Scores</div>
+</header>
+<div class="status-bar">
+  <span id="status">Loading live scores from ESPN...</span>
+  <button id="refresh-btn" onclick="refresh()">Refresh</button>
+</div>
+<main id="content"></main>
+<div class="legend">
+  <span>● = counting score</span> ·
+  <span>grey = bench (made cut)</span> ·
+  <span style="text-decoration: line-through; color: var(--red);">red = missed cut</span> ·
+  <span style="color: var(--red); font-style: italic;">⚠ italic = penalty (worst made-cut +2)</span>
+</div>
+<footer>Auto-refreshes every 60 seconds · Source: ESPN PGA scoreboard</footer>
+
+<script>
+const TEAMS = {
+  Fern:  ["Scottie Scheffler", "Chris Gotterup", "Tyrrell Hatton", "Keegan Bradley", "Sungjae Im"],
+  Troop: ["Cameron Young", "Rickie Fowler", "J.J. Spaun", "Harris English", "Ben Griffin"],
+  Ram:   ["Jon Rahm", "Min Woo Lee", "Adam Scott", "Alex Fitzpatrick", "Maverick McNealy"],
+  Bean:  ["Rory McIlroy", "Russell Henley", "Viktor Hovland", "Shane Lowry", "Austin Smotherman"],
+  Money: ["Xander Schauffele", "Patrick Cantlay", "Jordan Spieth", "Sam Burns", "Hideki Matsuyama"],
+  Gary:  ["Bryson DeChambeau", "Justin Thomas", "Patrick Reed", "Sam Stevens", "Max Homa"],
+  Taco:  ["Ludvig Aberg", "Justin Rose", "Robert MacIntyre", "Sepp Straka", "Matt McCarty"],
+  Cyc:   ["Brooks Koepka", "Collin Morikawa", "Si Woo Kim", "Akshay Bhatia", "Gary Woodland"],
+  Mags:  ["Matt Fitzpatrick", "Tommy Fleetwood", "Nicolai Hojgaard", "Kristoffer Reitan", "Jason Day"]
+};
+
+const SHORT_NAMES = {
+  "Scottie Scheffler": "Scheffler",
+  "Chris Gotterup": "Gotterup",
+  "Tyrrell Hatton": "Hatton",
+  "Keegan Bradley": "K. Bradley",
+  "Sungjae Im": "S. Im",
+  "Cameron Young": "C. Young",
+  "Rickie Fowler": "Fowler",
+  "J.J. Spaun": "Spaun",
+  "Harris English": "English",
+  "Ben Griffin": "B. Griffin",
+  "Jon Rahm": "Rahm",
+  "Min Woo Lee": "M.W. Lee",
+  "Adam Scott": "A. Scott",
+  "Alex Fitzpatrick": "A. Fitz",
+  "Maverick McNealy": "McNealy",
+  "Rory McIlroy": "Rory",
+  "Russell Henley": "Henley",
+  "Viktor Hovland": "Hovland",
+  "Shane Lowry": "Lowry",
+  "Austin Smotherman": "Smotherman",
+  "Xander Schauffele": "Xander",
+  "Patrick Cantlay": "Cantlay",
+  "Jordan Spieth": "Spieth",
+  "Sam Burns": "Burns",
+  "Hideki Matsuyama": "Hideki",
+  "Bryson DeChambeau": "Bryson",
+  "Justin Thomas": "JT",
+  "Patrick Reed": "Reed",
+  "Sam Stevens": "Stevens",
+  "Max Homa": "Homa",
+  "Ludvig Aberg": "Aberg",
+  "Justin Rose": "Rose",
+  "Robert MacIntyre": "MacIntyre",
+  "Sepp Straka": "Straka",
+  "Matt McCarty": "McCarty",
+  "Brooks Koepka": "Brooks",
+  "Collin Morikawa": "Morikawa",
+  "Si Woo Kim": "S.W. Kim",
+  "Akshay Bhatia": "Bhatia",
+  "Gary Woodland": "Woodland",
+  "Matt Fitzpatrick": "M. Fitz",
+  "Tommy Fleetwood": "Fleetwood",
+  "Nicolai Hojgaard": "Hojgaard",
+  "Kristoffer Reitan": "Reitan",
+  "Jason Day": "Day"
+};
+
+const normalize = (s) =>
+  s.normalize("NFD")
+   .replace(/[̀-ͯ]/g, "")
+   .replace(/ø/g, "o").replace(/Ø/g, "O")
+   .replace(/[.\s'-]/g, "")
+   .toLowerCase();
+
+const fmtScore = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return "—";
+  if (n === 0) return "E";
+  return n > 0 ? `+${n}` : `${n}`;
+};
+
+function parseScore(raw) {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw === "number") return raw;
+  const s = String(raw).trim();
+  if (s === "" || s === "—") return null;
+  if (s === "E") return 0;
+  if (s.startsWith("+")) return parseInt(s.slice(1), 10);
+  return parseInt(s, 10);
+}
+
+async function fetchScores() {
+  const url = "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard";
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`ESPN returned ${res.status}`);
+  const data = await res.json();
+
+  const event = (data.events || []).find(e => /PGA Championship/i.test(e.name)) || data.events?.[0];
+  if (!event) throw new Error("No event found in ESPN response");
+
+  const competition = event.competitions?.[0];
+  if (!competition) throw new Error("No competition data");
+
+  const players = {};
+  for (const comp of competition.competitors || []) {
+    const name = comp.athlete?.fullName || comp.athlete?.displayName;
+    if (!name) continue;
+    const score = parseScore(comp.score);
+    const linescores = comp.linescores || [];
+    const statusName = comp.status?.type?.name || "";
+    // Made cut signals: has 3+ rounds of scores, or status indicates active weekend play
+    const madeCut = linescores.length >= 3 ||
+                    statusName === "STATUS_ACTIVE" ||
+                    /STATUS_END_PERIOD/.test(statusName) && linescores.length >= 3;
+    // Missed cut signal: only 2 rounds played and not currently active
+    players[normalize(name)] = { name, score, madeCut, linescoresLen: linescores.length };
+  }
+
+  return { event: event.name, status: event.status, players };
+}
+
+function computeStandings(data) {
+  const { players } = data;
+
+  const madeCutScores = Object.values(players)
+    .filter(p => p.madeCut && p.score !== null)
+    .map(p => p.score);
+  const worstMadeCut = madeCutScores.length ? Math.max(...madeCutScores) : 0;
+  const penalty = worstMadeCut + 2;
+
+  const teams = Object.entries(TEAMS).map(([teamName, roster]) => {
+    const teamPlayers = roster.map(rosterName => {
+      const found = players[normalize(rosterName)];
+      if (!found) {
+        return { name: rosterName, score: null, madeCut: false, notFound: true };
+      }
+      return { name: rosterName, score: found.score, madeCut: found.madeCut };
+    });
+
+    const sortedMadeCut = teamPlayers
+      .filter(p => p.madeCut && p.score !== null)
+      .slice()
+      .sort((a, b) => a.score - b.score);
+
+    let total = 0;
+    const countingSet = new Set();
+    for (let i = 0; i < Math.min(3, sortedMadeCut.length); i++) {
+      countingSet.add(sortedMadeCut[i].name);
+      total += sortedMadeCut[i].score;
+    }
+    const penaltyCount = 3 - Math.min(3, sortedMadeCut.length);
+    total += penaltyCount * penalty;
+
+    const displayPlayers = teamPlayers.map(p => ({
+      ...p,
+      counting: countingSet.has(p.name)
+    }));
+
+    return { teamName, players: displayPlayers, total, penaltyCount };
+  });
+
+  teams.sort((a, b) => a.total - b.total);
+  return { teams, penalty, worstMadeCut };
+}
+
+function render(state) {
+  const { teams, penalty } = state;
+  const content = document.getElementById("content");
+  content.innerHTML = teams.map((team, idx) => {
+    const rank = idx + 1;
+    const isLeader = idx === 0;
+    const players = team.players.map(p => {
+      const short = SHORT_NAMES[p.name] || p.name;
+      let cls = "player";
+      let label = short;
+      let scoreText = fmtScore(p.score);
+      if (p.notFound) {
+        cls += " missed-cut";
+        scoreText = "?";
+      } else if (!p.madeCut) {
+        cls += " missed-cut";
+      } else if (p.counting) {
+        cls += " counting";
+      } else {
+        cls += " bench";
+      }
+      return `<span class="${cls}">${label} <span class="pscore">${scoreText}</span></span>`;
+    }).join("");
+
+    const penaltyHtml = team.penaltyCount > 0
+      ? Array(team.penaltyCount).fill(
+          `<span class="player penalty">Penalty <span class="pscore">${fmtScore(penalty)}</span></span>`
+        ).join("")
+      : "";
+
+    return `
+      <div class="team${isLeader ? " leader" : ""}">
+        <div class="team-header">
+          <div class="team-name-wrap">
+            <span class="rank">${rank}.</span>
+            <span class="team-name">${team.teamName}</span>
+          </div>
+          <div class="team-total">${fmtScore(team.total)}</div>
+        </div>
+        <div class="players">${players}${penaltyHtml}</div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function refresh() {
+  const status = document.getElementById("status");
+  const btn = document.getElementById("refresh-btn");
+  btn.disabled = true;
+  status.textContent = "Refreshing...";
+  try {
+    const data = await fetchScores();
+    const state = computeStandings(data);
+    render(state);
+    const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const eventStatus = data.status?.type?.description || data.status?.type?.shortDetail || "";
+    status.textContent = `${eventStatus} · Penalty: ${fmtScore(state.penalty)} · Updated ${now}`;
+  } catch (e) {
+    status.textContent = `Error: ${e.message}`;
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+refresh();
+setInterval(refresh, 60000);
+</script>
+</body>
+</html>
