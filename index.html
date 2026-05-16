@@ -487,6 +487,16 @@ function computeStandings(data) {
       counting: countingSet.has(p.name)
     }));
 
+    // Sort within team: made-cut players by score (best first), then missed-cut, then not-found
+    displayPlayers.sort((a, b) => {
+      const aRank = a.notFound ? 2 : (!a.madeCut ? 1 : 0);
+      const bRank = b.notFound ? 2 : (!b.madeCut ? 1 : 0);
+      if (aRank !== bRank) return aRank - bRank;
+      const aScore = a.score ?? Infinity;
+      const bScore = b.score ?? Infinity;
+      return aScore - bScore;
+    });
+
     return { teamName, players: displayPlayers, total, penaltyCount };
   });
 
@@ -646,7 +656,7 @@ function render(state) {
     const scorecards = team.players.map(p => renderScorecard(p, pars)).join("");
 
     return `
-      <div class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" onclick="toggleTeam('${team.teamName}')">
+      <div class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" data-team="${team.teamName}">
         <div class="team-header">
           <div class="team-name-wrap">
             <span class="expand-indicator">▶</span>
@@ -656,11 +666,19 @@ function render(state) {
           <div class="team-total">${fmtScore(team.total)}</div>
         </div>
         <div class="players">${players}${penaltyHtml}</div>
-        <div class="scorecards" onclick="event.stopPropagation()">${scorecards}</div>
+        <div class="scorecards">${scorecards}</div>
       </div>
     `;
   }).join("");
 }
+
+document.getElementById("content").addEventListener("click", (e) => {
+  if (e.target.closest(".scorecards")) return;
+  const teamEl = e.target.closest(".team");
+  if (!teamEl) return;
+  const teamName = teamEl.dataset.team;
+  if (teamName) toggleTeam(teamName);
+});
 
 async function refresh() {
   const status = document.getElementById("status");
