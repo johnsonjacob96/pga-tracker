@@ -500,7 +500,7 @@ function renderTabs() {
 
 async function init() {
   try {
-    const res = await fetch("./data/history.json");
+    const res = await fetch("./data/history.json?v=" + Date.now());
     if (!res.ok) throw new Error(`Could not load history (${res.status})`);
     HISTORY = await res.json();
     renderTabs();

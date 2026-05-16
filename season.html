@@ -382,7 +382,7 @@ async function fetchLivePGA() {
 }
 
 async function loadSeason() {
-  const res = await fetch("./data/2026-season.json");
+  const res = await fetch("./data/2026-season.json?v=" + Date.now());
   if (!res.ok) throw new Error("Could not load season data");
   return res.json();
 }
