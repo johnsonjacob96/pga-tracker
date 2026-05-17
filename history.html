@@ -3,331 +3,483 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>History · Locks of the Day Majors Draft</title>
+<title>Archive — Locks of the Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #f5efe0;
-    --cream-dark: #ebe3cf;
-    --gold: #c9a04e;
-    --gold-dark: #8e6e2c;
-    --green: #1d3d2c;
-    --green-light: #2d5a42;
-    --red: #a02828;
-    --grey: #888;
-    --text: #2a2417;
-    --border: #d9cfb5;
+    --paper:        #f1ebdd;
+    --paper-warm:   #ede5d2;
+    --paper-deep:   #e2d7be;
+    --ink:          #1a1410;
+    --ink-mute:     #6b5d44;
+    --ink-soft:     #a09078;
+    --rule:         #c8baa0;
+    --rule-soft:    #ddd0b3;
+    --forest:       #0e2818;
+    --forest-mid:   #1a3a26;
+    --forest-soft:  #2d5238;
+    --persimmon:    #c64a26;
+    --persimmon-bright: #e25826;
+    --old-gold:     #b08840;
+    --crimson:      #8c1c1c;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--cream);
-    color: var(--text);
-    font-family: Georgia, "Times New Roman", serif;
-    line-height: 1.4;
-    min-height: 100vh;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(110,85,40,0.04) 0px, transparent 1px),
+      radial-gradient(circle at 75% 65%, rgba(110,85,40,0.04) 0px, transparent 1px),
+      radial-gradient(circle at 45% 85%, rgba(110,85,40,0.03) 0px, transparent 1px);
+    background-size: 7px 7px, 11px 11px, 5px 5px;
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
   }
-  nav {
-    background: var(--green);
-    padding: 8px 16px;
+  nav.topnav {
+    background: var(--forest);
+    color: var(--paper);
+    padding: 9px 0;
     display: flex;
-    gap: 0;
     justify-content: center;
-    border-bottom: 1px solid var(--gold-dark);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: 'Fraunces', serif;
+    font-size: 11px;
+    font-weight: 500;
   }
-  nav a {
-    color: var(--cream);
+  nav.topnav a {
+    color: var(--paper-deep);
     text-decoration: none;
-    padding: 6px 16px;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.15s, color 0.15s;
+    padding: 4px 22px;
+    position: relative;
   }
-  nav a:hover { color: var(--gold); }
-  nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
-  header {
-    background: var(--green);
-    color: var(--cream);
-    padding: 20px 16px 18px;
+  nav.topnav a + a { border-left: 1px solid var(--forest-soft); }
+  nav.topnav a:hover { color: var(--persimmon-bright); }
+  nav.topnav a.active { color: var(--persimmon-bright); }
+  nav.topnav a.active::after {
+    content: ""; position: absolute; bottom: -9px; left: 22px; right: 22px; height: 2px;
+    background: var(--persimmon);
+  }
+  .masthead {
+    padding: 28px 24px 22px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .mast-rule { border: 0; border-top: 1px solid var(--ink); margin: 0; }
+  .mast-rule-double { border: 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); height: 4px; margin: 0; }
+  .mast-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 18px;
+    padding: 14px 0 10px;
+  }
+  .mast-side { font-style: italic; font-size: 11px; color: var(--ink-mute); }
+  .mast-side.right { text-align: right; }
+  .mast-issue {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .mast-paper {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 38px;
+    line-height: 0.95;
     text-align: center;
-    border-bottom: 4px solid var(--gold);
+    letter-spacing: -0.02em;
   }
-  header h1 {
+  .mast-paper em { font-style: italic; font-weight: 700; color: var(--persimmon); }
+  .event-bar { margin-top: 18px; text-align: center; }
+  .event-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--forest);
     margin: 0;
-    font-size: 22px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: normal;
   }
-  header h1 strong { color: var(--gold); font-weight: bold; }
-  header .sub {
+  .event-sub {
+    font-style: italic;
+    color: var(--ink-mute);
     font-size: 12px;
-    color: var(--gold);
-    margin-top: 6px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    margin-top: 8px;
   }
+
+  /* --- Year tabs --- */
   .year-tabs {
-    background: var(--cream-dark);
-    padding: 10px 8px;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 14px 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 0;
     justify-content: center;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--rule);
   }
   .year-tab {
-    background: white;
-    border: 1px solid var(--border);
-    color: var(--green);
-    padding: 6px 14px;
-    font-family: inherit;
-    font-weight: bold;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--ink-mute);
+    padding: 8px 14px;
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
     cursor: pointer;
-    border-radius: 2px;
-    letter-spacing: 1px;
-    font-size: 13px;
-    transition: background 0.1s;
+    transition: color 0.15s, border-color 0.15s;
+    font-variant-numeric: tabular-nums;
   }
-  .year-tab:hover { background: #fdfaf0; }
+  .year-tab:hover { color: var(--ink); }
   .year-tab.active {
-    background: var(--gold);
-    color: var(--green);
-    border-color: var(--gold-dark);
+    color: var(--persimmon);
+    border-bottom-color: var(--persimmon);
   }
-  main {
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 16px;
-  }
-  h2.section-title {
-    font-size: 14px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--green);
-    border-bottom: 2px solid var(--gold);
-    padding-bottom: 6px;
-    margin: 24px 0 12px;
-  }
-  h2.section-title:first-child { margin-top: 0; }
-  .champion-banner {
-    background: var(--green);
-    color: var(--cream);
-    padding: 16px;
+  main { max-width: 1080px; margin: 0 auto; padding: 18px 16px 32px; }
+
+  /* --- Champion plaque --- */
+  .champion {
+    background: var(--forest);
+    color: var(--paper);
+    padding: 22px 28px;
+    margin-bottom: 22px;
+    border: 1px solid var(--forest);
+    position: relative;
     text-align: center;
-    border-radius: 3px;
-    margin-bottom: 16px;
-    border: 2px solid var(--gold);
-  }
-  .champion-banner .label {
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gold);
-    text-transform: uppercase;
-  }
-  .champion-banner .name {
-    font-size: 24px;
-    color: var(--gold);
-    font-weight: bold;
-    letter-spacing: 2px;
-    margin-top: 4px;
-  }
-  .champion-banner .score {
-    font-family: "Courier New", monospace;
-    color: var(--cream);
-    margin-top: 4px;
-    font-size: 13px;
-  }
-  .cumulative {
-    background: white;
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--gold);
-    border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 20px;
   }
-  .cum-table {
+  .champion::before, .champion::after {
+    content: "";
+    position: absolute;
+    left: 14px; right: 14px;
+    height: 1px;
+    background: var(--old-gold);
+  }
+  .champion::before { top: 8px; }
+  .champion::after { bottom: 8px; }
+  .champion .crest {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--old-gold);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .champion .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 60px;
+    color: var(--paper);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .champion .name em { font-style: italic; color: var(--persimmon-bright); font-weight: 700; }
+  .champion .owner {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--old-gold);
+    font-weight: 500;
+  }
+  .champion .stat {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--paper-deep);
+    font-size: 13px;
+    margin-top: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-label {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 8px;
+    margin: 26px 0 14px;
+  }
+  .section-label em {
+    font-style: italic;
+    color: var(--ink-mute);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  /* Cumulative table */
+  .cum { margin-bottom: 26px; overflow-x: auto; }
+  .cum table {
     width: 100%;
     border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
     font-size: 13px;
+    min-width: 540px;
   }
-  .cum-table th, .cum-table td {
-    padding: 8px 8px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .cum-table th {
-    background: var(--green);
-    color: var(--cream);
+  .cum th {
+    background: var(--forest);
+    color: var(--paper-deep);
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
     font-size: 10px;
-    letter-spacing: 1px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
+    padding: 10px 8px;
+    text-align: center;
   }
-  .cum-table .owner-cell {
+  .cum th.left { text-align: left; padding-left: 18px; }
+  .cum td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-warm);
+  }
+  .cum .rank-cell {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink-soft);
+    width: 50px;
+  }
+  .cum .name-cell {
     text-align: left;
-    padding-left: 14px;
-    font-weight: bold;
-    color: var(--green);
-    font-size: 14px;
+    padding-left: 18px;
+    line-height: 1.1;
   }
-  .cum-table .rank-cell {
-    width: 32px;
-    font-weight: bold;
-    color: var(--gold-dark);
+  .cum .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink);
+    display: block;
   }
-  .cum-table .total-cell {
-    font-family: "Courier New", monospace;
-    font-weight: bold;
-    font-size: 15px;
-    color: var(--green);
-    background: #fdfaf0;
+  .cum .name-owner {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    display: block;
   }
-  .cum-table .score-cell {
-    font-family: "Courier New", monospace;
-    font-size: 12px;
+  .cum .score-cell.no-data { color: var(--ink-soft); }
+  .cum .total-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    background: var(--paper-deep);
+    border-left: 1px solid var(--rule);
   }
-  .cum-table .score-cell.no-data { color: #ccc; }
-  .cum-table tr.leader td.total-cell {
-    background: var(--gold);
-    color: var(--green);
-  }
+  .cum tr.leader td { background: var(--forest); color: var(--paper); border-bottom-color: var(--forest); }
+  .cum tr.leader .rank-cell { color: var(--old-gold); }
+  .cum tr.leader .name { color: var(--paper); }
+  .cum tr.leader .name-owner { color: var(--old-gold); }
+  .cum tr.leader .total-cell { background: var(--persimmon); color: var(--paper); }
+  .cum tr.leader .score-cell { color: var(--paper-deep); }
+
+  /* Events */
   .event {
-    background: white;
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--green);
-    margin-bottom: 12px;
-    padding: 12px 16px;
-    border-radius: 2px;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    padding: 18px 18px 14px;
   }
+  .event:last-child { border-bottom: 1px solid var(--rule); }
   .event-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 8px;
-    gap: 10px;
+    gap: 14px;
     flex-wrap: wrap;
+    margin-bottom: 10px;
   }
-  .event-title {
-    font-size: 15px;
-    font-weight: bold;
-    color: var(--green);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+  .event-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 0;
   }
   .event-winner {
-    font-size: 11px;
-    color: var(--gold-dark);
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    font-family: 'Spectral', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 2px;
   }
+  .event-winner strong { color: var(--persimmon); font-style: normal; font-weight: 500; letter-spacing: 0.05em; }
   .event-teams {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 4px 12px;
+    gap: 4px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
     font-size: 13px;
   }
-  .event-team {
+  .et {
     display: flex;
     justify-content: space-between;
-    padding: 3px 0;
-    border-bottom: 1px dotted #eee;
+    padding: 4px 0;
+    border-bottom: 1px dotted var(--rule-soft);
   }
-  .event-team .et-name { font-weight: bold; }
-  .event-team .et-score { font-family: "Courier New", monospace; font-weight: bold; }
-  .event-team.winner-team .et-name { color: var(--gold-dark); }
-  .event-team.winner-team .et-name::after { content: " 🏆"; }
-  .event-rosters {
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px dashed var(--border);
+  .et-name em {
+    font-style: italic;
+    color: var(--ink-mute);
     font-size: 11px;
-    color: var(--grey);
-    display: none;
   }
-  .event.show-rosters .event-rosters { display: block; }
-  .event-roster { padding: 3px 0; }
-  .event-roster strong { color: var(--green); }
-  .toggle-rosters {
-    background: none;
+  .et-score { font-weight: 700; }
+  .et.winner-team .et-name { color: var(--persimmon); font-weight: 700; }
+  .et.winner-team .et-name::after { content: " ★"; color: var(--old-gold); }
+  .et .flag {
+    color: var(--crimson);
+    font-weight: 700;
+    font-size: 10px;
+    margin-left: 4px;
+  }
+  .event-roster-toggle {
+    background: transparent;
     border: none;
-    color: var(--gold-dark);
-    font-family: inherit;
+    color: var(--ink-mute);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
     font-size: 11px;
     cursor: pointer;
-    padding: 4px 0;
-    margin-top: 6px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    padding: 6px 0 0;
+    margin-top: 4px;
   }
-  .toggle-rosters:hover { color: var(--green); }
+  .event-roster-toggle:hover { color: var(--persimmon); }
+  .event-rosters {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-family: 'Spectral', serif;
+  }
+  .event.show-rosters .event-rosters { display: block; }
+  .event-roster { padding: 4px 0; }
+  .event-roster strong { color: var(--ink); font-weight: 700; }
   .event-note {
-    font-size: 11px;
-    color: var(--grey);
-    font-style: italic;
     margin-top: 8px;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--ink-mute);
   }
-  .alias { color: var(--grey); font-weight: normal; font-size: 11px; }
-  footer {
+
+  footer.bottom {
     text-align: center;
-    font-size: 10px;
-    color: var(--grey);
-    padding: 16px;
-    letter-spacing: 1px;
+    padding: 24px 16px 36px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-soft);
   }
-  @media (max-width: 600px) {
-    header h1 { font-size: 17px; letter-spacing: 2px; }
-    .cum-table { font-size: 11px; }
-    .cum-table th, .cum-table td { padding: 6px 4px; }
-    .cum-table .owner-cell { padding-left: 8px; font-size: 12px; }
-    .cum-table .total-cell { font-size: 13px; }
-    .event-title { font-size: 13px; }
-    .year-tab { font-size: 12px; padding: 5px 10px; }
+  footer.bottom .colophon {
+    display: block;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 9px;
+    margin-top: 6px;
+    color: var(--ink-mute);
+  }
+
+  @media (max-width: 700px) {
+    .mast-row { grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 0 8px; }
+    .mast-side { font-size: 10px; }
+    .mast-paper { grid-column: 1 / -1; font-size: 30px; order: -1; }
+    .event-title { font-size: 18px; letter-spacing: 0.32em; }
+    .masthead { padding: 18px 14px 16px; }
+    .champion { padding: 18px 14px; }
+    .champion .name { font-size: 44px; }
+    .year-tab { font-size: 16px; padding: 6px 10px; }
+    .cum th, .cum td { padding: 8px 4px; font-size: 11px; }
+    .cum .name { font-size: 16px; }
+    .cum .total-cell { font-size: 14px; }
+    .cum .rank-cell { font-size: 14px; width: 30px; }
+    .event { padding: 14px 14px 12px; }
+    .event-name { font-size: 18px; }
+    main { padding: 12px 12px 24px; }
   }
 </style>
 </head>
 <body>
-<nav>
+<nav class="topnav">
   <a href="./">Live</a>
-  <a href="./season.html">2026 Season</a>
-  <a href="./history.html" class="active">History</a>
+  <a href="./season.html">Season</a>
+  <a href="./history.html" class="active">Archive</a>
 </nav>
-<header>
-  <h1>Majors Draft <strong>History</strong></h1>
-  <div class="sub">Locks of the Day · 2017 – 2025</div>
-</header>
+
+<div class="masthead">
+  <hr class="mast-rule-double">
+  <div class="mast-row">
+    <div class="mast-side">
+      <div class="mast-issue">Vol. I – IX</div>
+      Past Champions
+    </div>
+    <div class="mast-paper">Locks <em>of the</em> Day</div>
+    <div class="mast-side right">
+      <div class="mast-issue">2017–2025</div>
+      Yearbook
+    </div>
+  </div>
+  <hr class="mast-rule">
+  <div class="event-bar">
+    <h1 class="event-title">The Archive</h1>
+    <div class="event-sub">Nine seasons of fantasy major championship lore</div>
+  </div>
+</div>
+
 <div class="year-tabs" id="year-tabs"></div>
 <main id="content"></main>
-<footer>Some early years incomplete · Rosters reflect picks as originally written</footer>
+
+<footer class="bottom">
+  Some early years incomplete · Rosters reflect picks as originally drafted
+  <span class="colophon">Locks of the Day · Founded MMXVII</span>
+</footer>
 
 <script>
 const EVENT_ORDER = ["Masters", "PGA Championship", "US Open", "Open Championship"];
 const SHORT_EVENT = { "Masters": "Masters", "PGA Championship": "PGA", "US Open": "U.S. Open", "Open Championship": "The Open" };
 
+const OWNER_NICKNAMES = {
+  Jacob: "Bean", Emery: "Fern", Austin: "Troop", Miles: "Ram",
+  Kellen: "Money", Garrett: "Gary", Jared: "Taco", Dylan: "Cyc", Alex: "Mags"
+};
+
 const fmtScore = (n) => {
   if (n === null || n === undefined || isNaN(n)) return "—";
   if (n === 0) return "E";
-  return n > 0 ? `+${n}` : `${n}`;
+  return (n > 0 ? `+${n}` : `${n}`).replace("-", "−");
 };
 
 let HISTORY = null;
 let CURRENT_YEAR = null;
 
 function sortEventsChronologically(events) {
-  // Standard order Masters → PGA → US Open → Open. 2020 had odd ordering (Masters in Nov), preserve JSON order for that year.
-  const standardOrder = ["Masters", "PGA Championship", "US Open", "Open Championship"];
-  return events.slice().sort((a, b) => {
-    const ai = standardOrder.indexOf(a.name);
-    const bi = standardOrder.indexOf(b.name);
-    return ai - bi;
-  });
+  return events.slice().sort((a, b) => EVENT_ORDER.indexOf(a.name) - EVENT_ORDER.indexOf(b.name));
 }
 
 function computeYearCumulative(year) {
   const owners = {};
   for (const event of year.events) {
     for (const team of event.teams) {
-      if (team.score === null || team.score === undefined) continue;
+      if (team.score == null) continue;
       if (!owners[team.owner]) owners[team.owner] = { owner: team.owner, total: 0, scores: {} };
       owners[team.owner].scores[event.name] = team.score;
       owners[team.owner].total += team.score;
@@ -336,35 +488,18 @@ function computeYearCumulative(year) {
   return Object.values(owners).sort((a, b) => a.total - b.total);
 }
 
-const OWNER_NICKNAMES = {
-  Jacob:   "Bean",
-  Emery:   "Fern",
-  Austin:  "Troop",
-  Miles:   "Ram",
-  Kellen:  "Money",
-  Garrett: "Gary",
-  Jared:   "Taco",
-  Dylan:   "Cyc",
-  Alex:    "Mags"
-};
-
 function getPrimaryName(year, owner) {
-  // Prefer the team alias used in PGA / US Open / Open (these tend to be the canonical team name for that year)
-  // Then fall back to Masters alias, then to the owner's persistent nickname, then to owner name
   const events = year.events;
   for (const evName of ["PGA Championship", "US Open", "Open Championship", "Masters"]) {
     const ev = events.find(e => e.name === evName);
     if (!ev) continue;
     const team = ev.teams.find(t => t.owner === owner);
-    if (team && team.alias && team.alias !== team.owner) {
-      return team.alias;
-    }
+    if (team && team.alias && team.alias !== team.owner) return team.alias;
   }
   return OWNER_NICKNAMES[owner] || owner;
 }
 
 function getEventPrimary(team) {
-  // For per-event team rows: use event alias if set, else owner nickname, else owner name
   if (team.alias && team.alias !== team.owner) return team.alias;
   return OWNER_NICKNAMES[team.owner] || team.owner;
 }
@@ -372,10 +507,10 @@ function getEventPrimary(team) {
 function renderCumulative(year) {
   const cum = computeYearCumulative(year);
   if (cum.length === 0) {
-    return `<p style="color:var(--grey);font-style:italic;text-align:center;padding:16px;">Scores not on file for this year.</p>`;
+    return `<p style="color:var(--ink-mute);font-style:italic;text-align:center;padding:18px;">Scores not on file for this year.</p>`;
   }
   const eventNames = sortEventsChronologically(year.events).map(e => e.name);
-  const eventHeads = eventNames.map(e => `<th>${SHORT_EVENT[e] || e}</th>`).join("");
+  const heads = eventNames.map(e => `<th>${SHORT_EVENT[e] || e}</th>`).join("");
   const body = cum.map((r, i) => {
     const primary = getPrimaryName(year, r.owner);
     const showOwner = primary !== r.owner;
@@ -386,17 +521,20 @@ function renderCumulative(year) {
     }).join("");
     return `
       <tr${i === 0 ? ' class="leader"' : ""}>
-        <td class="rank-cell">${i + 1}</td>
-        <td class="owner-cell">${primary}${showOwner ? ` <span class="alias">${r.owner}</span>` : ""}</td>
+        <td class="rank-cell">${String(i + 1).padStart(2, "0")}</td>
+        <td class="name-cell">
+          <span class="name">${primary}</span>
+          ${showOwner ? `<span class="name-owner">${r.owner}</span>` : ""}
+        </td>
         ${scoreCells}
         <td class="total-cell">${fmtScore(r.total)}</td>
       </tr>
     `;
   }).join("");
   return `
-    <div class="cumulative">
-      <table class="cum-table">
-        <thead><tr><th>#</th><th class="owner-cell">Owner</th>${eventHeads}<th>Total</th></tr></thead>
+    <div class="cum">
+      <table>
+        <thead><tr><th>#</th><th class="left">Team</th>${heads}<th>Total</th></tr></thead>
         <tbody>${body}</tbody>
       </table>
     </div>
@@ -406,68 +544,63 @@ function renderCumulative(year) {
 function renderChampion(year) {
   const cum = computeYearCumulative(year);
   if (cum.length === 0) return "";
-  // Champion is always the lowest cumulative score (golf: low wins)
   const champRow = cum[0];
   const owner = champRow.owner;
   const primary = getPrimaryName(year, owner);
   const showOwner = primary !== owner;
-  const score = fmtScore(champRow.total);
   return `
-    <div class="champion-banner">
-      <div class="label">${year.year} Year-Long Champion</div>
-      <div class="name">${primary}${showOwner ? ` <span style="color:var(--cream);font-weight:normal;font-size:14px;letter-spacing:1px;">· ${owner}</span>` : ""}</div>
-      <div class="score">${score} across ${Object.keys(champRow.scores).length} events</div>
+    <div class="champion">
+      <div class="crest">${year.year} Year-Long Champion</div>
+      <div class="name">${primary}</div>
+      ${showOwner ? `<div class="owner">${owner}</div>` : ""}
+      <div class="stat">${fmtScore(champRow.total)} · ${Object.keys(champRow.scores).length} events</div>
     </div>
   `;
 }
 
 function renderEvent(event) {
   const teams = (event.teams || []).slice().sort((a, b) => {
-    if (a.score === null || a.score === undefined) return 1;
-    if (b.score === null || b.score === undefined) return -1;
+    if (a.score == null) return 1;
+    if (b.score == null) return -1;
     return a.score - b.score;
   });
-
   const rows = teams.map((t, i) => {
     const primary = getEventPrimary(t);
     const showOwner = primary !== t.owner;
     const flags = [];
-    if (t.winnerBonus) flags.push("***");
-    if (t.mc) flags.push("*");
-    if (t.doubleMc) flags.push("**");
-    const flagStr = flags.length ? ` <span style="color:var(--red);">${flags.join("")}</span>` : "";
-    const isWinner = i === 0 && t.score !== null && t.score !== undefined;
+    if (t.winnerBonus) flags.push("★");
+    if (t.mc) flags.push("†");
+    if (t.doubleMc) flags.push("‡");
+    const flagStr = flags.length ? `<span class="flag">${flags.join("")}</span>` : "";
+    const isWinner = i === 0 && t.score != null;
     return `
-      <div class="event-team${isWinner ? " winner-team" : ""}">
-        <span class="et-name">${primary}${showOwner ? ` <span class="alias">${t.owner}</span>` : ""}${flagStr}</span>
+      <div class="et${isWinner ? " winner-team" : ""}">
+        <span class="et-name">${primary}${showOwner ? ` <em>${t.owner}</em>` : ""}${flagStr}</span>
         <span class="et-score">${fmtScore(t.score)}</span>
       </div>
     `;
   }).join("");
-
   const rosters = teams.map(t => {
     const primary = getEventPrimary(t);
-    const showOwner = primary !== t.owner;
-    return `<div class="event-roster"><strong>${primary}</strong>${showOwner ? ` <span style="color:var(--grey);">(${t.owner})</span>` : ""}: ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>`;
+    return `<div class="event-roster"><strong>${primary}</strong> — ${t.players.join(", ")} <em style="color:var(--persimmon);">(${fmtScore(t.score)})</em></div>`;
   }).join("");
-
   const winnerLine = event.winner
-    ? `<div class="event-winner">Winner: ${event.winner}${event.winnerPickedBy ? ` (picked by ${event.winnerPickedBy})` : ""}</div>`
+    ? `<div class="event-winner">Tournament won by <strong>${event.winner}</strong>${event.winnerPickedBy ? ` · picked by ${event.winnerPickedBy}` : ""}</div>`
     : "";
-
   const note = event.note ? `<div class="event-note">${event.note}</div>` : "";
-
   return `
-    <div class="event">
+    <article class="event">
       <div class="event-header">
-        <div class="event-title">${event.name === "Open Championship" ? "The Open" : event.name}</div>
-        ${winnerLine}
+        <div>
+          <h3 class="event-name">${event.name === "Open Championship" ? "The Open" : event.name}</h3>
+          ${winnerLine}
+        </div>
       </div>
       <div class="event-teams">${rows}</div>
-      <button class="toggle-rosters" onclick="this.closest('.event').classList.toggle('show-rosters'); this.textContent = this.closest('.event').classList.contains('show-rosters') ? 'Hide rosters' : 'Show rosters';">Show rosters</button>
+      <button class="event-roster-toggle" onclick="this.closest('.event').classList.toggle('show-rosters'); this.textContent = this.closest('.event').classList.contains('show-rosters') ? 'Hide rosters' : 'Show rosters';">Show rosters</button>
       <div class="event-rosters">${rosters}</div>
       ${note}
-    </div>
+    </article>
   `;
 }
 
@@ -478,15 +611,13 @@ function selectYear(yearNum) {
   });
   const year = HISTORY.years.find(y => y.year === yearNum);
   if (!year) return;
-
   const content = document.getElementById("content");
   const eventsHtml = sortEventsChronologically(year.events).map(renderEvent).join("");
-
   content.innerHTML = `
     ${renderChampion(year)}
-    <h2 class="section-title">${year.year} Standings</h2>
+    <div class="section-label">${year.year} Standings <em>lowest wins</em></div>
     ${renderCumulative(year)}
-    <h2 class="section-title">${year.year} Events</h2>
+    <div class="section-label">${year.year} Major Championships</div>
     ${eventsHtml}
   `;
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -504,10 +635,9 @@ async function init() {
     if (!res.ok) throw new Error(`Could not load history (${res.status})`);
     HISTORY = await res.json();
     renderTabs();
-    const latest = Math.max(...HISTORY.years.map(y => y.year));
-    selectYear(latest);
+    selectYear(Math.max(...HISTORY.years.map(y => y.year)));
   } catch (e) {
-    document.getElementById("content").innerHTML = `<div style="background:#fee;border:1px solid var(--red);padding:14px;border-radius:4px;color:var(--red);">${e.message}</div>`;
+    document.getElementById("content").innerHTML = `<div style="background:rgba(140,28,28,0.08);border:1px solid var(--crimson);padding:18px;color:var(--crimson);font-family:'Spectral',serif;">${e.message}</div>`;
     console.error(e);
   }
 }

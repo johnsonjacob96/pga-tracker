@@ -3,295 +3,408 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2026 Season · Locks of the Day Majors Draft</title>
+<title>2026 Season — Locks of the Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #f5efe0;
-    --cream-dark: #ebe3cf;
-    --gold: #c9a04e;
-    --gold-dark: #8e6e2c;
-    --green: #1d3d2c;
-    --green-light: #2d5a42;
-    --red: #a02828;
-    --grey: #888;
-    --text: #2a2417;
-    --border: #d9cfb5;
+    --paper:        #f1ebdd;
+    --paper-warm:   #ede5d2;
+    --paper-deep:   #e2d7be;
+    --ink:          #1a1410;
+    --ink-mute:     #6b5d44;
+    --ink-soft:     #a09078;
+    --rule:         #c8baa0;
+    --rule-soft:    #ddd0b3;
+    --forest:       #0e2818;
+    --forest-mid:   #1a3a26;
+    --forest-soft:  #2d5238;
+    --persimmon:    #c64a26;
+    --persimmon-bright: #e25826;
+    --old-gold:     #b08840;
+    --crimson:      #8c1c1c;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
-    background: var(--cream);
-    color: var(--text);
-    font-family: Georgia, "Times New Roman", serif;
-    line-height: 1.4;
-    min-height: 100vh;
+    background: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(110,85,40,0.04) 0px, transparent 1px),
+      radial-gradient(circle at 75% 65%, rgba(110,85,40,0.04) 0px, transparent 1px),
+      radial-gradient(circle at 45% 85%, rgba(110,85,40,0.03) 0px, transparent 1px);
+    background-size: 7px 7px, 11px 11px, 5px 5px;
+    color: var(--ink);
+    font-family: 'Spectral', Georgia, serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
-  nav {
-    background: var(--green);
-    padding: 8px 16px;
+  nav.topnav {
+    background: var(--forest);
+    color: var(--paper);
+    padding: 9px 0;
     display: flex;
-    gap: 0;
     justify-content: center;
-    border-bottom: 1px solid var(--gold-dark);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: 'Fraunces', serif;
+    font-size: 11px;
+    font-weight: 500;
   }
-  nav a {
-    color: var(--cream);
+  nav.topnav a {
+    color: var(--paper-deep);
     text-decoration: none;
-    padding: 6px 16px;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-bottom: 2px solid transparent;
-    transition: border-color 0.15s, color 0.15s;
+    padding: 4px 22px;
+    position: relative;
   }
-  nav a:hover { color: var(--gold); }
-  nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
-  header {
-    background: var(--green);
-    color: var(--cream);
-    padding: 20px 16px 18px;
+  nav.topnav a + a { border-left: 1px solid var(--forest-soft); }
+  nav.topnav a:hover { color: var(--persimmon-bright); }
+  nav.topnav a.active { color: var(--persimmon-bright); }
+  nav.topnav a.active::after {
+    content: ""; position: absolute; bottom: -9px; left: 22px; right: 22px; height: 2px;
+    background: var(--persimmon);
+  }
+  .masthead {
+    padding: 28px 24px 22px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .mast-rule { border: 0; border-top: 1px solid var(--ink); margin: 0; }
+  .mast-rule-double { border: 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); height: 4px; margin: 0; }
+  .mast-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 18px;
+    padding: 14px 0 10px;
+  }
+  .mast-side { font-style: italic; font-size: 11px; color: var(--ink-mute); }
+  .mast-side.right { text-align: right; }
+  .mast-issue {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+  .mast-paper {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 38px;
+    line-height: 0.95;
     text-align: center;
-    border-bottom: 4px solid var(--gold);
+    letter-spacing: -0.02em;
+    color: var(--ink);
   }
-  header h1 {
+  .mast-paper em { font-style: italic; font-weight: 700; color: var(--persimmon); }
+  .event-bar { margin-top: 18px; text-align: center; }
+  .event-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 26px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--forest);
     margin: 0;
-    font-size: 22px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: normal;
   }
-  header h1 strong { color: var(--gold); font-weight: bold; }
-  header .sub {
+  .event-sub {
+    font-style: italic;
+    color: var(--ink-mute);
     font-size: 12px;
-    color: var(--gold);
-    margin-top: 6px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    margin-top: 8px;
   }
   .status-bar {
-    background: var(--cream-dark);
-    padding: 10px 16px;
-    font-size: 12px;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 8px 24px 14px;
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--rule);
     text-align: center;
-    border-bottom: 1px solid var(--border);
-    color: #5a4f30;
   }
   main {
-    max-width: 920px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 18px 16px 32px;
   }
-  h2.section-title {
-    font-size: 14px;
-    letter-spacing: 3px;
+  .section-label {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--green);
-    border-bottom: 2px solid var(--gold);
-    padding-bottom: 6px;
-    margin: 24px 0 12px;
+    color: var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 8px;
+    margin: 28px 0 14px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
   }
-  h2.section-title:first-child { margin-top: 0; }
-  .cumulative {
-    background: white;
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--gold);
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 20px;
+  .section-label:first-child { margin-top: 4px; }
+  .section-label em {
+    font-style: italic;
+    color: var(--ink-mute);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    text-transform: none;
   }
-  .cum-table {
+
+  /* --- Cumulative table --- */
+  .cum {
+    margin-bottom: 28px;
+    overflow-x: auto;
+  }
+  .cum table {
     width: 100%;
     border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
     font-size: 13px;
+    min-width: 560px;
   }
-  .cum-table th, .cum-table td {
-    padding: 8px 10px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-  .cum-table th {
-    background: var(--green);
-    color: var(--cream);
+  .cum th {
+    background: var(--forest);
+    color: var(--paper-deep);
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
     font-size: 10px;
-    letter-spacing: 1px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
-    padding: 8px 6px;
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 2px solid var(--forest);
   }
-  .cum-table .owner-cell {
+  .cum th.left { text-align: left; padding-left: 18px; }
+  .cum td {
+    padding: 12px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-warm);
+  }
+  .cum tr:hover td:not(.total-cell) { background: var(--paper-deep); }
+  .cum .rank-cell {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink-soft);
+    width: 50px;
+    text-align: center;
+  }
+  .cum .name-cell {
     text-align: left;
-    padding-left: 14px;
+    padding-left: 18px;
+    line-height: 1.1;
   }
-  .cum-table .owner-name {
-    font-weight: bold;
-    color: var(--green);
-    font-size: 14px;
-    letter-spacing: 0.5px;
+  .cum .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    display: block;
   }
-  .cum-table .team-tag {
-    display: inline-block;
-    margin-left: 6px;
-    color: var(--gold-dark);
-    font-size: 11px;
-    letter-spacing: 1px;
+  .cum .name-owner {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 9px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-top: 3px;
+    display: block;
   }
-  .cum-table .rank-cell {
-    width: 36px;
-    font-weight: bold;
-    color: var(--gold-dark);
+  .cum .score-cell.pending { color: var(--ink-soft); }
+  .cum .score-cell.live {
+    color: var(--persimmon);
+    font-weight: 700;
+    position: relative;
   }
-  .cum-table .total-cell {
-    font-family: "Courier New", monospace;
-    font-weight: bold;
-    font-size: 16px;
-    color: var(--green);
-    background: #fdfaf0;
+  .cum .total-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--ink);
+    background: var(--paper-deep);
+    border-left: 1px solid var(--rule);
   }
-  .cum-table .score-cell {
-    font-family: "Courier New", monospace;
-    font-size: 12px;
-    color: var(--text);
-  }
-  .cum-table .score-cell.pending { color: #bbb; }
-  .cum-table .score-cell.live {
-    color: var(--red);
-    font-weight: bold;
-  }
-  .cum-table tr.leader td.total-cell {
-    background: var(--gold);
-    color: var(--green);
-  }
-  .cum-table tr:hover td:not(.total-cell):not(.rank-cell) { background: #fafaf0; }
+  .cum tr.leader td { background: var(--forest); color: var(--paper); border-bottom-color: var(--forest); }
+  .cum tr.leader .rank-cell { color: var(--old-gold); }
+  .cum tr.leader .name { color: var(--paper); }
+  .cum tr.leader .name-owner { color: var(--old-gold); }
+  .cum tr.leader .total-cell { background: var(--persimmon); color: var(--paper); font-size: 22px; }
+  .cum tr.leader .score-cell { color: var(--paper-deep); }
+  .cum tr.leader .score-cell.live { color: var(--persimmon-bright); }
 
+  /* --- Events --- */
   .event {
-    background: white;
-    border: 1px solid var(--border);
-    border-left: 5px solid var(--gold);
-    margin-bottom: 12px;
-    padding: 14px 16px;
-    border-radius: 2px;
+    background: var(--paper-warm);
+    border-top: 1px solid var(--rule);
+    padding: 18px 18px 14px;
   }
-  .event.live { border-left-color: var(--red); }
-  .event.complete { border-left-color: var(--green); background: #fdfaf0; }
-  .event.upcoming { opacity: 0.7; }
+  .event:last-child { border-bottom: 1px solid var(--rule); }
+  .event.upcoming { opacity: 0.55; }
   .event-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 10px;
-    gap: 10px;
+    gap: 14px;
     flex-wrap: wrap;
+    margin-bottom: 10px;
   }
-  .event-title {
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--green);
-    letter-spacing: 1.5px;
+  .event-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+  .event-name em { font-style: italic; font-weight: 500; color: var(--persimmon); }
+  .event-tag {
+    font-family: 'Fraunces', serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
+    color: var(--ink-mute);
   }
-  .event-meta {
-    font-size: 11px;
-    color: var(--gold-dark);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+  .event-tag.live {
+    background: var(--persimmon);
+    color: var(--paper);
+    padding: 3px 10px;
+    font-weight: 700;
   }
-  .event-meta.live-tag {
-    background: var(--red);
-    color: white;
-    padding: 2px 8px;
-    border-radius: 2px;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
-  .event-meta.final-tag {
-    background: var(--green);
-    color: var(--gold);
-    padding: 2px 8px;
-    border-radius: 2px;
+  .event-tag.final {
+    background: var(--forest);
+    color: var(--old-gold);
+    padding: 3px 10px;
+    font-weight: 700;
   }
   .event-teams {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 6px 12px;
+    gap: 4px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
     font-size: 13px;
   }
-  .event-team {
+  .et {
     display: flex;
     justify-content: space-between;
     padding: 4px 0;
-    border-bottom: 1px dotted #eee;
+    border-bottom: 1px dotted var(--rule-soft);
   }
-  .event-team .et-name { font-weight: bold; }
-  .event-team .et-score { font-family: "Courier New", monospace; font-weight: bold; }
-  .event-team.winner .et-name { color: var(--gold-dark); }
-  .event-team.winner .et-name::after { content: " 🏆"; }
-  .event-rosters {
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px dashed var(--border);
-    font-size: 11px;
-    color: var(--grey);
-    display: none;
-  }
-  .event.show-rosters .event-rosters { display: block; }
-  .event-roster {
-    padding: 4px 0;
-  }
-  .event-roster strong { color: var(--green); }
-  .toggle-rosters {
-    background: none;
-    border: none;
-    color: var(--gold-dark);
-    font-family: inherit;
-    font-size: 11px;
-    cursor: pointer;
-    padding: 4px 0;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .toggle-rosters:hover { color: var(--green); }
+  .et-name { font-weight: 400; color: var(--ink); }
+  .et-name em { font-style: italic; color: var(--ink-mute); font-size: 11px; }
+  .et-score { font-weight: 700; }
+  .et.winner .et-name { color: var(--persimmon); font-weight: 700; }
+  .et.winner .et-name::after { content: " ★"; color: var(--old-gold); }
+
   .upcoming-msg {
     text-align: center;
-    color: var(--grey);
     font-style: italic;
-    padding: 12px;
-    font-size: 13px;
+    color: var(--ink-mute);
+    padding: 10px;
   }
-  footer {
+  .event-roster-toggle {
+    background: transparent;
+    border: none;
+    color: var(--ink-mute);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    padding: 6px 0 0;
+    margin-top: 4px;
+  }
+  .event-roster-toggle:hover { color: var(--persimmon); }
+  .event-rosters {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--rule);
+    font-size: 12px;
+    color: var(--ink-mute);
+    font-family: 'Spectral', serif;
+  }
+  .event.show-rosters .event-rosters { display: block; }
+  .event-roster { padding: 4px 0; }
+  .event-roster strong { color: var(--ink); font-weight: 700; }
+
+  footer.bottom {
     text-align: center;
-    font-size: 10px;
-    color: var(--grey);
-    padding: 16px;
-    letter-spacing: 1px;
+    padding: 24px 16px 36px;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11px;
+    color: var(--ink-soft);
   }
-  @media (max-width: 600px) {
-    header h1 { font-size: 17px; letter-spacing: 2px; }
-    .cum-table { font-size: 11px; }
-    .cum-table th, .cum-table td { padding: 6px 4px; }
-    .cum-table .owner-cell { padding-left: 8px; }
-    .cum-table .owner-name { font-size: 12px; }
-    .cum-table .team-tag { display: block; margin-left: 0; font-size: 9px; }
-    .cum-table .total-cell { font-size: 14px; }
-    .event-title { font-size: 14px; }
+  footer.bottom .colophon {
+    display: block;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    font-size: 9px;
+    margin-top: 6px;
+    color: var(--ink-mute);
+  }
+
+  @media (max-width: 700px) {
+    .mast-row { grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 0 8px; }
+    .mast-side { font-size: 10px; }
+    .mast-paper { grid-column: 1 / -1; font-size: 30px; order: -1; }
+    .event-title { font-size: 18px; letter-spacing: 0.32em; }
+    .masthead { padding: 18px 14px 16px; }
+    .cum th, .cum td { padding: 8px 4px; font-size: 11px; }
+    .cum .name { font-size: 18px; }
+    .cum .total-cell { font-size: 16px; }
+    .cum .rank-cell { font-size: 14px; width: 30px; }
+    .event { padding: 14px 14px 12px; }
+    .event-name { font-size: 18px; }
+    main { padding: 12px 12px 24px; }
   }
 </style>
 </head>
 <body>
-<nav>
+<nav class="topnav">
   <a href="./">Live</a>
-  <a href="./season.html" class="active">2026 Season</a>
-  <a href="./history.html">History</a>
+  <a href="./season.html" class="active">Season</a>
+  <a href="./history.html">Archive</a>
 </nav>
-<header>
-  <h1>2026 <strong>Season</strong></h1>
-  <div class="sub">Locks of the Day · Majors Draft</div>
-</header>
-<div class="status-bar" id="status">Loading...</div>
+
+<div class="masthead">
+  <hr class="mast-rule-double">
+  <div class="mast-row">
+    <div class="mast-side">
+      <div class="mast-issue">Vol. 09</div>
+      Year in Progress
+    </div>
+    <div class="mast-paper">Locks <em>of the</em> Day</div>
+    <div class="mast-side right">
+      <div class="mast-issue">2026</div>
+      Four-Major Cumulative
+    </div>
+  </div>
+  <hr class="mast-rule">
+  <div class="event-bar">
+    <h1 class="event-title">The 2026 Season</h1>
+    <div class="event-sub">Lowest Cumulative Wins · Best Three Per Major</div>
+  </div>
+</div>
+
+<div class="status-bar" id="status">Loading…</div>
 <main id="content"></main>
-<footer>Cumulative across all 4 majors · Lowest total wins · Live data refreshes every 60s</footer>
+
+<footer class="bottom">
+  Live PGA Championship feed via ESPN
+  <span class="colophon">Locks of the Day · MMXXVI</span>
+</footer>
 
 <script>
 const PGA_TEAMS = {
@@ -307,22 +420,19 @@ const PGA_TEAMS = {
 };
 
 const EVENT_KEYS = ["Masters", "PGA Championship", "US Open", "Open Championship"];
+const SHORT_EVENT = { "Masters": "Masters", "PGA Championship": "PGA", "US Open": "U.S. Open", "Open Championship": "The Open" };
 
 const normalize = (s) =>
-  s.normalize("NFD")
-   .replace(/[̀-ͯ]/g, "")
-   .replace(/ø/g, "o").replace(/Ø/g, "O")
-   .replace(/[.\s'-]/g, "")
-   .toLowerCase();
+  s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ø/g, "o").replace(/Ø/g, "O").replace(/[.\s'-]/g, "").toLowerCase();
 
 const fmtScore = (n) => {
   if (n === null || n === undefined || isNaN(n)) return "—";
   if (n === 0) return "E";
-  return n > 0 ? `+${n}` : `${n}`;
+  return (n > 0 ? `+${n}` : `${n}`).replace("-", "−");
 };
 
 function parseScore(raw) {
-  if (raw === null || raw === undefined) return null;
+  if (raw == null) return null;
   if (typeof raw === "number") return raw;
   const s = String(raw).trim();
   if (s === "" || s === "—") return null;
@@ -340,23 +450,14 @@ async function fetchLivePGA() {
     if (!event) return null;
     const competition = event.competitions?.[0];
     if (!competition) return null;
-
     const players = {};
     for (const comp of competition.competitors || []) {
       const name = comp.athlete?.fullName || comp.athlete?.displayName;
       if (!name) continue;
-      const score = parseScore(comp.score);
-      const linescores = comp.linescores || [];
-      const madeCut = linescores.length >= 3;
-      players[normalize(name)] = { name, score, madeCut };
+      players[normalize(name)] = { name, score: parseScore(comp.score), madeCut: (comp.linescores || []).length >= 3 };
     }
-
-    const madeCutScores = Object.values(players)
-      .filter(p => p.madeCut && p.score !== null)
-      .map(p => p.score);
-    const worstMadeCut = madeCutScores.length ? Math.max(...madeCutScores) : 0;
-    const penalty = worstMadeCut + 2;
-
+    const made = Object.values(players).filter(p => p.madeCut && p.score !== null).map(p => p.score);
+    const penalty = (made.length ? Math.max(...made) : 0) + 2;
     const completed = event.status?.type?.completed === true;
     let winner = null;
     if (completed) {
@@ -368,30 +469,17 @@ async function fetchLivePGA() {
       if (finishers.length) winner = finishers[0].name;
     }
     const winnerNorm = winner ? normalize(winner) : null;
-
     const teamScores = {};
     for (const [teamName, roster] of Object.entries(PGA_TEAMS)) {
-      const teamPlayers = roster.map(rn => {
-        const f = players[normalize(rn)];
-        return f ? { score: f.score, madeCut: f.madeCut } : { score: null, madeCut: false };
-      });
-      const sorted = teamPlayers.filter(p => p.madeCut && p.score !== null).sort((a, b) => a.score - b.score);
+      const ps = roster.map(rn => players[normalize(rn)] || { score: null, madeCut: false });
+      const sorted = ps.filter(p => p.madeCut && p.score !== null).sort((a, b) => a.score - b.score);
       let total = 0;
       for (let i = 0; i < Math.min(3, sorted.length); i++) total += sorted[i].score;
       total += Math.max(0, 3 - sorted.length) * penalty;
-      // Apply winner bonus if event complete and this team drafted the winner
-      if (winnerNorm && roster.some(rn => normalize(rn) === winnerNorm)) {
-        total -= 3;
-      }
+      if (winnerNorm && roster.some(rn => normalize(rn) === winnerNorm)) total -= 3;
       teamScores[teamName] = total;
     }
-
-    return {
-      status: event.status?.type?.description || "In Progress",
-      complete: completed,
-      winner,
-      teamScores
-    };
+    return { status: event.status?.type?.description || "In Progress", complete: completed, winner, teamScores };
   } catch (e) {
     console.error("Live PGA fetch failed:", e);
     return null;
@@ -429,23 +517,20 @@ function computeCumulative(seasonData, livePGA) {
 }
 
 function renderCumulative(rows, livePGA) {
-  const eventHeads = EVENT_KEYS.map(e => {
-    const short = e === "PGA Championship" ? "PGA" : e === "Open Championship" ? "Open" : e === "US Open" ? "U.S." : e;
-    return `<th>${short}</th>`;
-  }).join("");
+  const heads = EVENT_KEYS.map(e => `<th>${SHORT_EVENT[e]}</th>`).join("");
   const body = rows.map((r, i) => {
     const scoreCells = EVENT_KEYS.map(e => {
       const s = r.scores[e];
-      if (s === null) return '<td class="score-cell pending">—</td>';
-      const isLive = e === "PGA Championship" && livePGA && !livePGA.complete;
-      return `<td class="score-cell${isLive ? " live" : ""}">${fmtScore(s)}</td>`;
+      if (s === null || s === undefined) return '<td class="score-cell pending">—</td>';
+      const live = e === "PGA Championship" && livePGA && !livePGA.complete;
+      return `<td class="score-cell${live ? " live" : ""}">${fmtScore(s)}</td>`;
     }).join("");
     return `
       <tr${i === 0 ? ' class="leader"' : ""}>
-        <td class="rank-cell">${i + 1}</td>
-        <td class="owner-cell">
-          <span class="owner-name">${r.teamName}</span>
-          <span class="team-tag">${r.owner}</span>
+        <td class="rank-cell">${String(i + 1).padStart(2, "0")}</td>
+        <td class="name-cell">
+          <span class="name">${r.teamName}</span>
+          <span class="name-owner">${r.owner}</span>
         </td>
         ${scoreCells}
         <td class="total-cell">${fmtScore(r.total)}</td>
@@ -453,9 +538,9 @@ function renderCumulative(rows, livePGA) {
     `;
   }).join("");
   return `
-    <div class="cumulative">
-      <table class="cum-table">
-        <thead><tr><th>#</th><th class="owner-cell">Owner</th>${eventHeads}<th>Total</th></tr></thead>
+    <div class="cum">
+      <table>
+        <thead><tr><th>#</th><th class="left">Team</th>${heads}<th>Total</th></tr></thead>
         <tbody>${body}</tbody>
       </table>
     </div>
@@ -465,21 +550,17 @@ function renderCumulative(rows, livePGA) {
 function renderEvent(event, livePGA, ownerMap) {
   if (!event.complete && !(event.name === "PGA Championship" && livePGA)) {
     return `
-      <div class="event upcoming">
+      <article class="event upcoming">
         <div class="event-header">
-          <div class="event-title">${event.name === "Open Championship" ? "The Open" : event.name}</div>
-          <div class="event-meta">${event.month}</div>
+          <h3 class="event-name">${event.name === "Open Championship" ? "The Open" : event.name}</h3>
+          <div class="event-tag">${event.month}</div>
         </div>
-        <div class="upcoming-msg">Not started — picks haven't been made yet</div>
-      </div>
+        <div class="upcoming-msg">Not yet played — picks pending</div>
+      </article>
     `;
   }
-
   let teams = [];
-  let isLive = false;
-  let isFinal = false;
-  let winnerLabel = "";
-
+  let isLive = false, isFinal = false, winnerLine = "";
   if (event.name === "PGA Championship" && livePGA) {
     isLive = !livePGA.complete;
     isFinal = livePGA.complete;
@@ -492,42 +573,41 @@ function renderEvent(event, livePGA, ownerMap) {
   } else {
     isFinal = true;
     teams = (event.teams || []).slice().sort((a, b) => a.score - b.score);
-    winnerLabel = event.winner ? ` · won by ${event.winner} (picked by ${event.winnerPickedBy})` : "";
+    if (event.winner) winnerLine = `Winner — ${event.winner} <em>(picked by ${event.winnerPickedBy})</em>`;
   }
 
   const rows = teams.map((t, i) => `
-    <div class="event-team${i === 0 ? " winner" : ""}">
-      <span class="et-name">${t.teamName} <span style="color:var(--grey);font-weight:normal;">· ${t.owner}</span></span>
+    <div class="et${i === 0 ? " winner" : ""}">
+      <span class="et-name">${t.teamName} <em>${t.owner}</em></span>
       <span class="et-score">${fmtScore(t.score)}</span>
     </div>
   `).join("");
 
   const rosters = event.teams ? event.teams.slice().sort((a, b) => a.score - b.score).map(t => `
-    <div class="event-roster"><strong>${t.teamName}</strong> <span style="color:var(--grey);">(${t.owner}):</span> ${t.players.join(", ")} <em>(${fmtScore(t.score)})</em></div>
+    <div class="event-roster"><strong>${t.teamName}</strong> — ${t.players.join(", ")} <em style="color:var(--persimmon);">(${fmtScore(t.score)})</em></div>
   `).join("") : "";
 
-  const eventClass = isLive ? "event live" : (isFinal ? "event complete" : "event");
   const tag = isLive
-    ? `<div class="event-meta live-tag">● Live</div>`
-    : (isFinal ? `<div class="event-meta final-tag">Final${winnerLabel}</div>` : `<div class="event-meta">${event.month}</div>`);
+    ? `<div class="event-tag live">● Live</div>`
+    : (isFinal ? `<div class="event-tag final">Final</div>` : `<div class="event-tag">${event.month}</div>`);
 
   const rosterToggle = event.teams && event.teams.length
-    ? `<button class="toggle-rosters" onclick="this.closest('.event').classList.toggle('show-rosters'); this.textContent = this.closest('.event').classList.contains('show-rosters') ? 'Hide rosters' : 'Show rosters';">Show rosters</button>`
-    : (isLive ? `<a href="./" style="color:var(--gold-dark);font-size:11px;text-transform:uppercase;letter-spacing:1px;text-decoration:none;">View live scorecards →</a>` : "");
+    ? `<button class="event-roster-toggle" onclick="this.closest('.event').classList.toggle('show-rosters'); this.textContent = this.closest('.event').classList.contains('show-rosters') ? 'Hide rosters' : 'Show rosters';">Show rosters</button>`
+    : (isLive ? `<a href="./" style="color:var(--persimmon);font-family:'Fraunces',serif;font-style:italic;font-size:11px;text-decoration:none;display:inline-block;margin-top:8px;">→ Live scorecards</a>` : "");
 
   return `
-    <div class="${eventClass}">
+    <article class="event">
       <div class="event-header">
         <div>
-          <div class="event-title">${event.name === "Open Championship" ? "The Open" : event.name}</div>
-          <div style="font-size:11px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;">${event.month}</div>
+          <h3 class="event-name">${event.name === "Open Championship" ? "The Open" : event.name}</h3>
+          ${winnerLine ? `<div style="font-family:'Spectral',serif;font-style:italic;font-size:12px;color:var(--ink-mute);margin-top:2px;">${winnerLine}</div>` : ""}
         </div>
         ${tag}
       </div>
       <div class="event-teams">${rows}</div>
-      <div style="margin-top:10px;">${rosterToggle}</div>
+      ${rosterToggle}
       <div class="event-rosters">${rosters}</div>
-    </div>
+    </article>
   `;
 }
 
@@ -536,26 +616,22 @@ async function render() {
   const content = document.getElementById("content");
   try {
     const seasonData = await loadSeason();
-    status.textContent = "Loading live PGA Championship scores...";
+    status.textContent = "Pulling live PGA Championship scores…";
     const livePGA = await fetchLivePGA();
-
     const cumulative = computeCumulative(seasonData, livePGA);
     const cumHtml = renderCumulative(cumulative, livePGA);
     const eventsHtml = seasonData.events.map(e => renderEvent(e, livePGA, seasonData.owners)).join("");
-
     content.innerHTML = `
-      <h2 class="section-title">Cumulative Standings</h2>
+      <div class="section-label">Cumulative Standings <em>lowest wins</em></div>
       ${cumHtml}
-      <h2 class="section-title">Events</h2>
+      <div class="section-label">The Four Majors</div>
       ${eventsHtml}
     `;
-
     const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    const liveBit = livePGA ? `PGA Championship · ${livePGA.status}` : "PGA Championship · live data unavailable";
+    const liveBit = livePGA ? `PGA Championship · ${livePGA.status}` : "PGA Championship · feed unavailable";
     status.textContent = `${liveBit} · Updated ${now}`;
   } catch (e) {
     status.textContent = `Error: ${e.message}`;
-    content.innerHTML = `<div style="background:#fee;border:1px solid var(--red);padding:14px;border-radius:4px;color:var(--red);">${e.message}</div>`;
     console.error(e);
   }
 }
