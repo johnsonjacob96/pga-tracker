@@ -221,26 +221,29 @@
     display: block;
   }
   .cum .score-cell.pending { color: var(--ink-soft); }
-  .cum .score-cell.live {
-    color: var(--persimmon);
-    font-weight: 700;
-    position: relative;
-  }
+  .cum .score-cell.live { font-weight: 700; }
   .cum .total-cell {
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     font-size: 20px;
-    color: var(--ink);
     background: var(--paper-deep);
     border-left: 1px solid var(--rule);
   }
+  /* Par-relative score colors (golf scoreboard convention) */
+  .s-under { color: var(--persimmon); }
+  .s-even  { color: var(--ink); }
+  .s-over  { color: var(--forest-mid); }
   .cum tr.leader td { background: var(--forest); color: var(--paper); border-bottom-color: var(--forest); }
   .cum tr.leader .rank-cell { color: var(--old-gold); }
   .cum tr.leader .name { color: var(--paper); }
   .cum tr.leader .name-owner { color: var(--old-gold); }
-  .cum tr.leader .total-cell { background: var(--persimmon); color: var(--paper); font-size: 22px; }
-  .cum tr.leader .score-cell { color: var(--paper-deep); }
-  .cum tr.leader .score-cell.live { color: var(--persimmon-bright); }
+  .cum tr.leader .total-cell { background: var(--persimmon); font-size: 22px; }
+  .cum tr.leader .total-cell.s-under,
+  .cum tr.leader .total-cell.s-even,
+  .cum tr.leader .total-cell.s-over { color: var(--paper); }
+  .cum tr.leader .s-under { color: var(--persimmon-bright); }
+  .cum tr.leader .s-even  { color: var(--paper); }
+  .cum tr.leader .s-over  { color: var(--old-gold); }
 
   /* --- Events --- */
   .event {
@@ -302,6 +305,9 @@
   .et-name { font-weight: 400; color: var(--ink); }
   .et-name em { font-style: italic; color: var(--ink-mute); font-size: 11px; }
   .et-score { font-weight: 700; }
+  .et-score.s-under { color: var(--persimmon); }
+  .et-score.s-even  { color: var(--ink); }
+  .et-score.s-over  { color: var(--forest-mid); }
   .et.winner .et-name { color: var(--persimmon); font-weight: 700; }
   .et.winner .et-name::after { content: " ★"; color: var(--old-gold); }
 
@@ -431,6 +437,13 @@ const fmtScore = (n) => {
   return (n > 0 ? `+${n}` : `${n}`).replace("-", "−");
 };
 
+const scoreClass = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return "";
+  if (n < 0) return "s-under";
+  if (n === 0) return "s-even";
+  return "s-over";
+};
+
 function parseScore(raw) {
   if (raw == null) return null;
   if (typeof raw === "number") return raw;
@@ -523,7 +536,7 @@ function renderCumulative(rows, livePGA) {
       const s = r.scores[e];
       if (s === null || s === undefined) return '<td class="score-cell pending">—</td>';
       const live = e === "PGA Championship" && livePGA && !livePGA.complete;
-      return `<td class="score-cell${live ? " live" : ""}">${fmtScore(s)}</td>`;
+      return `<td class="score-cell ${scoreClass(s)}${live ? " live" : ""}">${fmtScore(s)}</td>`;
     }).join("");
     return `
       <tr${i === 0 ? ' class="leader"' : ""}>
@@ -533,7 +546,7 @@ function renderCumulative(rows, livePGA) {
           <span class="name-owner">${r.owner}</span>
         </td>
         ${scoreCells}
-        <td class="total-cell">${fmtScore(r.total)}</td>
+        <td class="total-cell ${scoreClass(r.total)}">${fmtScore(r.total)}</td>
       </tr>
     `;
   }).join("");
@@ -579,7 +592,7 @@ function renderEvent(event, livePGA, ownerMap) {
   const rows = teams.map((t, i) => `
     <div class="et${i === 0 ? " winner" : ""}">
       <span class="et-name">${t.teamName} <em>${t.owner}</em></span>
-      <span class="et-score">${fmtScore(t.score)}</span>
+      <span class="et-score ${scoreClass(t.score)}">${fmtScore(t.score)}</span>
     </div>
   `).join("");
 

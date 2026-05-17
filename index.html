@@ -303,12 +303,23 @@
     font-weight: 700;
     font-size: 36px;
     line-height: 1;
-    color: var(--ink);
     letter-spacing: -0.03em;
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
-  .team.leader .team-score { color: var(--persimmon-bright); }
+  /* Par-relative score colors (golf scoreboard convention) */
+  .s-under { color: var(--persimmon); }
+  .s-even  { color: var(--ink); }
+  .s-over  { color: var(--forest-mid); }
+  .team.leader .s-under { color: var(--persimmon-bright); }
+  .team.leader .s-even  { color: var(--paper); }
+  .team.leader .s-over  { color: var(--old-gold); }
+  .pl-score.s-under { color: var(--persimmon); }
+  .pl-score.s-even  { color: var(--ink-mute); }
+  .pl-score.s-over  { color: var(--forest-mid); }
+  .team.leader .pl-score.s-under { color: var(--persimmon-bright); }
+  .team.leader .pl-score.s-even  { color: var(--paper-deep); }
+  .team.leader .pl-score.s-over  { color: var(--old-gold); }
   .team-expand {
     color: var(--ink-soft);
     font-size: 10px;
@@ -670,6 +681,13 @@ const fmtScore = (n) => {
   return n > 0 ? `+${n}` : `${n}`;
 };
 
+const scoreClass = (n) => {
+  if (n === null || n === undefined || isNaN(n)) return "";
+  if (n < 0) return "s-under";
+  if (n === 0) return "s-even";
+  return "s-over";
+};
+
 const ordinal = (n) => {
   const s = n.toString().padStart(2, "0");
   return s;
@@ -908,10 +926,11 @@ function render(state) {
       else if (p.counting) cls += " counting";
       else cls += " bench";
       const sc = fmtScore(p.score);
-      return `<span class="${cls}">${short}<span class="pl-score">${sc}</span></span>`;
+      const sCls = p.madeCut ? scoreClass(p.score) : "";
+      return `<span class="${cls}">${short}<span class="pl-score ${sCls}">${sc}</span></span>`;
     }).join("");
     const penaltyHtml = team.penaltyCount > 0
-      ? Array(team.penaltyCount).fill(`<span class="pl penalty">Penalty<span class="pl-score">${fmtScore(penalty)}</span></span>`).join("")
+      ? Array(team.penaltyCount).fill(`<span class="pl penalty">Penalty<span class="pl-score ${scoreClass(penalty)}">${fmtScore(penalty)}</span></span>`).join("")
       : "";
     const scorecards = team.players.map(p => renderScorecard(p, pars)).join("");
     const winnerTag = team.winnerBonus ? `<span class="winner-tag">Winner −3</span>` : "";
@@ -925,7 +944,7 @@ function render(state) {
             <div class="team-eyebrow">${owner}<span class="team-expand">▶</span></div>
             <h2 class="team-name">${team.teamName}${winnerTag}</h2>
           </div>
-          <div class="team-score">${fmtScore(team.total).replace("-", "−")}</div>
+          <div class="team-score ${scoreClass(team.total)}">${fmtScore(team.total).replace("-", "−")}</div>
         </div>
         <div class="roster-line">${players}${penaltyHtml}</div>
         <div class="scorecards">
