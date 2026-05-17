@@ -563,25 +563,43 @@
 
   /* --- Mobile --- */
   @media (max-width: 700px) {
-    .mast-row { grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 0 8px; }
-    .mast-side { font-size: 10px; }
-    .mast-paper {
-      grid-column: 1 / -1;
-      font-size: 30px;
-      order: -1;
-      margin-bottom: 4px;
+    .masthead { padding: 10px 14px 6px; }
+    .mast-rule-double { height: 3px; }
+    .mast-row { grid-template-columns: 1fr; gap: 0; padding: 6px 0 4px; }
+    .mast-side { display: none; }
+    .mast-paper { font-size: 22px; line-height: 1; }
+    .event-bar { margin-top: 4px; }
+    .event-title { font-size: 12.5px; letter-spacing: 0.22em; }
+    .event-sub { font-size: 10px; margin-top: 3px; }
+    .status-bar {
+      padding: 5px 14px 6px;
+      font-size: 9px;
+      letter-spacing: 0.08em;
     }
-    .event-title { font-size: 18px; letter-spacing: 0.32em; }
-    .masthead { padding: 18px 14px 16px; }
-    .status-bar { padding: 6px 14px 12px; font-size: 10px; }
-    .team { padding: 14px 14px 12px; }
-    .team-grid { gap: 10px; grid-template-columns: auto 1fr auto; }
-    .team-rank { font-size: 22px; min-width: 30px; }
-    .team-name { font-size: 26px; }
-    .team-score { font-size: 28px; }
-    .team-eyebrow { font-size: 9px; }
-    .roster-line { font-size: 12.5px; }
-    main { padding: 12px 0 24px; }
+    .refresh-btn { padding: 3px 9px; font-size: 9px; letter-spacing: 0.15em; }
+    main { padding: 4px 0 20px; }
+    .team { padding: 8px 14px 9px; }
+    .team-grid { gap: 8px; align-items: center; grid-template-columns: auto 1fr auto; }
+    .team-rank { font-size: 14px; min-width: 20px; }
+    .team-eyebrow { font-size: 8px; letter-spacing: 0.28em; margin-bottom: 1px; }
+    .team-name { font-size: 19px; }
+    .team-score { font-size: 21px; }
+    .winner-tag { font-size: 7.5px; padding: 1px 5px; top: -5px; margin-left: 6px; }
+    .roster-line {
+      font-size: 10.5px;
+      line-height: 1.45;
+      gap: 1px 8px;
+      margin-top: 7px;
+      padding-top: 7px;
+    }
+    .pl-score { font-size: 9.5px; }
+    .scorecards { margin-top: 12px; padding-top: 12px; }
+    .scorecards-label { font-size: 9px; margin-bottom: 8px; }
+    .legend { padding: 12px 14px; font-size: 10px; line-height: 1.6; margin-top: 16px; }
+    .legend .hint { font-size: 9px; letter-spacing: 0.14em; margin-bottom: 4px; }
+    .legend span { margin: 0 2px; }
+    footer.bottom { padding: 12px 14px 22px; font-size: 9px; }
+    footer.bottom .colophon { font-size: 8px; }
   }
 </style>
 </head>
