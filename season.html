@@ -604,7 +604,12 @@ function renderEvent(event, livePGA, ownerMap) {
   } else {
     isFinal = true;
     teams = (event.teams || []).slice().sort((a, b) => a.score - b.score);
-    if (event.winner) winnerLine = `Winner — ${event.winner} <em>(picked by ${event.winnerPickedBy})</em>`;
+    if (event.winner) {
+      const pickedBy = event.winnerPickedBy
+        ? `picked by ${event.winnerPickedBy}`
+        : "not on any roster";
+      winnerLine = `Winner — ${event.winner} <em>(${pickedBy})</em>`;
+    }
   }
 
   const rows = teams.map((t, i) => `
@@ -642,13 +647,33 @@ function renderEvent(event, livePGA, ownerMap) {
   `;
 }
 
+function pgacIsLive(seasonData, today = new Date()) {
+  const pgac = (seasonData.events || []).find(e => e.name === "PGA Championship");
+  if (!pgac || !pgac.startDate || !pgac.endDate) return false;
+  if (pgac.complete) return false;
+  const start = new Date(pgac.startDate + "T00:00:00");
+  const end = new Date(pgac.endDate + "T23:59:59");
+  return today >= start && today <= end;
+}
+
+function findNextUpcoming(seasonData, today = new Date()) {
+  return (seasonData.events || []).find(e => {
+    if (!e.startDate || e.complete) return false;
+    return new Date(e.startDate + "T00:00:00") > today;
+  });
+}
+
 async function render() {
   const status = document.getElementById("status");
   const content = document.getElementById("content");
   try {
     const seasonData = await loadSeason();
-    status.textContent = "Pulling live PGA Championship scores…";
-    const livePGA = await fetchLivePGA();
+    const shouldFetchLive = pgacIsLive(seasonData);
+    let livePGA = null;
+    if (shouldFetchLive) {
+      status.textContent = "Pulling live PGA Championship scores…";
+      livePGA = await fetchLivePGA();
+    }
     const cumulative = computeCumulative(seasonData, livePGA);
     const cumHtml = renderCumulative(cumulative, livePGA);
     const eventsHtml = seasonData.events.map(e => renderEvent(e, livePGA, seasonData.owners)).join("");
@@ -659,16 +684,32 @@ async function render() {
       ${eventsHtml}
     `;
     const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    const liveBit = livePGA ? `PGA Championship · ${livePGA.status}` : "PGA Championship · feed unavailable";
-    status.textContent = `${liveBit} · Updated ${now}`;
+    let statusBit;
+    if (livePGA) {
+      statusBit = `PGA Championship · ${livePGA.status}`;
+    } else {
+      const next = findNextUpcoming(seasonData);
+      statusBit = next ? `Next: ${next.name === "Open Championship" ? "The Open" : next.name} · ${next.month}` : "All majors complete";
+    }
+    status.textContent = `${statusBit} · Updated ${now}`;
   } catch (e) {
     status.textContent = `Error: ${e.message}`;
     console.error(e);
   }
 }
 
-render();
-setInterval(render, 60000);
+// Poll every 60s only while the PGA Championship is live; otherwise this is a static page.
+let seasonPollTimer = null;
+async function bootstrap() {
+  await render();
+  try {
+    const s = await loadSeason();
+    if (pgacIsLive(s) && !seasonPollTimer) {
+      seasonPollTimer = setInterval(render, 60000);
+    }
+  } catch (_) { /* ignore */ }
+}
+bootstrap();
 </script>
 </body>
 </html>

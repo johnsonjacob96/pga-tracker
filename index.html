@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PGA Championship — Locks of the Day</title>
+<title>Locks of the Day · Majors Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -614,19 +614,19 @@
   <hr class="mast-rule-double">
   <div class="mast-row">
     <div class="mast-side">
-      <div class="mast-issue">Vol. 09 · No. 02</div>
-      Spring Major
+      <div class="mast-issue" id="mast-issue-left">Vol. 09</div>
+      <span id="mast-label-left">Majors Tracker</span>
     </div>
     <div class="mast-paper">Locks <em>of the</em> Day</div>
     <div class="mast-side right">
-      <div class="mast-issue">May 2026</div>
-      Live from the Field
+      <div class="mast-issue" id="mast-issue-right">2026 Season</div>
+      <span id="mast-label-right">Live from the Field</span>
     </div>
   </div>
   <hr class="mast-rule">
   <div class="event-bar">
-    <h1 class="event-title">PGA Championship</h1>
-    <div class="event-sub" id="event-sub"><span class="live-dot"></span>Live · Best Three Scores</div>
+    <h1 class="event-title" id="event-title">Loading…</h1>
+    <div class="event-sub" id="event-sub">&nbsp;</div>
   </div>
 </div>
 
@@ -638,7 +638,7 @@
 <main id="content"></main>
 
 <div class="legend">
-  <span class="hint">Tap any team for hole-by-hole scorecards</span>
+  <span class="hint" id="legend-hint">&nbsp;</span>
   <span>■ counting</span> ·
   <span><em>italic</em> bench</span> ·
   <span style="text-decoration:line-through;color:var(--crimson);">missed cut</span> ·
@@ -646,45 +646,75 @@
 </div>
 
 <footer class="bottom">
-  Auto-refreshes every sixty seconds
+  <span id="footer-note">&nbsp;</span>
   <span class="colophon">Source · ESPN PGA Scoreboard</span>
 </footer>
 
 <script>
-const TEAMS = {
-  Fern:  ["Scottie Scheffler", "Chris Gotterup", "Tyrrell Hatton", "Keegan Bradley", "Sungjae Im"],
-  Troop: ["Cameron Young", "Rickie Fowler", "J.J. Spaun", "Harris English", "Ben Griffin"],
-  Ram:   ["Jon Rahm", "Min Woo Lee", "Adam Scott", "Alex Fitzpatrick", "Maverick McNealy"],
-  Bean:  ["Rory McIlroy", "Russell Henley", "Viktor Hovland", "Shane Lowry", "Austin Smotherman"],
-  Money: ["Xander Schauffele", "Patrick Cantlay", "Jordan Spieth", "Sam Burns", "Hideki Matsuyama"],
-  Gary:  ["Bryson DeChambeau", "Justin Thomas", "Patrick Reed", "Sam Stevens", "Max Homa"],
-  Taco:  ["Ludvig Aberg", "Justin Rose", "Robert MacIntyre", "Sepp Straka", "Matt McCarty"],
-  Cyc:   ["Brooks Koepka", "Collin Morikawa", "Si Woo Kim", "Akshay Bhatia", "Gary Woodland"],
-  Mags:  ["Matt Fitzpatrick", "Tommy Fleetwood", "Nicolai Hojgaard", "Kristoffer Reitan", "Jason Day"]
+// TEAMS, OWNERS, SHORT_NAMES are populated from data/2026-season.json once a
+// focus event is picked. See loadSeason() and pickFocusEvent() below.
+let TEAMS = {};
+let OWNERS = {};
+let SHORT_NAMES = {};
+let FOCUS = null;   // { event, mode: "live" | "final" | "none", nextEvent, season }
+
+const SEASON_LABELS = { 1: "Spring Major", 2: "Spring Major", 3: "Summer Major", 4: "Summer Major" };
+const ORDINAL_VOL = (n) => `Vol. ${String(n).padStart(2, "0")}`;
+const MONTH_FROM_ISO = (iso) => {
+  const m = new Date(iso + "T12:00:00").toLocaleString("en-US", { month: "long", year: "numeric" });
+  return m;
 };
 
-const OWNERS = {
-  Fern: "Emery", Troop: "Austin", Ram: "Miles", Bean: "Jacob",
-  Money: "Kellen", Gary: "Garrett", Taco: "Jared", Cyc: "Dylan", Mags: "Alex"
-};
+async function loadSeason() {
+  const res = await fetch("./data/2026-season.json?v=" + Date.now());
+  if (!res.ok) throw new Error("Could not load season data");
+  return res.json();
+}
 
-const SHORT_NAMES = {
-  "Scottie Scheffler": "Scheffler", "Chris Gotterup": "Gotterup", "Tyrrell Hatton": "Hatton",
-  "Keegan Bradley": "K. Bradley", "Sungjae Im": "S. Im", "Cameron Young": "C. Young",
-  "Rickie Fowler": "Fowler", "J.J. Spaun": "Spaun", "Harris English": "English",
-  "Ben Griffin": "B. Griffin", "Jon Rahm": "Rahm", "Min Woo Lee": "M.W. Lee",
-  "Adam Scott": "A. Scott", "Alex Fitzpatrick": "A. Fitz", "Maverick McNealy": "McNealy",
-  "Rory McIlroy": "Rory", "Russell Henley": "Henley", "Viktor Hovland": "Hovland",
-  "Shane Lowry": "Lowry", "Austin Smotherman": "Smotherman", "Xander Schauffele": "Xander",
-  "Patrick Cantlay": "Cantlay", "Jordan Spieth": "Spieth", "Sam Burns": "Burns",
-  "Hideki Matsuyama": "Hideki", "Bryson DeChambeau": "Bryson", "Justin Thomas": "JT",
-  "Patrick Reed": "Reed", "Sam Stevens": "Stevens", "Max Homa": "Homa",
-  "Ludvig Aberg": "Åberg", "Justin Rose": "Rose", "Robert MacIntyre": "MacIntyre",
-  "Sepp Straka": "Straka", "Matt McCarty": "McCarty", "Brooks Koepka": "Brooks",
-  "Collin Morikawa": "Morikawa", "Si Woo Kim": "S.W. Kim", "Akshay Bhatia": "Bhatia",
-  "Gary Woodland": "Woodland", "Matt Fitzpatrick": "M. Fitz", "Tommy Fleetwood": "Fleetwood",
-  "Nicolai Hojgaard": "Højgaard", "Kristoffer Reitan": "Reitan", "Jason Day": "Day"
-};
+function pickFocusEvent(season, today = new Date()) {
+  const events = (season.events || []).filter(e => e.startDate && e.endDate);
+  const inWindow = (e) => {
+    const start = new Date(e.startDate + "T00:00:00");
+    const end = new Date(e.endDate + "T23:59:59");
+    return today >= start && today <= end;
+  };
+  // Live: today inside an event window AND a roster has been drafted
+  const live = events.find(e => inWindow(e) && e.roster);
+  if (live) {
+    const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(live.endDate + "T23:59:59"));
+    return { event: live, mode: "live", nextEvent: next || null, season };
+  }
+  // Pending-draft: today is inside an event window but no roster yet
+  const pendingDraft = events.find(e => inWindow(e) && !e.roster);
+  if (pendingDraft) {
+    return { event: pendingDraft, mode: "pending", nextEvent: null, season };
+  }
+  // Final: most recently ended event with both roster and snapshot
+  const past = events
+    .filter(e => new Date(e.endDate + "T23:59:59") < today && e.roster && e.snapshot)
+    .sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+  if (past.length) {
+    const last = past[0];
+    const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(last.endDate + "T23:59:59") && !e.complete);
+    return { event: last, mode: "final", nextEvent: next || null, season };
+  }
+  // Nothing to show — find the next upcoming
+  const upcoming = events.find(e => new Date(e.startDate + "T00:00:00") > today);
+  return { event: null, mode: "none", nextEvent: upcoming || null, season };
+}
+
+function hydrateFromFocus(focus) {
+  const ev = focus.event;
+  if (!ev || !ev.roster) {
+    TEAMS = {}; SHORT_NAMES = {};
+  } else {
+    TEAMS = ev.roster;
+    SHORT_NAMES = ev.shortNames || {};
+  }
+  OWNERS = {};
+  // season.owners is owner→team; flip to team→owner for the existing render code
+  for (const [owner, team] of Object.entries(focus.season.owners || {})) OWNERS[team] = owner;
+}
 
 const normalize = (s) =>
   s.normalize("NFD")
@@ -722,13 +752,40 @@ function parseScore(raw) {
 }
 
 async function fetchScores() {
+  if (!FOCUS || !FOCUS.event) throw new Error("No focus event");
+
+  // Final mode: hydrate from the snapshot baked into season.json — no ESPN call.
+  if (FOCUS.mode === "final") {
+    const ev = FOCUS.event;
+    const snap = ev.snapshot || {};
+    // snapshot.players uses normalized keys → { name, score, madeCut }.
+    // The renderer expects each player to have a linescores array (empty is fine).
+    const players = {};
+    for (const [k, p] of Object.entries(snap.players || {})) {
+      players[k] = { ...p, linescores: [] };
+    }
+    return {
+      event: ev.name,
+      status: { type: { description: "Final", shortDetail: "Final", completed: true } },
+      players,
+      pars: snap.pars || Array(18).fill(4),
+      completed: true,
+      winner: ev.winner || null,
+      worstMadeCut: snap.worstMadeCut    // pinned so penalty math matches the live finish
+    };
+  }
+
+  // Live mode: hit ESPN's live scoreboard and pick the focus event by exact name.
+  // No fallback to data.events[0] — better to surface an error than render the
+  // wrong tournament (which is the bug that prompted this refactor).
   const url = "https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard";
   const res = await fetch(url);
   if (!res.ok) throw new Error(`ESPN returned ${res.status}`);
   const data = await res.json();
 
-  const event = (data.events || []).find(e => /PGA Championship/i.test(e.name)) || data.events?.[0];
-  if (!event) throw new Error("No event found in ESPN response");
+  const focusName = FOCUS.event.name;
+  const event = (data.events || []).find(e => e.name && e.name.toLowerCase().includes(focusName.toLowerCase()));
+  if (!event) throw new Error(`ESPN scoreboard did not return "${focusName}"`);
 
   const competition = event.competitions?.[0];
   if (!competition) throw new Error("No competition data");
@@ -787,10 +844,17 @@ function derivePars(competitors) {
 
 function computeStandings(data) {
   const { players } = data;
-  const madeCutScores = Object.values(players)
-    .filter(p => p.madeCut && p.score !== null)
-    .map(p => p.score);
-  const worstMadeCut = madeCutScores.length ? Math.max(...madeCutScores) : 0;
+  // In final mode the snapshot only carries roster players, so the worst-made-cut
+  // computed from this subset is wrong. Honor an explicit data.worstMadeCut override.
+  let worstMadeCut;
+  if (typeof data.worstMadeCut === "number") {
+    worstMadeCut = data.worstMadeCut;
+  } else {
+    const madeCutScores = Object.values(players)
+      .filter(p => p.madeCut && p.score !== null)
+      .map(p => p.score);
+    worstMadeCut = madeCutScores.length ? Math.max(...madeCutScores) : 0;
+  }
   const penalty = worstMadeCut + 2;
 
   const teams = Object.entries(TEAMS).map(([teamName, roster]) => {
@@ -950,25 +1014,27 @@ function render(state) {
     const penaltyHtml = team.penaltyCount > 0
       ? Array(team.penaltyCount).fill(`<span class="pl penalty">Penalty<span class="pl-score ${scoreClass(penalty)}">${fmtScore(penalty)}</span></span>`).join("")
       : "";
-    const scorecards = team.players.map(p => renderScorecard(p, pars)).join("");
+    const hasScorecards = FOCUS?.mode !== "final";
+    const scorecards = hasScorecards ? team.players.map(p => renderScorecard(p, pars)).join("") : "";
     const winnerTag = team.winnerBonus ? `<span class="winner-tag">Winner −3</span>` : "";
     const owner = OWNERS[team.teamName] || "";
+    const expandChevron = hasScorecards ? `<span class="team-expand">▶</span>` : "";
+    const scorecardsBlock = hasScorecards
+      ? `<div class="scorecards"><div class="scorecards-label">Hole-by-Hole</div>${scorecards}</div>`
+      : "";
 
     return `
       <article class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" data-team="${team.teamName}">
         <div class="team-grid">
           <div class="team-rank">${rank}</div>
           <div class="team-identity">
-            <div class="team-eyebrow">${owner}<span class="team-expand">▶</span></div>
+            <div class="team-eyebrow">${owner}${expandChevron}</div>
             <h2 class="team-name">${team.teamName}${winnerTag}</h2>
           </div>
           <div class="team-score ${scoreClass(team.total)}">${fmtScore(team.total).replace("-", "−")}</div>
         </div>
         <div class="roster-line">${players}${penaltyHtml}</div>
-        <div class="scorecards">
-          <div class="scorecards-label">Hole-by-Hole</div>
-          ${scorecards}
-        </div>
+        ${scorecardsBlock}
       </article>
     `;
   }).join("");
@@ -982,22 +1048,102 @@ document.getElementById("content").addEventListener("click", (e) => {
   if (teamName) toggleTeam(teamName);
 });
 
+let pollTimer = null;
+
+function updateMasthead(focus) {
+  const ev = focus.event;
+  const title = document.getElementById("event-title");
+  const sub = document.getElementById("event-sub");
+  const left = document.getElementById("mast-label-left");
+  const right = document.getElementById("mast-issue-right");
+  const vol = document.getElementById("mast-issue-left");
+  const rightLabel = document.getElementById("mast-label-right");
+  const events = focus.season.events || [];
+
+  if (ev) {
+    title.textContent = ev.name === "Open Championship" ? "The Open" : ev.name;
+    document.title = `${ev.name} — Locks of the Day`;
+    const idx = events.findIndex(e => e.name === ev.name);
+    if (vol) vol.textContent = `Vol. 09 · No. 0${idx + 1}`;
+    if (left) left.textContent = SEASON_LABELS[idx + 1] || "Major";
+    if (right) right.textContent = ev.startDate ? MONTH_FROM_ISO(ev.startDate) : "2026 Season";
+    if (rightLabel) {
+      rightLabel.textContent = focus.mode === "live" ? "Live from the Field"
+        : focus.mode === "pending" ? "Draft Pending"
+        : "Final Edition";
+    }
+  } else {
+    title.textContent = "Between Majors";
+    document.title = "Locks of the Day · Majors Tracker";
+    if (rightLabel) rightLabel.textContent = "Off-Season";
+  }
+
+  if (focus.mode === "none") {
+    const next = focus.nextEvent;
+    sub.innerHTML = next
+      ? `Next major: <strong>${next.name === "Open Championship" ? "The Open" : next.name}</strong> · ${formatDateRange(next)}`
+      : "All majors complete — see /history.html";
+  }
+}
+
+function formatDateRange(ev) {
+  if (!ev.startDate || !ev.endDate) return ev.month || "";
+  const fmt = (iso) => new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  return `${fmt(ev.startDate)}–${fmt(ev.endDate).split(" ").pop()}`;
+}
+
 async function refresh() {
   const status = document.getElementById("status");
   const sub = document.getElementById("event-sub");
   const btn = document.getElementById("refresh-btn");
+  const footerNote = document.getElementById("footer-note");
   btn.disabled = true;
-  status.textContent = "Refreshing…";
+
+  if (!FOCUS || !FOCUS.event) {
+    status.textContent = "No major in window.";
+    document.getElementById("content").innerHTML = "";
+    if (footerNote) footerNote.textContent = "Idle";
+    btn.disabled = false;
+    return;
+  }
+
+  if (FOCUS.mode === "pending") {
+    status.textContent = `${FOCUS.event.name} is in progress — rosters not yet posted.`;
+    document.getElementById("content").innerHTML = `<div style="padding: 30px 14px; text-align: center; font-family: 'Spectral', serif; font-style: italic; color: var(--ink-mute);">Tournament is live but the friend-group draft hasn't been entered into <code>data/2026-season.json</code> yet. Once Jacob adds a roster, this page goes live automatically — see <a href="./season.html">season standings</a> for the most recent completed major.</div>`;
+    sub.innerHTML = `In progress · ${formatDateRange(FOCUS.event)} · Rosters TBD`;
+    if (footerNote) footerNote.textContent = "Waiting on draft entry";
+    btn.disabled = false;
+    return;
+  }
+
+  status.textContent = FOCUS.mode === "live" ? "Refreshing…" : "Loading final results…";
   try {
     const data = await fetchScores();
     const state = computeStandings(data);
     render(state);
     const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     const eventStatus = data.status?.type?.description || data.status?.type?.shortDetail || "";
-    const winnerBit = state.winner ? ` · Winner: ${state.winner} (−3)` : "";
-    status.textContent = `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} · Updated ${now}`;
-    const live = !data.completed;
-    sub.innerHTML = `${live ? '<span class="live-dot"></span>' : ""}${eventStatus} · Best Three Scores`;
+    const winnerName = state.winner || FOCUS.event.winner;
+    const winnerOnTeam = winnerName && Object.values(TEAMS).some(roster => roster.some(rn => normalize(rn) === normalize(winnerName)));
+    const winnerBit = winnerName
+      ? ` · Winner: ${winnerName}${winnerOnTeam ? " (−3 bonus paid)" : " (not on any roster)"}`
+      : "";
+    const legendHint = document.getElementById("legend-hint");
+    if (FOCUS.mode === "live") {
+      status.textContent = `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} · Updated ${now}`;
+      sub.innerHTML = `<span class="live-dot"></span>${eventStatus} · Best Three Scores`;
+      if (footerNote) footerNote.textContent = "Auto-refreshes every sixty seconds";
+      if (legendHint) legendHint.textContent = "Tap any team for hole-by-hole scorecards";
+    } else {
+      // Final mode
+      status.textContent = `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit}`;
+      const nextBit = FOCUS.nextEvent
+        ? ` · Next: ${FOCUS.nextEvent.name === "Open Championship" ? "The Open" : FOCUS.nextEvent.name} ${formatDateRange(FOCUS.nextEvent)}`
+        : "";
+      sub.innerHTML = `Final${nextBit}`;
+      if (footerNote) footerNote.textContent = "Final results — see /season.html for cumulative standings";
+      if (legendHint) legendHint.textContent = "";
+    }
   } catch (e) {
     status.textContent = `Error: ${e.message}`;
     console.error(e);
@@ -1006,8 +1152,23 @@ async function refresh() {
   }
 }
 
-refresh();
-setInterval(refresh, 60000);
+async function bootstrap() {
+  try {
+    const season = await loadSeason();
+    FOCUS = pickFocusEvent(season);
+    hydrateFromFocus(FOCUS);
+    updateMasthead(FOCUS);
+    await refresh();
+    if (FOCUS.mode === "live") {
+      pollTimer = setInterval(refresh, 60000);
+    }
+  } catch (e) {
+    document.getElementById("status").textContent = `Bootstrap error: ${e.message}`;
+    console.error(e);
+  }
+}
+
+bootstrap();
 </script>
 </body>
 </html>
