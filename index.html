@@ -604,10 +604,11 @@
     opacity: 1;
   }
 
-  /* Roster reveal — collapsed by default, revealed when row is expanded.
-     Keeps the leaderboard compact and broadcast-style until clicked. */
+  /* Roster line — face-up by default so the 5 players + their scores
+     are always visible. Click-to-expand still toggles the hole-by-hole
+     scorecards panel below. */
   body.theme-usopen .roster-line {
-    display: none;
+    display: flex;
     margin-top: 0;
     padding: 12px 18px 16px 110px;
     border-top: 1px dashed #d6d0bd;
@@ -618,7 +619,6 @@
     line-height: 1.55;
     gap: 4px 18px;
   }
-  body.theme-usopen .team.expanded .roster-line { display: flex; }
   body.theme-usopen .team.leader .roster-line {
     background: rgba(255, 244, 209, 0.6);
     border-top-color: rgba(184,140,60,0.35);
@@ -764,12 +764,27 @@
   @media (max-width: 720px) {
     body.theme-usopen .usga-rail-inner {
       grid-template-columns: auto 1fr auto;
-      gap: 10px 12px;
-      padding: 10px 14px;
+      gap: 8px 10px;
+      padding: 9px 12px;
     }
-    body.theme-usopen .usga-wordmark { height: 30px; }
-    body.theme-usopen .usga-rail-center { display: none; }
-    body.theme-usopen .usga-status-pill { font-size: 9px; padding: 5px 9px; letter-spacing: 0.16em; gap: 6px; }
+    body.theme-usopen .usga-wordmark { height: 26px; }
+    body.theme-usopen .usga-rail-center { min-width: 0; }
+    body.theme-usopen .usga-rail-eyebrow {
+      font-size: 7.5px;
+      letter-spacing: 0.26em;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    body.theme-usopen .usga-rail-title {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    body.theme-usopen .usga-status-pill { font-size: 8.5px; padding: 4px 8px; letter-spacing: 0.14em; gap: 5px; }
     body.theme-usopen .usga-subrail-inner {
       padding: 7px 12px;
       gap: 6px 12px;
