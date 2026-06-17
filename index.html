@@ -436,7 +436,7 @@
   .lb-colhead { display: none; }
   body.theme-usopen .lb-colhead {
     display: grid;
-    grid-template-columns: 56px 1fr 84px 90px;
+    grid-template-columns: 56px 1fr 90px;
     align-items: center;
     background: var(--usga-navy);
     color: #fff;
@@ -451,7 +451,6 @@
   }
   body.theme-usopen .lb-colhead .col-pos { text-align: center; color: rgba(255,255,255,0.62); }
   body.theme-usopen .lb-colhead .col-team { padding-left: 12px; }
-  body.theme-usopen .lb-colhead .col-thru { text-align: center; color: rgba(255,255,255,0.62); }
   body.theme-usopen .lb-colhead .col-total { text-align: right; }
 
   /* ---------------------------------------------------------------------
@@ -484,7 +483,7 @@
 
   /* Row layout matches the column-header grid */
   body.theme-usopen .team-grid {
-    grid-template-columns: 56px 1fr 84px 90px;
+    grid-template-columns: 56px 1fr 90px;
     align-items: center;
     gap: 0;
     padding: 16px 18px;
@@ -546,23 +545,6 @@
     font-weight: 500;
     color: var(--usga-ribbon);
   }
-
-  /* THRU column: shows holes played / status. Injected by renderer below
-     the team-identity in the team-grid when theme-usopen is on. */
-  body.theme-usopen .team-thru {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: #5a5345;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-  }
-  body.theme-usopen .team-thru.tee {
-    color: var(--usga-ribbon);
-    font-weight: 700;
-  }
-  body.theme-usopen .team.leader .team-thru { color: #6a5018; font-weight: 700; }
 
   /* TOTAL column — big tabular team score */
   body.theme-usopen .team-score {
@@ -796,20 +778,19 @@
     body.theme-usopen .refresh-btn { padding: 4px 10px; font-size: 9px; letter-spacing: 0.16em; }
 
     body.theme-usopen .lb-colhead {
-      grid-template-columns: 34px 1fr 48px 60px;
+      grid-template-columns: 34px 1fr 60px;
       padding: 6px 10px;
       font-size: 8px;
       letter-spacing: 0.16em;
     }
     body.theme-usopen .team-grid {
-      grid-template-columns: 34px 1fr 48px 60px;
+      grid-template-columns: 34px 1fr 60px;
       padding: 6px 10px;
     }
     body.theme-usopen .team-rank { width: 24px; height: 24px; font-size: 11px; }
     body.theme-usopen .team-identity { padding-left: 8px; }
     body.theme-usopen .team-eyebrow { font-size: 7.5px; letter-spacing: 0.2em; margin-bottom: 1px; }
     body.theme-usopen .team-name { font-size: 15px; line-height: 1.1; }
-    body.theme-usopen .team-thru { font-size: 10px; }
     body.theme-usopen .team-score { font-size: 18px; }
     body.theme-usopen .team.leader .team-score { font-size: 20px; }
     body.theme-usopen .roster-line {
@@ -1729,27 +1710,11 @@ function render(state) {
   const content = document.getElementById("content");
   const usopen = document.body.classList.contains("theme-usopen");
 
-  // Compute a team THRU/status indicator for the broadcast leaderboard column.
-  // Logic:
-  //  - if every counting player has 4 rounds in linescores → "F" (final)
-  //  - if no rounds at all (pre-tournament) → "TEE" with red tint
-  //  - otherwise, average rounds played across counting players → "Rn"
-  const teamThru = (team) => {
-    const counting = team.players.filter(p => p.counting && p.madeCut);
-    if (counting.length === 0) return { txt: "—", cls: "" };
-    const rounds = counting.map(p => (p.linescores || []).length);
-    const maxR = Math.max(...rounds);
-    if (maxR === 0) return { txt: "THU", cls: "tee" };
-    if (maxR >= 4 && rounds.every(r => r >= 4)) return { txt: "F", cls: "" };
-    return { txt: "R" + maxR, cls: "" };
-  };
-
   // Column header bar — only meaningful in the championship theme.
   const colhead = usopen
     ? `<div class="lb-colhead" role="row">
          <span class="col-pos">POS</span>
          <span class="col-team">TEAM</span>
-         <span class="col-thru">THRU</span>
          <span class="col-total">TOTAL</span>
        </div>`
     : "";
@@ -1780,11 +1745,6 @@ function render(state) {
     const scorecardsBlock = hasScorecards
       ? `<div class="scorecards"><div class="scorecards-label">Hole-by-Hole</div>${scorecards}</div>`
       : "";
-    const thru = teamThru(team);
-    const thruCell = usopen
-      ? `<div class="team-thru ${thru.cls}">${thru.txt}</div>`
-      : "";
-
     return `
       <article class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" data-team="${team.teamName}">
         <div class="team-grid">
@@ -1793,7 +1753,6 @@ function render(state) {
             <div class="team-eyebrow">${owner}${expandChevron}</div>
             <h2 class="team-name">${team.teamName}${winnerTag}</h2>
           </div>
-          ${thruCell}
           <div class="team-score ${scoreClass(team.total)}">${fmtScore(team.total).replace("-", "−")}</div>
         </div>
         <div class="roster-line">${players}${penaltyHtml}</div>
