@@ -25,6 +25,27 @@
     --old-gold:     #b08840;
     --crimson:      #8c1c1c;
   }
+  /* U.S. Open championship theme — activated when focus event is the U.S. Open.
+     Swaps the masthead's "Locks of the Day" identity to a USGA-style championship
+     banner with the cream paper base intact, navy + red + champagne palette. */
+  body.theme-usopen {
+    --paper:        #efe9da;
+    --paper-warm:   #e8dfc7;
+    --paper-deep:   #d9ccab;
+    --rule:         #bfb091;
+    --rule-soft:    #d3c5a4;
+    --forest:       #0a2240;     /* USGA deep navy replaces forest */
+    --forest-mid:   #15355f;
+    --forest-soft:  #2a4d7a;
+    --persimmon:    #ba0c2f;     /* USGA red replaces persimmon */
+    --persimmon-bright: #d81e3f;
+    --old-gold:     #a8843a;     /* champagne (trophy) */
+    --crimson:      #8a1228;
+    --usga-ribbon:  #ba0c2f;
+    --usga-navy:    #0a2240;
+    --usga-gold:    #b88c3c;
+    --usga-cream:   #f5edd8;
+  }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
@@ -170,6 +191,162 @@
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.45; transform: scale(0.85); }
+  }
+
+  /* --- U.S. Open championship banner (theme-usopen only) --- */
+  .champ-banner { display: none; }
+  body.theme-usopen .champ-banner {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 30px;
+    margin: 22px auto 0;
+    padding: 22px 28px;
+    background:
+      linear-gradient(180deg, rgba(10,34,64,0.97) 0%, rgba(21,53,95,0.97) 100%);
+    color: var(--usga-cream);
+    position: relative;
+    border-top: 3px double var(--usga-gold);
+    border-bottom: 3px double var(--usga-gold);
+    overflow: hidden;
+  }
+  body.theme-usopen .champ-banner::before,
+  body.theme-usopen .champ-banner::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--usga-ribbon);
+  }
+  body.theme-usopen .champ-banner::before { top: 6px; }
+  body.theme-usopen .champ-banner::after  { bottom: 6px; }
+
+  .champ-shield { width: 96px; height: 110px; flex-shrink: 0; }
+  .champ-titleblock { text-align: center; }
+  .champ-overline {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--usga-gold);
+    margin-bottom: 8px;
+  }
+  .champ-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 38px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--usga-cream);
+    margin: 0;
+    font-variation-settings: "opsz" 144;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+  }
+  .champ-title em {
+    font-style: italic;
+    color: var(--usga-gold);
+    font-weight: 700;
+  }
+  .champ-venue {
+    font-family: 'Spectral', serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+    margin-top: 10px;
+    opacity: 0.92;
+  }
+  .champ-venue .ribbon-dot {
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--usga-ribbon);
+    margin: 0 8px 2px;
+    vertical-align: middle;
+  }
+  .champ-meta {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 14px;
+    row-gap: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--paper-deep);
+  }
+  .champ-meta dt {
+    color: var(--usga-gold);
+    font-weight: 400;
+    opacity: 0.85;
+  }
+  .champ-meta dd {
+    color: var(--usga-cream);
+    font-weight: 700;
+    margin: 0;
+    text-align: right;
+  }
+
+  /* Hide the secondary event-bar title when the championship banner is showing —
+     the banner carries the full identity. Keep event-sub for live status. */
+  body.theme-usopen .event-title { display: none; }
+  body.theme-usopen .event-bar { margin-top: 14px; }
+  body.theme-usopen .event-sub {
+    color: var(--ink);
+    font-style: normal;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+  body.theme-usopen .event-sub .live-dot { background: var(--usga-ribbon); }
+
+  /* Tweaks so the championship aesthetic carries through the rest of the page */
+  body.theme-usopen nav.topnav { background: var(--usga-navy); }
+  body.theme-usopen nav.topnav a + a { border-left-color: rgba(184,140,60,0.35); }
+  body.theme-usopen nav.topnav a:hover,
+  body.theme-usopen nav.topnav a.active { color: var(--usga-gold); }
+  body.theme-usopen nav.topnav a.active::after { background: var(--usga-ribbon); }
+  body.theme-usopen .mast-paper em { color: var(--usga-ribbon); }
+  body.theme-usopen .refresh-btn:hover { background: var(--usga-navy); color: var(--usga-cream); }
+  body.theme-usopen .team.leader .team-rank,
+  body.theme-usopen .team.leader .team-eyebrow { color: var(--usga-gold); }
+
+  @media (max-width: 720px) {
+    body.theme-usopen .champ-banner {
+      grid-template-columns: auto 1fr;
+      grid-template-areas:
+        "shield title"
+        "meta meta";
+      gap: 14px;
+      padding: 16px 16px 14px;
+      margin-top: 14px;
+    }
+    body.theme-usopen .champ-shield {
+      grid-area: shield;
+      width: 64px; height: 74px;
+    }
+    body.theme-usopen .champ-titleblock { grid-area: title; text-align: left; }
+    body.theme-usopen .champ-overline { font-size: 10px; margin-bottom: 4px; letter-spacing: 0.14em; }
+    body.theme-usopen .champ-title { font-size: 22px; letter-spacing: 0.02em; }
+    body.theme-usopen .champ-venue { font-size: 11.5px; margin-top: 5px; }
+    body.theme-usopen .champ-venue .ribbon-dot { margin: 0 5px 2px; }
+    body.theme-usopen .champ-meta {
+      grid-area: meta;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 8px;
+      row-gap: 2px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(184,140,60,0.3);
+      margin-top: 4px;
+      font-size: 9px;
+    }
+    body.theme-usopen .champ-meta dd { text-align: left; margin-top: 1px; }
+    body.theme-usopen .champ-meta dt { font-size: 8px; }
   }
 
   /* --- Status / refresh bar --- */
@@ -624,6 +801,61 @@
     </div>
   </div>
   <hr class="mast-rule">
+
+  <div class="champ-banner" aria-label="U.S. Open Championship">
+    <svg class="champ-shield" viewBox="0 0 96 110" aria-hidden="true">
+      <!-- Heater shield outline with gold double border on navy field -->
+      <defs>
+        <clipPath id="shieldClip">
+          <path d="M48 4 L88 14 L88 56 C88 82 70 100 48 106 C26 100 8 82 8 56 L8 14 Z"/>
+        </clipPath>
+      </defs>
+      <path d="M48 4 L88 14 L88 56 C88 82 70 100 48 106 C26 100 8 82 8 56 L8 14 Z"
+            fill="#0a2240" stroke="#b88c3c" stroke-width="2.5"/>
+      <path d="M48 9 L83 18 L83 56 C83 79 67 96 48 101 C29 96 13 79 13 56 L13 18 Z"
+            fill="none" stroke="#b88c3c" stroke-width="1"/>
+      <!-- Top red banner -->
+      <rect x="13" y="22" width="70" height="14" fill="#ba0c2f" clip-path="url(#shieldClip)"/>
+      <text x="48" y="33" text-anchor="middle"
+            font-family="Fraunces, serif" font-weight="700"
+            font-size="11" letter-spacing="2" fill="#f5edd8">U.S. OPEN</text>
+      <!-- Crossed flagsticks -->
+      <g stroke="#b88c3c" stroke-width="1.6" stroke-linecap="round" fill="none">
+        <line x1="30" y1="78" x2="48" y2="46"/>
+        <line x1="66" y1="78" x2="48" y2="46"/>
+      </g>
+      <!-- Flag on left stick -->
+      <path d="M30 60 L42 60 L38 65 L42 70 L30 70 Z" fill="#ba0c2f"/>
+      <!-- Flag on right stick (offset other direction) -->
+      <path d="M66 60 L54 60 L58 65 L54 70 L66 70 Z" fill="#b88c3c"/>
+      <!-- Hole cup at base -->
+      <ellipse cx="48" cy="80" rx="14" ry="3.5" fill="#15355f" stroke="#b88c3c" stroke-width="0.8"/>
+      <!-- Year arc -->
+      <text x="48" y="96" text-anchor="middle"
+            font-family="Fraunces, serif" font-weight="700"
+            font-size="9" letter-spacing="3" fill="#b88c3c">2026</text>
+    </svg>
+
+    <div class="champ-titleblock">
+      <div class="champ-overline">The One Hundred Twenty-Sixth</div>
+      <h2 class="champ-title">U<em>.</em>S<em>.</em> Open Championship</h2>
+      <div class="champ-venue">
+        Shinnecock Hills Golf Club
+        <span class="ribbon-dot"></span>
+        Southampton, New York
+      </div>
+    </div>
+
+    <dl class="champ-meta">
+      <dt>Course</dt><dd>Shinnecock</dd>
+      <dt>Architect</dt><dd>W. Flynn</dd>
+      <dt>Par</dt><dd>70</dd>
+      <dt>Yardage</dt><dd>7,488</dd>
+      <dt>First Tee</dt><dd>Thu 6:45 AM</dd>
+      <dt>Network</dt><dd>NBC · USA</dd>
+    </dl>
+  </div>
+
   <div class="event-bar">
     <h1 class="event-title" id="event-title">Loading…</h1>
     <div class="event-sub" id="event-sub">&nbsp;</div>
@@ -1074,6 +1306,10 @@ function updateMasthead(focus) {
   const vol = document.getElementById("mast-issue-left");
   const rightLabel = document.getElementById("mast-label-right");
   const events = focus.season.events || [];
+
+  // Per-major theme. Currently only the U.S. Open has a championship treatment;
+  // future majors can opt in by adding their own body.theme-* class.
+  document.body.classList.toggle("theme-usopen", !!ev && ev.name === "US Open");
 
   if (ev) {
     title.textContent = ev.name === "Open Championship" ? "The Open" : ev.name;
