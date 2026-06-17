@@ -6,7 +6,7 @@
 <title>Locks of the Day · Majors Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --paper:        #f1ebdd;
@@ -221,66 +221,76 @@
   body.theme-usopen .champ-banner::before { top: 6px; }
   body.theme-usopen .champ-banner::after  { bottom: 6px; }
 
-  .champ-shield { width: 96px; height: 110px; flex-shrink: 0; }
+  .champ-logo {
+    width: 132px;
+    height: 132px;
+    flex-shrink: 0;
+    background: var(--usga-cream);
+    border-radius: 50%;
+    padding: 10px;
+    box-shadow:
+      0 0 0 2px var(--usga-gold),
+      0 0 0 4px rgba(10,34,64,0.6),
+      0 0 0 6px var(--usga-gold);
+    object-fit: contain;
+  }
   .champ-titleblock { text-align: center; }
   .champ-overline {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 13px;
-    letter-spacing: 0.16em;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-weight: 600;
+    font-size: 10.5px;
+    letter-spacing: 0.34em;
     text-transform: uppercase;
     color: var(--usga-gold);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
   .champ-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 900;
-    font-size: 38px;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-weight: 800;
+    font-size: 36px;
     letter-spacing: 0.04em;
     line-height: 1;
     color: var(--usga-cream);
     margin: 0;
-    font-variation-settings: "opsz" 144;
-    text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    font-feature-settings: "ss01", "cv11";
   }
-  .champ-title em {
-    font-style: italic;
-    color: var(--usga-gold);
-    font-weight: 700;
+  .champ-title .accent {
+    color: var(--usga-ribbon);
+    font-weight: 900;
   }
-  .champ-venue {
-    font-family: 'Spectral', serif;
-    font-style: italic;
-    font-size: 14px;
-    letter-spacing: 0.02em;
-    color: var(--paper);
-    margin-top: 10px;
-    opacity: 0.92;
+  .champ-dateline {
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--usga-cream);
+    margin-top: 14px;
+    opacity: 0.95;
   }
-  .champ-venue .ribbon-dot {
+  .champ-dateline .pipe {
     display: inline-block;
-    width: 4px; height: 4px;
-    border-radius: 50%;
-    background: var(--usga-ribbon);
-    margin: 0 8px 2px;
+    width: 1px; height: 11px;
+    background: var(--usga-gold);
+    margin: 0 12px -1px;
     vertical-align: middle;
   }
   .champ-meta {
     display: grid;
     grid-template-columns: auto auto;
-    column-gap: 14px;
-    row-gap: 4px;
-    font-family: 'JetBrains Mono', monospace;
+    column-gap: 16px;
+    row-gap: 5px;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
     font-size: 10px;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     text-align: left;
     color: var(--paper-deep);
   }
   .champ-meta dt {
     color: var(--usga-gold);
-    font-weight: 400;
+    font-weight: 500;
     opacity: 0.85;
   }
   .champ-meta dd {
@@ -288,6 +298,8 @@
     font-weight: 700;
     margin: 0;
     text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
   }
 
   /* Hide the secondary event-bar title when the championship banner is showing —
@@ -297,11 +309,17 @@
   body.theme-usopen .event-sub {
     color: var(--ink);
     font-style: normal;
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 10.5px;
+  }
+  body.theme-usopen .status-bar { font-family: 'Inter', sans-serif; letter-spacing: 0.16em; }
+  body.theme-usopen .refresh-btn {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.24em;
   }
   body.theme-usopen .event-sub .live-dot { background: var(--usga-ribbon); }
 
@@ -803,45 +821,15 @@
   <hr class="mast-rule">
 
   <div class="champ-banner" aria-label="U.S. Open Championship">
-    <svg class="champ-shield" viewBox="0 0 96 110" aria-hidden="true">
-      <!-- Heater shield outline with gold double border on navy field -->
-      <defs>
-        <clipPath id="shieldClip">
-          <path d="M48 4 L88 14 L88 56 C88 82 70 100 48 106 C26 100 8 82 8 56 L8 14 Z"/>
-        </clipPath>
-      </defs>
-      <path d="M48 4 L88 14 L88 56 C88 82 70 100 48 106 C26 100 8 82 8 56 L8 14 Z"
-            fill="#0a2240" stroke="#b88c3c" stroke-width="2.5"/>
-      <path d="M48 9 L83 18 L83 56 C83 79 67 96 48 101 C29 96 13 79 13 56 L13 18 Z"
-            fill="none" stroke="#b88c3c" stroke-width="1"/>
-      <!-- Top red banner -->
-      <rect x="13" y="22" width="70" height="14" fill="#ba0c2f" clip-path="url(#shieldClip)"/>
-      <text x="48" y="33" text-anchor="middle"
-            font-family="Fraunces, serif" font-weight="700"
-            font-size="11" letter-spacing="2" fill="#f5edd8">U.S. OPEN</text>
-      <!-- Crossed flagsticks -->
-      <g stroke="#b88c3c" stroke-width="1.6" stroke-linecap="round" fill="none">
-        <line x1="30" y1="78" x2="48" y2="46"/>
-        <line x1="66" y1="78" x2="48" y2="46"/>
-      </g>
-      <!-- Flag on left stick -->
-      <path d="M30 60 L42 60 L38 65 L42 70 L30 70 Z" fill="#ba0c2f"/>
-      <!-- Flag on right stick (offset other direction) -->
-      <path d="M66 60 L54 60 L58 65 L54 70 L66 70 Z" fill="#b88c3c"/>
-      <!-- Hole cup at base -->
-      <ellipse cx="48" cy="80" rx="14" ry="3.5" fill="#15355f" stroke="#b88c3c" stroke-width="0.8"/>
-      <!-- Year arc -->
-      <text x="48" y="96" text-anchor="middle"
-            font-family="Fraunces, serif" font-weight="700"
-            font-size="9" letter-spacing="3" fill="#b88c3c">2026</text>
-    </svg>
+    <img class="champ-logo" src="./assets/usopen-logo.png"
+         alt="126th U.S. Open at Shinnecock Hills" width="132" height="132">
 
     <div class="champ-titleblock">
       <div class="champ-overline">The One Hundred Twenty-Sixth</div>
-      <h2 class="champ-title">U<em>.</em>S<em>.</em> Open Championship</h2>
-      <div class="champ-venue">
-        Shinnecock Hills Golf Club
-        <span class="ribbon-dot"></span>
+      <h2 class="champ-title">United States <span class="accent">Open</span> Championship</h2>
+      <div class="champ-dateline">
+        June 18–21, 2026
+        <span class="pipe"></span>
         Southampton, New York
       </div>
     </div>
