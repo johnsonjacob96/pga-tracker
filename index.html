@@ -193,178 +193,619 @@
     50% { opacity: 0.45; transform: scale(0.85); }
   }
 
-  /* --- U.S. Open championship banner (theme-usopen only) --- */
+  /* =====================================================================
+     U.S. OPEN CHAMPIONSHIP THEME
+     ---------------------------------------------------------------------
+     A broadcast-grade scoreboard treatment that mirrors usopen.com's own
+     scoring page: edge-to-edge dark-navy championship rail with the red
+     USOPEN wordmark, a light gray sub-bar carrying course/venue/dates,
+     then a dense leaderboard with navy column headers, position chips,
+     hairline row dividers, and zebra row tint. All gated behind
+     body.theme-usopen so other majors keep the "Locks of the Day" mast.
+     ===================================================================== */
+
+  /* Hide the championship-card markup from the base build; we replace it
+     with a full-bleed rail + sub-bar that lives outside .masthead. */
   .champ-banner { display: none; }
-  body.theme-usopen .champ-banner {
+
+  /* Full-bleed championship rail (navy header strip with the wordmark).
+     Inserted in markup above .masthead; only shown when theme-usopen is on. */
+  .usga-rail { display: none; }
+  body.theme-usopen .usga-rail {
+    display: block;
+    background: var(--usga-navy);
+    color: #fff;
+    position: relative;
+    border-bottom: 1px solid #000;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,0.04);
+  }
+  body.theme-usopen .usga-rail::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(135deg,
+        rgba(255,255,255,0.012) 0 1px,
+        transparent 1px 4px);
+    pointer-events: none;
+  }
+  .usga-rail-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 14px 22px;
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 30px;
-    margin: 22px auto 0;
-    padding: 22px 28px;
-    background:
-      linear-gradient(180deg, rgba(10,34,64,0.97) 0%, rgba(21,53,95,0.97) 100%);
-    color: var(--usga-cream);
+    gap: 28px;
     position: relative;
-    border-top: 3px double var(--usga-gold);
-    border-bottom: 3px double var(--usga-gold);
-    overflow: hidden;
   }
-  body.theme-usopen .champ-banner::before,
-  body.theme-usopen .champ-banner::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0;
-    height: 2px;
-    background: var(--usga-ribbon);
+  .usga-wordmark {
+    height: 54px;
+    width: auto;
+    display: block;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.25));
   }
-  body.theme-usopen .champ-banner::before { top: 6px; }
-  body.theme-usopen .champ-banner::after  { bottom: 6px; }
-
-  .champ-logo {
-    width: 132px;
-    height: 132px;
-    flex-shrink: 0;
-    background: var(--usga-cream);
-    border-radius: 50%;
-    padding: 10px;
-    box-shadow:
-      0 0 0 2px var(--usga-gold),
-      0 0 0 4px rgba(10,34,64,0.6),
-      0 0 0 6px var(--usga-gold);
-    object-fit: contain;
-  }
-  .champ-titleblock { text-align: center; }
-  .champ-overline {
+  .usga-rail-center {
+    text-align: center;
+    color: rgba(255,255,255,0.85);
     font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  }
+  .usga-rail-eyebrow {
+    font-size: 10px;
     font-weight: 600;
-    font-size: 10.5px;
     letter-spacing: 0.34em;
     text-transform: uppercase;
     color: var(--usga-gold);
-    margin-bottom: 12px;
+    margin-bottom: 4px;
   }
-  .champ-title {
+  .usga-rail-title {
     font-family: 'Inter', 'Helvetica Neue', sans-serif;
-    font-weight: 800;
-    font-size: 36px;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    color: var(--usga-cream);
-    margin: 0;
-    text-transform: uppercase;
-    font-feature-settings: "ss01", "cv11";
-  }
-  .champ-title .accent {
-    color: var(--usga-ribbon);
-    font-weight: 900;
-  }
-  .champ-dateline {
-    font-family: 'Inter', 'Helvetica Neue', sans-serif;
-    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.32em;
+    font-size: 13.5px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--usga-cream);
-    margin-top: 14px;
-    opacity: 0.95;
+    color: #fff;
   }
-  .champ-dateline .pipe {
-    display: inline-block;
-    width: 1px; height: 11px;
-    background: var(--usga-gold);
-    margin: 0 12px -1px;
-    vertical-align: middle;
-  }
-  .champ-meta {
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 16px;
-    row-gap: 5px;
-    font-family: 'Inter', 'Helvetica Neue', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-align: left;
-    color: var(--paper-deep);
-  }
-  .champ-meta dt {
-    color: var(--usga-gold);
-    font-weight: 500;
-    opacity: 0.85;
-  }
-  .champ-meta dd {
-    color: var(--usga-cream);
-    font-weight: 700;
-    margin: 0;
-    text-align: right;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.04em;
-  }
-
-  /* Hide the secondary event-bar title when the championship banner is showing —
-     the banner carries the full identity. Keep event-sub for live status. */
-  body.theme-usopen .event-title { display: none; }
-  body.theme-usopen .event-bar { margin-top: 14px; }
-  body.theme-usopen .event-sub {
-    color: var(--ink);
+  .usga-rail-title em {
     font-style: normal;
-    font-family: 'Inter', 'Helvetica Neue', sans-serif;
-    font-weight: 600;
+    font-weight: 800;
+    color: var(--usga-gold);
+    margin: 0 6px;
+  }
+  .usga-rail-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .usga-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
-    font-size: 10.5px;
+    padding: 7px 14px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 2px;
+    background: rgba(255,255,255,0.04);
+    color: #fff;
+    line-height: 1;
   }
-  body.theme-usopen .status-bar { font-family: 'Inter', sans-serif; letter-spacing: 0.16em; }
+  .usga-status-pill .pill-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--usga-ribbon);
+    box-shadow: 0 0 0 3px rgba(186,12,47,0.18);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .usga-status-pill.upcoming .pill-dot {
+    background: var(--usga-gold);
+    box-shadow: 0 0 0 3px rgba(184,140,60,0.16);
+    animation: none;
+  }
+  .usga-status-pill.final .pill-dot {
+    background: #8eb19a;
+    box-shadow: none;
+    animation: none;
+  }
+
+  /* Course / venue sub-bar — the light gray strip on the reference page */
+  .usga-subrail { display: none; }
+  body.theme-usopen .usga-subrail {
+    display: block;
+    background: #ece9e3;
+    border-bottom: 1px solid #d2cdbf;
+    color: #2b2620;
+  }
+  .usga-subrail-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 9px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    font-family: 'Inter', 'Helvetica Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    flex-wrap: wrap;
+  }
+  .usga-subrail-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    color: var(--usga-navy);
+  }
+  .usga-subrail-mark {
+    width: 30px; height: 30px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .usga-subrail-venue {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  .usga-subrail-divider {
+    width: 1px; height: 14px;
+    background: #b8b2a3;
+    display: inline-block;
+  }
+  .usga-subrail-meta {
+    color: #5a5345;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+  .usga-subrail-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5a5345;
+  }
+  .usga-subrail-right strong {
+    color: var(--usga-navy);
+    font-weight: 800;
+  }
+
+  /* When the theme is on, the editorial masthead is hidden — the rail does
+     the identity work. Top nav and status bar get USGA fonts. */
+  body.theme-usopen .masthead { display: none; }
+  body.theme-usopen .status-bar {
+    max-width: 1180px;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.14em;
+    border-bottom: none;
+    padding: 14px 22px 8px;
+    color: #4a4438;
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #fff;
+  }
+  body.theme-usopen .status-bar #status .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--usga-ribbon);
+    margin-right: 8px;
+    vertical-align: middle;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
   body.theme-usopen .refresh-btn {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.22em;
+    border: 1px solid var(--usga-navy);
+    color: var(--usga-navy);
+    background: transparent;
+    border-radius: 2px;
+    padding: 6px 14px;
+    font-size: 10px;
   }
-  body.theme-usopen .event-sub .live-dot { background: var(--usga-ribbon); }
+  body.theme-usopen .refresh-btn:hover {
+    background: var(--usga-navy);
+    color: #fff;
+  }
 
-  /* Tweaks so the championship aesthetic carries through the rest of the page */
-  body.theme-usopen nav.topnav { background: var(--usga-navy); }
-  body.theme-usopen nav.topnav a + a { border-left-color: rgba(184,140,60,0.35); }
+  /* Top nav — keep navy but switch the accent to USGA gold */
+  body.theme-usopen nav.topnav {
+    background: #061a33;
+    border-bottom: 1px solid var(--usga-gold);
+  }
+  body.theme-usopen nav.topnav a {
+    color: rgba(255,255,255,0.72);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    padding: 4px 26px;
+  }
+  body.theme-usopen nav.topnav a + a { border-left-color: rgba(255,255,255,0.10); }
   body.theme-usopen nav.topnav a:hover,
   body.theme-usopen nav.topnav a.active { color: var(--usga-gold); }
-  body.theme-usopen nav.topnav a.active::after { background: var(--usga-ribbon); }
-  body.theme-usopen .mast-paper em { color: var(--usga-ribbon); }
-  body.theme-usopen .refresh-btn:hover { background: var(--usga-navy); color: var(--usga-cream); }
-  body.theme-usopen .team.leader .team-rank,
-  body.theme-usopen .team.leader .team-eyebrow { color: var(--usga-gold); }
+  body.theme-usopen nav.topnav a.active::after { background: var(--usga-ribbon); height: 2px; }
+
+  /* ---------------------------------------------------------------------
+     LEADERBOARD COLUMN-HEADER BAR
+     Dark navy strip above the team rows with uppercase column labels.
+     --------------------------------------------------------------------- */
+  .lb-colhead { display: none; }
+  body.theme-usopen .lb-colhead {
+    display: grid;
+    grid-template-columns: 56px 1fr 84px 90px;
+    align-items: center;
+    background: var(--usga-navy);
+    color: #fff;
+    padding: 12px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    border-top: 1px solid #061a33;
+    border-bottom: 2px solid var(--usga-gold);
+  }
+  body.theme-usopen .lb-colhead .col-pos { text-align: center; color: rgba(255,255,255,0.62); }
+  body.theme-usopen .lb-colhead .col-team { padding-left: 12px; }
+  body.theme-usopen .lb-colhead .col-thru { text-align: center; color: rgba(255,255,255,0.62); }
+  body.theme-usopen .lb-colhead .col-total { text-align: right; }
+
+  /* ---------------------------------------------------------------------
+     TEAM ROWS — broadcast leaderboard styling
+     --------------------------------------------------------------------- */
+  body.theme-usopen main {
+    max-width: 1180px;
+    padding: 0 0 36px;
+    background: #fff;
+  }
+  body.theme-usopen .team {
+    background: #fff;
+    border-top: 1px solid #e7e3da;
+    padding: 0;
+    transition: background 0.12s;
+  }
+  body.theme-usopen .team:nth-of-type(even) { background: #faf8f3; }
+  body.theme-usopen .team:hover { background: #f1ece0; }
+  body.theme-usopen .team:last-of-type { border-bottom: 1px solid #d8d3c5; }
+  body.theme-usopen .team.leader {
+    background: linear-gradient(180deg, #fffaea 0%, #fff5d6 100%);
+    color: var(--ink);
+    border-top: 1px solid var(--usga-gold);
+    box-shadow: inset 4px 0 0 var(--usga-gold);
+  }
+  body.theme-usopen .team.leader:hover {
+    background: linear-gradient(180deg, #fff7df 0%, #ffefc4 100%);
+  }
+  body.theme-usopen .team.leader + .team { border-top-color: var(--usga-gold); }
+
+  /* Row layout matches the column-header grid */
+  body.theme-usopen .team-grid {
+    grid-template-columns: 56px 1fr 84px 90px;
+    align-items: center;
+    gap: 0;
+    padding: 16px 18px;
+  }
+
+  /* Position chip — small navy-filled square like the reference */
+  body.theme-usopen .team-rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 auto;
+    background: var(--usga-navy);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0;
+    border-radius: 2px;
+    min-width: 0;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  body.theme-usopen .team.leader .team-rank {
+    background: var(--usga-ribbon);
+    color: #fff;
+    box-shadow: 0 0 0 1px var(--usga-gold), 0 1px 4px rgba(186,12,47,0.3);
+  }
+
+  /* Team identity column */
+  body.theme-usopen .team-identity { padding-left: 14px; min-width: 0; }
+  body.theme-usopen .team-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 9.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #8a8270;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  body.theme-usopen .team.leader .team-eyebrow { color: #8a6a1f; }
+  body.theme-usopen .team-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: -0.005em;
+    line-height: 1.05;
+    color: var(--usga-navy);
+    margin: 0;
+    font-variation-settings: "opsz" 144, "SOFT" 20;
+  }
+  body.theme-usopen .team.leader .team-name { color: #1a1208; }
+  body.theme-usopen .team-name em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--usga-ribbon);
+  }
+
+  /* THRU column: shows holes played / status. Injected by renderer below
+     the team-identity in the team-grid when theme-usopen is on. */
+  body.theme-usopen .team-thru {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: #5a5345;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  body.theme-usopen .team-thru.tee {
+    color: var(--usga-ribbon);
+    font-weight: 700;
+  }
+  body.theme-usopen .team.leader .team-thru { color: #6a5018; font-weight: 700; }
+
+  /* TOTAL column — big tabular team score */
+  body.theme-usopen .team-score {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    text-align: right;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    padding-right: 4px;
+  }
+  body.theme-usopen .team-score.s-under { color: var(--usga-ribbon); }
+  body.theme-usopen .team-score.s-even  { color: var(--usga-navy); }
+  body.theme-usopen .team-score.s-over  { color: #2d5238; }
+  body.theme-usopen .team.leader .team-score { font-size: 30px; }
+
+  /* Winner tag inline */
+  body.theme-usopen .winner-tag {
+    background: var(--usga-gold);
+    color: var(--usga-navy);
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 8.5px;
+    letter-spacing: 0.18em;
+    padding: 3px 7px;
+    border-radius: 1px;
+    top: -3px;
+  }
+
+  /* Expand chevron */
+  body.theme-usopen .team-expand {
+    font-size: 9px;
+    color: var(--usga-navy);
+    opacity: 0.55;
+  }
+  body.theme-usopen .team.expanded .team-expand {
+    color: var(--usga-ribbon);
+    opacity: 1;
+  }
+
+  /* Roster reveal — collapsed by default, revealed when row is expanded.
+     Keeps the leaderboard compact and broadcast-style until clicked. */
+  body.theme-usopen .roster-line {
+    display: none;
+    margin-top: 0;
+    padding: 12px 18px 16px 110px;
+    border-top: 1px dashed #d6d0bd;
+    background: rgba(245, 240, 224, 0.55);
+    font-family: 'Inter', sans-serif;
+    font-size: 12.5px;
+    color: #4a4438;
+    line-height: 1.55;
+    gap: 4px 18px;
+  }
+  body.theme-usopen .team.expanded .roster-line { display: flex; }
+  body.theme-usopen .team.leader .roster-line {
+    background: rgba(255, 244, 209, 0.6);
+    border-top-color: rgba(184,140,60,0.35);
+    color: #3a2f12;
+  }
+  body.theme-usopen .pl { gap: 6px; }
+  body.theme-usopen .pl-score {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: #8a8270;
+  }
+  body.theme-usopen .pl.counting {
+    color: var(--usga-navy);
+    font-weight: 600;
+  }
+  body.theme-usopen .pl.counting::before {
+    content: "";
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--usga-ribbon);
+    margin-right: 5px;
+    position: relative;
+    top: -2px;
+    border-radius: 50%;
+  }
+  body.theme-usopen .pl.counting .pl-score.s-under { color: var(--usga-ribbon); }
+  body.theme-usopen .pl.counting .pl-score.s-even  { color: var(--usga-navy); }
+  body.theme-usopen .pl.counting .pl-score.s-over  { color: #2d5238; }
+  body.theme-usopen .pl.bench { color: #8a8270; font-style: normal; opacity: 1; }
+  body.theme-usopen .pl.bench .pl-score { color: #a89e85; font-weight: 500; }
+  body.theme-usopen .pl.missed-cut {
+    color: #a89e85;
+    text-decoration: line-through;
+    text-decoration-color: #c5beab;
+  }
+  body.theme-usopen .pl.penalty {
+    color: var(--usga-ribbon);
+    font-style: normal;
+    font-weight: 600;
+  }
+  body.theme-usopen .team.leader .pl.counting { color: #1a1208; }
+  body.theme-usopen .team.leader .pl-score { color: #6a5e3a; }
+
+  /* Scorecard panel inside expanded row */
+  body.theme-usopen .scorecards {
+    padding: 12px 18px 18px 110px;
+    border-top: 1px solid #e7e3da;
+    background: #fbf9f3;
+    margin-top: 0;
+  }
+  body.theme-usopen .scorecards-label {
+    font-family: 'Inter', sans-serif;
+    color: var(--usga-navy);
+    letter-spacing: 0.28em;
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+  body.theme-usopen .scorecard { border-color: #d8d3c5; background: #fff; }
+  body.theme-usopen .scorecard-head {
+    background: var(--usga-navy);
+    color: #fff;
+    padding: 9px 14px;
+  }
+  body.theme-usopen .scorecard-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: 13px;
+  }
+  body.theme-usopen .scorecard-meta {
+    color: var(--usga-gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+  body.theme-usopen .scorecard th {
+    background: #ece9e1;
+    color: var(--usga-navy);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+  body.theme-usopen .scorecard .row-label {
+    background: #ece9e1;
+    color: var(--usga-navy);
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+  body.theme-usopen .scorecard .par-row { background: #f5f2ea; color: #6a6354; }
+  body.theme-usopen .scorecard .tot { background: #ece9e1; color: var(--usga-navy); }
+  body.theme-usopen .scorecard .h-eagle { background: var(--usga-gold); color: #fff; }
+  body.theme-usopen .scorecard .h-birdie { background: rgba(186,12,47,0.14); color: var(--usga-ribbon); }
+  body.theme-usopen .scorecard .h-bogey { background: rgba(10,34,64,0.07); color: var(--usga-navy); }
+  body.theme-usopen .scorecard .h-double { background: rgba(10,34,64,0.16); color: var(--usga-navy); font-weight: 800; }
+  body.theme-usopen .scorecard-legend {
+    background: #f5f2ea;
+    border-top-color: #d8d3c5;
+    font-family: 'Inter', sans-serif;
+    color: #5a5345;
+  }
+  body.theme-usopen .scorecard-mc {
+    color: var(--usga-ribbon);
+    background: rgba(186,12,47,0.05);
+  }
+
+  /* Legend at the bottom — clean Inter row */
+  body.theme-usopen .legend {
+    max-width: 1180px;
+    border-top: 1px solid #d8d3c5;
+    padding: 16px 22px 14px;
+    background: #fff;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    color: #5a5345;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  body.theme-usopen .legend .hint {
+    color: var(--usga-navy);
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    font-size: 10px;
+  }
+  body.theme-usopen footer.bottom {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    color: #8a8270;
+    background: #fff;
+  }
+  body.theme-usopen footer.bottom .colophon {
+    color: var(--usga-navy);
+    letter-spacing: 0.28em;
+    opacity: 0.6;
+  }
+
+  /* Page canvas */
+  body.theme-usopen {
+    background: #f3f1eb;
+    background-image: none;
+  }
 
   @media (max-width: 720px) {
-    body.theme-usopen .champ-banner {
-      grid-template-columns: auto 1fr;
-      grid-template-areas:
-        "shield title"
-        "meta meta";
-      gap: 14px;
-      padding: 16px 16px 14px;
-      margin-top: 14px;
+    body.theme-usopen .usga-rail-inner {
+      grid-template-columns: auto 1fr auto;
+      gap: 10px 12px;
+      padding: 10px 14px;
     }
-    body.theme-usopen .champ-shield {
-      grid-area: shield;
-      width: 64px; height: 74px;
+    body.theme-usopen .usga-wordmark { height: 30px; }
+    body.theme-usopen .usga-rail-center { display: none; }
+    body.theme-usopen .usga-status-pill { font-size: 9px; padding: 5px 9px; letter-spacing: 0.16em; gap: 6px; }
+    body.theme-usopen .usga-subrail-inner {
+      padding: 7px 12px;
+      gap: 6px 12px;
+      font-size: 10.5px;
     }
-    body.theme-usopen .champ-titleblock { grid-area: title; text-align: left; }
-    body.theme-usopen .champ-overline { font-size: 10px; margin-bottom: 4px; letter-spacing: 0.14em; }
-    body.theme-usopen .champ-title { font-size: 22px; letter-spacing: 0.02em; }
-    body.theme-usopen .champ-venue { font-size: 11.5px; margin-top: 5px; }
-    body.theme-usopen .champ-venue .ribbon-dot { margin: 0 5px 2px; }
-    body.theme-usopen .champ-meta {
-      grid-area: meta;
-      grid-template-columns: repeat(4, 1fr);
-      column-gap: 8px;
-      row-gap: 2px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(184,140,60,0.3);
-      margin-top: 4px;
-      font-size: 9px;
+    body.theme-usopen .usga-subrail-mark { width: 22px; height: 22px; }
+    body.theme-usopen .usga-subrail-right { font-size: 9px; gap: 10px; letter-spacing: 0.05em; }
+    body.theme-usopen .status-bar { padding: 10px 14px 6px; font-size: 9px; letter-spacing: 0.12em; }
+    body.theme-usopen .refresh-btn { padding: 4px 10px; font-size: 9px; letter-spacing: 0.16em; }
+
+    body.theme-usopen .lb-colhead {
+      grid-template-columns: 38px 1fr 56px 68px;
+      padding: 9px 12px;
+      font-size: 8.5px;
+      letter-spacing: 0.18em;
     }
-    body.theme-usopen .champ-meta dd { text-align: left; margin-top: 1px; }
-    body.theme-usopen .champ-meta dt { font-size: 8px; }
+    body.theme-usopen .team-grid {
+      grid-template-columns: 38px 1fr 56px 68px;
+      padding: 11px 12px;
+    }
+    body.theme-usopen .team-rank { width: 28px; height: 28px; font-size: 12px; }
+    body.theme-usopen .team-identity { padding-left: 10px; }
+    body.theme-usopen .team-eyebrow { font-size: 8.5px; letter-spacing: 0.22em; margin-bottom: 2px; }
+    body.theme-usopen .team-name { font-size: 17px; }
+    body.theme-usopen .team-thru { font-size: 11px; }
+    body.theme-usopen .team-score { font-size: 21px; }
+    body.theme-usopen .team.leader .team-score { font-size: 23px; }
+    body.theme-usopen .roster-line {
+      padding: 10px 12px 12px 60px;
+      font-size: 11px;
+      gap: 2px 12px;
+    }
+    body.theme-usopen .pl-score { font-size: 10px; }
+    body.theme-usopen .scorecards { padding: 10px 12px 14px 60px; }
+    body.theme-usopen .winner-tag { font-size: 7.5px; padding: 2px 5px; }
+    body.theme-usopen .legend { padding: 12px 14px; }
   }
 
   /* --- Status / refresh bar --- */
@@ -805,6 +1246,43 @@
   <a href="./history.html">Archive</a>
 </nav>
 
+<!-- Full-bleed U.S. Open championship rail. Only renders visually when
+     body.theme-usopen is on; the JS toggles that class for the focus event. -->
+<header class="usga-rail" aria-label="U.S. Open Championship">
+  <div class="usga-rail-inner">
+    <img class="usga-wordmark" src="./assets/usopen-logo-primary.png"
+         alt="U.S. Open" width="124" height="46">
+    <div class="usga-rail-center">
+      <div class="usga-rail-eyebrow">The 126th Championship</div>
+      <div class="usga-rail-title" id="rail-title">Locks of the Day Draft</div>
+    </div>
+    <div class="usga-rail-right">
+      <span class="usga-status-pill" id="rail-pill">
+        <span class="pill-dot"></span>
+        <span id="rail-pill-text">Live</span>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- Course / venue sub-bar -->
+<div class="usga-subrail">
+  <div class="usga-subrail-inner">
+    <div class="usga-subrail-left">
+      <img class="usga-subrail-mark" src="./assets/usopen-logo.png"
+           alt="126th U.S. Open at Shinnecock Hills" width="30" height="30">
+      <span class="usga-subrail-venue">Shinnecock Hills Golf Club</span>
+      <span class="usga-subrail-divider"></span>
+      <span class="usga-subrail-meta">Southampton, NY &middot; June 18&ndash;21, 2026</span>
+    </div>
+    <div class="usga-subrail-right">
+      <span>Par <strong>70</strong></span>
+      <span>Yds <strong>7,488</strong></span>
+      <span>First Tee <strong>6:45 AM</strong></span>
+    </div>
+  </div>
+</div>
+
 <div class="masthead">
   <hr class="mast-rule-double">
   <div class="mast-row">
@@ -1231,7 +1709,34 @@ function render(state) {
   lastState = state;
   const { teams, penalty, pars } = state;
   const content = document.getElementById("content");
-  content.innerHTML = teams.map((team, idx) => {
+  const usopen = document.body.classList.contains("theme-usopen");
+
+  // Compute a team THRU/status indicator for the broadcast leaderboard column.
+  // Logic:
+  //  - if every counting player has 4 rounds in linescores → "F" (final)
+  //  - if no rounds at all (pre-tournament) → "TEE" with red tint
+  //  - otherwise, average rounds played across counting players → "Rn"
+  const teamThru = (team) => {
+    const counting = team.players.filter(p => p.counting && p.madeCut);
+    if (counting.length === 0) return { txt: "—", cls: "" };
+    const rounds = counting.map(p => (p.linescores || []).length);
+    const maxR = Math.max(...rounds);
+    if (maxR === 0) return { txt: "THU", cls: "tee" };
+    if (maxR >= 4 && rounds.every(r => r >= 4)) return { txt: "F", cls: "" };
+    return { txt: "R" + maxR, cls: "" };
+  };
+
+  // Column header bar — only meaningful in the championship theme.
+  const colhead = usopen
+    ? `<div class="lb-colhead" role="row">
+         <span class="col-pos">POS</span>
+         <span class="col-team">TEAM</span>
+         <span class="col-thru">THRU</span>
+         <span class="col-total">TOTAL</span>
+       </div>`
+    : "";
+
+  content.innerHTML = colhead + teams.map((team, idx) => {
     const rank = ordinal(idx + 1);
     const isLeader = idx === 0;
     const isExpanded = expandedTeams.has(team.teamName);
@@ -1257,6 +1762,10 @@ function render(state) {
     const scorecardsBlock = hasScorecards
       ? `<div class="scorecards"><div class="scorecards-label">Hole-by-Hole</div>${scorecards}</div>`
       : "";
+    const thru = teamThru(team);
+    const thruCell = usopen
+      ? `<div class="team-thru ${thru.cls}">${thru.txt}</div>`
+      : "";
 
     return `
       <article class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" data-team="${team.teamName}">
@@ -1266,6 +1775,7 @@ function render(state) {
             <div class="team-eyebrow">${owner}${expandChevron}</div>
             <h2 class="team-name">${team.teamName}${winnerTag}</h2>
           </div>
+          ${thruCell}
           <div class="team-score ${scoreClass(team.total)}">${fmtScore(team.total).replace("-", "−")}</div>
         </div>
         <div class="roster-line">${players}${penaltyHtml}</div>
@@ -1298,6 +1808,24 @@ function updateMasthead(focus) {
   // Per-major theme. Currently only the U.S. Open has a championship treatment;
   // future majors can opt in by adding their own body.theme-* class.
   document.body.classList.toggle("theme-usopen", !!ev && ev.name === "US Open");
+
+  // U.S. Open rail status pill — broadcast-style indicator (LIVE / UPCOMING / FINAL).
+  // Mirrors the focus mode so the rail reads correctly before, during, and after the event.
+  const pill = document.getElementById("rail-pill");
+  const pillText = document.getElementById("rail-pill-text");
+  if (pill && pillText) {
+    pill.classList.remove("upcoming", "final");
+    if (focus.mode === "final") {
+      pill.classList.add("final");
+      pillText.textContent = "Final";
+    } else if (focus.mode === "live") {
+      // We can't tell live-vs-preview here — refresh() refines this once ESPN responds.
+      pillText.textContent = "Live";
+    } else {
+      pill.classList.add("upcoming");
+      pillText.textContent = "Upcoming";
+    }
+  }
 
   if (ev) {
     title.textContent = ev.name === "Open Championship" ? "The Open" : ev.name;
@@ -1370,9 +1898,23 @@ async function refresh() {
     const legendHint = document.getElementById("legend-hint");
     if (FOCUS.mode === "live") {
       const preTournament = data.status?.type?.state === "pre";
-      status.textContent = preTournament
-        ? `Tees off ${formatDateRange(FOCUS.event)} · Updated ${now}`
-        : `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} · Updated ${now}`;
+      // Refine the championship rail pill now that ESPN has told us whether we're
+      // pre-tournament or actually in play. Pre → gold UPCOMING pill, in-play → red LIVE.
+      const pill = document.getElementById("rail-pill");
+      const pillText = document.getElementById("rail-pill-text");
+      if (pill && pillText) {
+        pill.classList.remove("upcoming", "final");
+        if (preTournament) {
+          pill.classList.add("upcoming");
+          pillText.textContent = "Upcoming";
+        } else {
+          pillText.textContent = "Live";
+        }
+      }
+      // Sync the live status line with a dot (in-play) or a clean tee-off message.
+      status.innerHTML = preTournament
+        ? `Tees off ${formatDateRange(FOCUS.event)} &middot; Updated ${now}`
+        : `<span class="live-dot"></span>${eventStatus} &middot; Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} &middot; Updated ${now}`;
       sub.innerHTML = preTournament
         ? `${eventStatus} · ${formatDateRange(FOCUS.event)} · Rosters set, scores at E until Thursday`
         : `<span class="live-dot"></span>${eventStatus} · Best Three Scores`;
