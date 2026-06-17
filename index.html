@@ -684,6 +684,14 @@ function pickFocusEvent(season, today = new Date()) {
     const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(live.endDate + "T23:59:59"));
     return { event: live, mode: "live", nextEvent: next || null, season };
   }
+  // Live preview: roster drafted but tournament hasn't started yet. ESPN already has the field,
+  // so we render it live with all players at E (handled in fetchScores when status state === 'pre').
+  const upcomingDrafted = events.find(e =>
+    e.roster && !e.complete && new Date(e.startDate + "T00:00:00") > today);
+  if (upcomingDrafted) {
+    const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(upcomingDrafted.endDate + "T23:59:59"));
+    return { event: upcomingDrafted, mode: "live", nextEvent: next || null, season };
+  }
   // Pending-draft: today is inside an event window but no roster yet
   const pendingDraft = events.find(e => inWindow(e) && !e.roster);
   if (pendingDraft) {
@@ -794,17 +802,21 @@ async function fetchScores() {
   if (!competition) throw new Error("No competition data");
 
   const competitors = competition.competitors || [];
+  // Pre-tournament: ESPN sometimes reports phantom linescores from sectional qualifying.
+  // Force everyone to madeCut=true at E so the live preview shows clean even-par teams.
+  const preTournament = event.status?.type?.state === "pre";
   const players = {};
   for (const comp of competitors) {
     const name = comp.athlete?.fullName || comp.athlete?.displayName;
     if (!name) continue;
-    const score = parseScore(comp.score);
     const linescores = comp.linescores || [];
     const statusName = comp.status?.type?.name || "";
-    const madeCut = linescores.length >= 3 ||
+    const score = preTournament ? 0 : parseScore(comp.score);
+    const madeCut = preTournament ||
+                    linescores.length >= 3 ||
                     statusName === "STATUS_ACTIVE" ||
                     /STATUS_END_PERIOD/.test(statusName) && linescores.length >= 3;
-    players[normalize(name)] = { name, score, madeCut, linescores };
+    players[normalize(name)] = { name, score, madeCut, linescores: preTournament ? [] : linescores };
   }
 
   const pars = derivePars(competitors);
@@ -1133,10 +1145,19 @@ async function refresh() {
       : "";
     const legendHint = document.getElementById("legend-hint");
     if (FOCUS.mode === "live") {
-      status.textContent = `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} · Updated ${now}`;
-      sub.innerHTML = `<span class="live-dot"></span>${eventStatus} · Best Three Scores`;
-      if (footerNote) footerNote.textContent = "Auto-refreshes every sixty seconds";
-      if (legendHint) legendHint.textContent = "Tap any team for hole-by-hole scorecards";
+      const preTournament = data.status?.type?.state === "pre";
+      status.textContent = preTournament
+        ? `Tees off ${formatDateRange(FOCUS.event)} · Updated ${now}`
+        : `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} · Updated ${now}`;
+      sub.innerHTML = preTournament
+        ? `${eventStatus} · ${formatDateRange(FOCUS.event)} · Rosters set, scores at E until Thursday`
+        : `<span class="live-dot"></span>${eventStatus} · Best Three Scores`;
+      if (footerNote) footerNote.textContent = preTournament
+        ? "Live scores begin at first tee Thursday morning"
+        : "Auto-refreshes every sixty seconds";
+      if (legendHint) legendHint.textContent = preTournament
+        ? "Scorecards populate once Round 1 begins"
+        : "Tap any team for hole-by-hole scorecards";
     } else {
       // Final mode
       status.textContent = `Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit}`;
