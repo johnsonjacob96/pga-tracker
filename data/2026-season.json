@@ -182,7 +182,38 @@
       "month": "June",
       "startDate": "2026-06-18",
       "endDate": "2026-06-21",
-      "complete": false
+      "complete": false,
+      "roster": {
+        "Ram":   ["Scottie Scheffler", "Patrick Cantlay", "Chris Gotterup", "Alex Fitzpatrick", "Jackson Koivun"],
+        "Money": ["Rory McIlroy", "Tyrrell Hatton", "Patrick Reed", "Adam Scott", "Kurt Kitayama"],
+        "Troop": ["Jon Rahm", "Si Woo Kim", "Harris English", "Ryan Gerard", "J.T. Poston"],
+        "Gary":  ["Cameron Young", "Collin Morikawa", "Jordan Spieth", "Viktor Hovland", "Ben Griffin"],
+        "Mags":  ["Xander Schauffele", "Russell Henley", "Justin Rose", "Shane Lowry", "Nick Taylor"],
+        "Cyc":   ["Matt Fitzpatrick", "Bryson DeChambeau", "Maverick McNealy", "Joaquin Niemann", "Bud Cauley"],
+        "Taco":  ["Tommy Fleetwood", "Justin Thomas", "J.J. Spaun", "Robert MacIntyre", "Gary Woodland"],
+        "Fern":  ["Brooks Koepka", "Wyndham Clark", "Hideki Matsuyama", "Rickie Fowler", "Jake Knapp"],
+        "Bean":  ["Ludvig Aberg", "Sam Burns", "Min Woo Lee", "Aaron Rai", "Sepp Straka"]
+      },
+      "shortNames": {
+        "Scottie Scheffler": "Scheffler", "Patrick Cantlay": "Cantlay", "Chris Gotterup": "Gotterup",
+        "Alex Fitzpatrick": "A. Fitz", "Jackson Koivun": "Koivun (am)",
+        "Rory McIlroy": "Rory", "Tyrrell Hatton": "Hatton", "Patrick Reed": "Reed",
+        "Adam Scott": "A. Scott", "Kurt Kitayama": "Kitayama",
+        "Jon Rahm": "Rahm", "Si Woo Kim": "S.W. Kim", "Harris English": "English",
+        "Ryan Gerard": "Gerard", "J.T. Poston": "Poston",
+        "Cameron Young": "C. Young", "Collin Morikawa": "Morikawa", "Jordan Spieth": "Spieth",
+        "Viktor Hovland": "Hovland", "Ben Griffin": "B. Griffin",
+        "Xander Schauffele": "Xander", "Russell Henley": "Henley", "Justin Rose": "Rose",
+        "Shane Lowry": "Lowry", "Nick Taylor": "N. Taylor",
+        "Matt Fitzpatrick": "M. Fitz", "Bryson DeChambeau": "Bryson", "Maverick McNealy": "McNealy",
+        "Joaquin Niemann": "Niemann", "Bud Cauley": "Cauley",
+        "Tommy Fleetwood": "Fleetwood", "Justin Thomas": "JT", "J.J. Spaun": "Spaun",
+        "Robert MacIntyre": "MacIntyre", "Gary Woodland": "Woodland",
+        "Brooks Koepka": "Brooks", "Wyndham Clark": "Clark", "Hideki Matsuyama": "Hideki",
+        "Rickie Fowler": "Fowler", "Jake Knapp": "Knapp",
+        "Ludvig Aberg": "Åberg", "Sam Burns": "Burns", "Min Woo Lee": "M.W. Lee",
+        "Aaron Rai": "Rai", "Sepp Straka": "Straka"
+      }
     },
     {
       "name": "Open Championship",

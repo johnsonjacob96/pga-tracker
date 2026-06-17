@@ -784,7 +784,10 @@ async function fetchScores() {
   const data = await res.json();
 
   const focusName = FOCUS.event.name;
-  const event = (data.events || []).find(e => e.name && e.name.toLowerCase().includes(focusName.toLowerCase()));
+  // Punctuation-tolerant match: ESPN uses "U.S. Open" while our key is "US Open".
+  const eventKey = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const focusKey = eventKey(focusName);
+  const event = (data.events || []).find(e => e.name && eventKey(e.name).includes(focusKey));
   if (!event) throw new Error(`ESPN scoreboard did not return "${focusName}"`);
 
   const competition = event.competitions?.[0];
