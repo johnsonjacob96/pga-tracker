@@ -28,6 +28,8 @@ export async function onRequestGet(context) {
         // A generic non-browser UA mirrors what `curl` sends and clears the
         // gate; spoofing Safari/Chrome here triggers a 403.
         "user-agent": "pga-tracker/1.0 (+github.com/johnsonjacob96/pga-tracker)",
+        // Azure APIM subscription key, same one usopen.com ships in its bundle.
+        "ocp-apim-subscription-key": "0f679e1117d348d6b586d4888ea13559",
       },
     });
     upstreamStatus = res.status;

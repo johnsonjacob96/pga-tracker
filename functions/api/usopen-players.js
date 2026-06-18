@@ -29,6 +29,11 @@ export async function onRequestGet(context) {
   const headers = {
     accept: "application/json",
     "user-agent": "pga-tracker/1.0 (+github.com/johnsonjacob96/pga-tracker)",
+    // USGA's ace-api is fronted by Azure API Management. The same public
+    // subscription key is embedded in usopen.com's bundle; without it the
+    // origin returns 401 for most player IDs, even though some flow through
+    // an upstream cache.
+    "ocp-apim-subscription-key": "0f679e1117d348d6b586d4888ea13559",
   };
 
   const fetchOne = async (id) => {
