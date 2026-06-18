@@ -1344,7 +1344,7 @@
 
 <footer class="bottom">
   <span id="footer-note">&nbsp;</span>
-  <span class="colophon">Source · ESPN PGA Scoreboard</span>
+  <span class="colophon" id="colophon">Source · ESPN PGA Scoreboard</span>
 </footer>
 
 <script>
@@ -1459,7 +1459,7 @@ function parseScore(raw) {
 async function fetchScores() {
   if (!FOCUS || !FOCUS.event) throw new Error("No focus event");
 
-  // Final mode: hydrate from the snapshot baked into season.json — no ESPN call.
+  // Final mode: hydrate from the snapshot baked into season.json — no live call.
   if (FOCUS.mode === "final") {
     const ev = FOCUS.event;
     const snap = ev.snapshot || {};
@@ -1476,10 +1476,24 @@ async function fetchScores() {
       pars: snap.pars || Array(18).fill(4),
       completed: true,
       winner: ev.winner || null,
-      worstMadeCut: snap.worstMadeCut    // pinned so penalty math matches the live finish
+      worstMadeCut: snap.worstMadeCut,   // pinned so penalty math matches the live finish
+      sourceLabel: "snapshot",
     };
   }
 
+  // U.S. Open: prefer the USGA leaderboard via our Cloudflare proxy (faster
+  // updates, authoritative cutLine), fall back to ESPN on any failure.
+  if (FOCUS.event.name === "US Open") {
+    try {
+      return await fetchScoresUSGA();
+    } catch (e) {
+      console.warn("USGA path failed, falling back to ESPN:", e);
+    }
+  }
+  return await fetchScoresESPN();
+}
+
+async function fetchScoresESPN() {
   // Live mode: hit ESPN's live scoreboard and pick the focus event by exact name.
   // No fallback to data.events[0] — better to surface an error than render the
   // wrong tournament (which is the bug that prompted this refactor).
@@ -1530,7 +1544,58 @@ async function fetchScores() {
       .sort((a, b) => a.score - b.score);
     if (finishers.length) winner = finishers[0].name;
   }
-  return { event: event.name, status: event.status, players, pars, completed, winner };
+  return { event: event.name, status: event.status, players, pars, completed, winner, sourceLabel: "ESPN" };
+}
+
+async function fetchScoresUSGA() {
+  // Cloudflare Pages Function that proxies ace-api.usga.org. Returns
+  // { fetchedAt, source, upstream, payload } where payload is the raw USGA
+  // shape: { round, cutLine, extendedCutLine, standings: [...] }.
+  const year = new Date(FOCUS.event.startDate + "T12:00:00").getUTCFullYear();
+  const url = `/api/usopen-scoreboard?year=${year}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`USGA proxy returned ${res.status}`);
+  const wrapper = await res.json();
+  if (!wrapper.payload) throw new Error("USGA proxy had no payload");
+  const data = wrapper.payload;
+  const standings = data.standings || [];
+  if (!standings.length) throw new Error("USGA leaderboard empty");
+
+  // Authoritative cut signal from USGA. position > 0 with projected=false
+  // means the line is set; until then every player in the field is "in".
+  const cutEnforced = (data.cutLine?.position || 0) > 0 && data.cutLine.projected === false;
+  const completed = data.round >= 4 && standings.every(s => /^F/i.test(s.holesThrough?.displayValue || ""));
+
+  const players = {};
+  for (const s of standings) {
+    const fn = s.player?.firstName || "";
+    const ln = s.player?.lastName || "";
+    const name = (fn + " " + ln).trim();
+    if (!name) continue;
+    const score = typeof s.toPar?.value === "number" ? s.toPar.value : 0;
+    // Round totals only — USGA's leaderboard doesn't carry hole-by-hole, so
+    // linescores stays empty and the scorecard panel renders its empty state.
+    const linescores = (s.roundScores || []).filter(r => r?.score?.value != null);
+    const madeCut = !cutEnforced || linescores.length >= 3;
+    players[normalize(name)] = { name, score, madeCut, linescores };
+  }
+
+  let winner = null;
+  if (completed) {
+    const top = standings.find(s => s.position?.value === 1);
+    if (top) winner = ((top.player.firstName || "") + " " + (top.player.lastName || "")).trim();
+  }
+
+  const roundLabel = completed ? "Final" : `Round ${data.round} · In Progress`;
+  return {
+    event: "US Open",
+    status: { type: { description: roundLabel, shortDetail: roundLabel, state: completed ? "post" : "in", completed } },
+    players,
+    pars: Array(18).fill(4),   // USGA leaderboard.json doesn't carry pars; renderer falls back gracefully
+    completed,
+    winner,
+    sourceLabel: "USGA",
+  };
 }
 
 function derivePars(competitors) {
@@ -1609,7 +1674,7 @@ function computeStandings(data) {
   });
 
   teams.sort((a, b) => a.total - b.total);
-  return { teams, penalty, worstMadeCut, pars: data.pars, completed: data.completed, winner: data.winner };
+  return { teams, penalty, worstMadeCut, pars: data.pars, completed: data.completed, winner: data.winner, sourceLabel: data.sourceLabel };
 }
 
 const expandedTeams = new Set();
@@ -1898,9 +1963,16 @@ async function refresh() {
       const penaltyBit = penaltyApplied
         ? ` · Penalty ${fmtScore(state.penalty).replace("-", "−")}`
         : "";
+      const sourceBit = state.sourceLabel ? ` · ${state.sourceLabel}` : "";
+      const colophon = document.getElementById("colophon");
+      if (colophon) {
+        colophon.textContent = state.sourceLabel === "USGA"
+          ? "Source · USGA Championship Scoring"
+          : "Source · ESPN PGA Scoreboard";
+      }
       status.innerHTML = preTournament
-        ? `Tees off ${formatDateRange(FOCUS.event)} &middot; Updated ${now}`
-        : `<span class="live-dot"></span>${eventStatus}${penaltyBit}${winnerBit} &middot; Updated ${now}`;
+        ? `Tees off ${formatDateRange(FOCUS.event)} &middot; Updated ${now}${sourceBit}`
+        : `<span class="live-dot"></span>${eventStatus}${penaltyBit}${winnerBit} &middot; Updated ${now}${sourceBit}`;
       sub.innerHTML = preTournament
         ? `${eventStatus} · ${formatDateRange(FOCUS.event)} · Rosters set, scores at E until Thursday`
         : `<span class="live-dot"></span>${eventStatus} · Best Three Scores`;
