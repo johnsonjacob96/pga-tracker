@@ -1566,18 +1566,90 @@ async function fetchScoresUSGA() {
   const cutEnforced = (data.cutLine?.position || 0) > 0 && data.cutLine.projected === false;
   const completed = data.round >= 4 && standings.every(s => /^F/i.test(s.holesThrough?.displayValue || ""));
 
-  const players = {};
+  // Index standings by normalized name and collect player identifiers for the
+  // drafted roster names — those are the ones we want hole-by-hole for.
+  const standingByNorm = {};
   for (const s of standings) {
     const fn = s.player?.firstName || "";
     const ln = s.player?.lastName || "";
     const name = (fn + " " + ln).trim();
     if (!name) continue;
+    standingByNorm[normalize(name)] = { standing: s, displayName: name };
+  }
+
+  const rosterIds = [];
+  const rosterIdByNorm = {};
+  for (const roster of Object.values(TEAMS)) {
+    for (const rn of roster) {
+      const hit = standingByNorm[normalize(rn)];
+      const pid = hit?.standing?.player?.identifier;
+      if (pid && !rosterIdByNorm[normalize(rn)]) {
+        rosterIdByNorm[normalize(rn)] = pid;
+        rosterIds.push(pid);
+      }
+    }
+  }
+
+  // Fan out one batched call to the per-player Worker for our ~45 roster IDs.
+  // Worker caches each player 30s at the edge so polling is cheap.
+  let perPlayer = {};
+  if (rosterIds.length) {
+    try {
+      const pr = await fetch(`/api/usopen-players?year=${year}&ids=${rosterIds.join(",")}`);
+      if (pr.ok) {
+        const pj = await pr.json();
+        perPlayer = pj.players || {};
+      }
+    } catch (e) {
+      console.warn("USGA per-player fetch failed:", e);
+    }
+  }
+
+  // Derive course pars from any one player's R1 scorecard (every hole appears
+  // exactly once with its par). Fall back to par 4 across if no player data.
+  let pars = Array(18).fill(4);
+  for (const p of Object.values(perPlayer)) {
+    const r1 = (p.roundsInfo || []).find(r => r.scorecard?.holeResults?.length === 18);
+    if (r1) {
+      const map = {};
+      for (const h of r1.scorecard.holeResults) {
+        if (h.hole?.identifier && h.hole.par) map[h.hole.identifier] = h.hole.par;
+      }
+      if (Object.keys(map).length === 18) {
+        pars = Array.from({ length: 18 }, (_, i) => map[i + 1] || 4);
+        break;
+      }
+    }
+  }
+
+  const players = {};
+  for (const [norm, { standing: s, displayName: name }] of Object.entries(standingByNorm)) {
     const score = typeof s.toPar?.value === "number" ? s.toPar.value : 0;
-    // Round totals only — USGA's leaderboard doesn't carry hole-by-hole, so
-    // linescores stays empty and the scorecard panel renders its empty state.
-    const linescores = (s.roundScores || []).filter(r => r?.score?.value != null);
+    const detail = perPlayer[s.player?.identifier];
+    let linescores;
+    if (detail && detail.roundsInfo?.length) {
+      // Convert USGA roundsInfo → ESPN-shaped linescores so renderScorecard
+      // works unchanged: each round carries displayValue (round vs par) and an
+      // inner linescores[] with period (hole #) and value (strokes).
+      linescores = detail.roundsInfo.map(r => {
+        const holes = r.scorecard?.holeResults || [];
+        const inner = holes.map(h => ({
+          period: h.hole?.identifier,
+          value: h.score?.value ?? null,
+        }));
+        const strokes = inner.reduce((acc, h) => acc + (h.value ?? 0), 0);
+        const parSum = holes.reduce((acc, h) => acc + (h.hole?.par ?? 0), 0);
+        const toPar = strokes - parSum;
+        const displayValue = inner.length === 0 ? "-" : toPar === 0 ? "E" : (toPar > 0 ? `+${toPar}` : `${toPar}`);
+        return { period: r.number, value: strokes, displayValue, linescores: inner };
+      });
+    } else {
+      // No detail (non-roster player or fetch failed): fall back to leaderboard
+      // round totals so the team math still works even without hole detail.
+      linescores = (s.roundScores || []).filter(r => r?.score?.value != null);
+    }
     const madeCut = !cutEnforced || linescores.length >= 3;
-    players[normalize(name)] = { name, score, madeCut, linescores };
+    players[norm] = { name, score, madeCut, linescores };
   }
 
   let winner = null;
@@ -1591,7 +1663,7 @@ async function fetchScoresUSGA() {
     event: "US Open",
     status: { type: { description: roundLabel, shortDetail: roundLabel, state: completed ? "post" : "in", completed } },
     players,
-    pars: Array(18).fill(4),   // USGA leaderboard.json doesn't carry pars; renderer falls back gracefully
+    pars,
     completed,
     winner,
     sourceLabel: "USGA",
