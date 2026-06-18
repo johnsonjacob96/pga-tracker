@@ -691,10 +691,27 @@
   }
   body.theme-usopen .scorecard .par-row { background: #f5f2ea; color: #6a6354; }
   body.theme-usopen .scorecard .tot { background: #ece9e1; color: var(--usga-navy); }
-  body.theme-usopen .scorecard .h-eagle { background: var(--usga-gold); color: #fff; }
-  body.theme-usopen .scorecard .h-birdie { background: rgba(186,12,47,0.14); color: var(--usga-ribbon); }
-  body.theme-usopen .scorecard .h-bogey { background: rgba(10,34,64,0.07); color: var(--usga-navy); }
-  body.theme-usopen .scorecard .h-double { background: rgba(10,34,64,0.16); color: var(--usga-navy); font-weight: 800; }
+  /* Standard scorecard notation: hollow circle = birdie, double circle = eagle,
+     hollow square = bogey, double square = double-bogey or worse. The cell
+     stays neutral; the mark span sits inside it. */
+  body.theme-usopen .scorecard .sc-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 1.5px solid currentColor;
+  }
+  body.theme-usopen .scorecard .sc-birdie,
+  body.theme-usopen .scorecard .sc-eagle { border-radius: 50%; color: var(--usga-ribbon); }
+  body.theme-usopen .scorecard .sc-bogey,
+  body.theme-usopen .scorecard .sc-double { border-radius: 1px; color: var(--usga-navy); }
+  body.theme-usopen .scorecard .sc-eagle,
+  body.theme-usopen .scorecard .sc-double {
+    box-shadow: 0 0 0 1.5px #fff, 0 0 0 3px currentColor;
+  }
   body.theme-usopen .scorecard-legend {
     background: #f5f2ea;
     border-top-color: #d8d3c5;
@@ -1113,10 +1130,25 @@
   }
   .scorecard .par-row { background: var(--paper-warm); color: var(--ink-mute); }
   .scorecard .tot { background: var(--paper-deep); font-weight: 700; }
-  .scorecard .h-eagle { background: var(--old-gold); color: var(--paper); font-weight: 700; }
-  .scorecard .h-birdie { background: rgba(198,74,38,0.18); color: var(--persimmon); font-weight: 700; }
-  .scorecard .h-bogey { background: rgba(14,40,24,0.10); color: var(--forest); }
-  .scorecard .h-double { background: rgba(14,40,24,0.22); color: var(--forest); font-weight: 700; }
+  /* Standard golf scorecard notation. The cell stays neutral; the mark wraps
+     the number with a hollow circle (under par) or square (over par), doubled
+     for eagle and double-bogey-or-worse. */
+  .scorecard .sc-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+    box-sizing: border-box;
+    border: 1.5px solid currentColor;
+  }
+  .scorecard .sc-birdie,
+  .scorecard .sc-eagle { border-radius: 50%; color: var(--persimmon); }
+  .scorecard .sc-bogey,
+  .scorecard .sc-double { border-radius: 1px; color: var(--forest); }
+  .scorecard .sc-eagle,
+  .scorecard .sc-double { box-shadow: 0 0 0 1.5px var(--paper), 0 0 0 3px currentColor; }
   .scorecard .pending { color: var(--ink-soft); }
   .scorecard-mc {
     padding: 10px 14px;
@@ -1633,10 +1665,15 @@ async function fetchScoresUSGA() {
       // inner linescores[] with period (hole #) and value (strokes).
       linescores = detail.roundsInfo.map(r => {
         const holes = r.scorecard?.holeResults || [];
-        const inner = holes.map(h => ({
-          period: h.hole?.identifier,
-          value: h.score?.value ?? null,
-        }));
+        // USGA fills unplayed holes with value 0 and displayValue "-". Treat
+        // those as null so the scorecard renders "—" instead of "0".
+        const inner = holes.map(h => {
+          const played = h.score?.displayValue && h.score.displayValue !== "-";
+          return {
+            period: h.hole?.identifier,
+            value: played ? h.score.value : null,
+          };
+        });
         const strokes = inner.reduce((acc, h) => acc + (h.value ?? 0), 0);
         const parSum = holes.reduce((acc, h) => acc + (h.hole?.par ?? 0), 0);
         const toPar = strokes - parSum;
@@ -1761,12 +1798,16 @@ function toggleTeam(name) {
 function scoreCell(strokes, par) {
   if (strokes == null) return '<td class="pending">—</td>';
   const rel = strokes - par;
-  let cls = "";
-  if (rel <= -2) cls = "h-eagle";
-  else if (rel === -1) cls = "h-birdie";
-  else if (rel === 1) cls = "h-bogey";
-  else if (rel >= 2) cls = "h-double";
-  return `<td class="${cls}">${strokes}</td>`;
+  // Standard scorecard notation: circle for under par, square for over par,
+  // doubled outline for eagle / double-bogey. Par is plain. No fill colors.
+  let mark = "";
+  if (rel <= -2) mark = "sc-eagle";
+  else if (rel === -1) mark = "sc-birdie";
+  else if (rel === 1) mark = "sc-bogey";
+  else if (rel >= 2) mark = "sc-double";
+  return mark
+    ? `<td><span class="sc-mark ${mark}">${strokes}</span></td>`
+    : `<td>${strokes}</td>`;
 }
 
 function renderScorecard(player, pars) {
@@ -1835,11 +1876,11 @@ function renderScorecard(player, pars) {
       </div>
       ${mcNote}
       <div class="scorecard-legend">
-        <span><span class="sw" style="background:var(--old-gold);color:var(--paper);">3</span>eagle+</span>
-        <span><span class="sw" style="background:rgba(198,74,38,0.18);color:var(--persimmon);">3</span>birdie</span>
+        <span><span class="sc-mark sc-eagle">3</span>eagle+</span>
+        <span><span class="sc-mark sc-birdie">3</span>birdie</span>
         <span><span class="sw">4</span>par</span>
-        <span><span class="sw" style="background:rgba(14,40,24,0.10);color:var(--forest);">5</span>bogey</span>
-        <span><span class="sw" style="background:rgba(14,40,24,0.22);color:var(--forest);">6</span>double+</span>
+        <span><span class="sc-mark sc-bogey">5</span>bogey</span>
+        <span><span class="sc-mark sc-double">6</span>double+</span>
       </div>
     </div>`;
 }
