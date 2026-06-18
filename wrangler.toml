@@ -1,6 +1,6 @@
 # Cloudflare Pages Functions config. The site itself is the static repo root;
 # `functions/` is auto-routed by Pages (e.g. functions/api/foo.js → /api/foo).
 # This file mostly exists so `wrangler pages dev` doesn't warn on compat date.
-name = "pga-tracker"
+name = "locksoftheday"
 compatibility_date = "2026-06-18"
 pages_build_output_dir = "."
