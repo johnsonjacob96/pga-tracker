@@ -698,12 +698,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 4px;
     line-height: 1;
     box-sizing: border-box;
     border: 1.5px solid currentColor;
   }
+  body.theme-usopen .scorecard .sc-mark:empty { width: 22px; min-width: 22px; padding: 0; }
   body.theme-usopen .scorecard .sc-birdie,
   body.theme-usopen .scorecard .sc-eagle { border-radius: 50%; color: var(--usga-ribbon); }
   body.theme-usopen .scorecard .sc-bogey,
@@ -1137,12 +1139,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 4px;
     line-height: 1;
     box-sizing: border-box;
     border: 1.5px solid currentColor;
   }
+  .scorecard .sc-mark:empty { width: 22px; min-width: 22px; padding: 0; }
   .scorecard .sc-birdie,
   .scorecard .sc-eagle { border-radius: 50%; color: var(--persimmon); }
   .scorecard .sc-bogey,
@@ -1170,6 +1174,11 @@
     justify-content: center;
     font-family: 'Fraunces', serif;
     letter-spacing: 0.05em;
+  }
+  .scorecard-legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
   .scorecard-legend .sw {
     display: inline-block;
@@ -1666,20 +1675,29 @@ async function fetchScoresUSGA() {
       linescores = detail.roundsInfo.map(r => {
         const holes = r.scorecard?.holeResults || [];
         // USGA fills unplayed holes with value 0 and displayValue "-". Treat
-        // those as null so the scorecard renders "—" instead of "0".
+        // those as null so the scorecard renders "—" instead of "0", and only
+        // accumulate par for holes that were actually played so toPar is honest.
+        let strokes = 0;
+        let parSum = 0;
+        let playedHoles = 0;
         const inner = holes.map(h => {
           const played = h.score?.displayValue && h.score.displayValue !== "-";
+          if (played) {
+            strokes += h.score.value || 0;
+            parSum += h.hole?.par || 0;
+            playedHoles += 1;
+          }
           return {
             period: h.hole?.identifier,
             value: played ? h.score.value : null,
           };
         });
-        const strokes = inner.reduce((acc, h) => acc + (h.value ?? 0), 0);
-        const parSum = holes.reduce((acc, h) => acc + (h.hole?.par ?? 0), 0);
         const toPar = strokes - parSum;
-        const displayValue = inner.length === 0 ? "-" : toPar === 0 ? "E" : (toPar > 0 ? `+${toPar}` : `${toPar}`);
-        return { period: r.number, value: strokes, displayValue, linescores: inner };
-      });
+        const displayValue = playedHoles === 0
+          ? "-"
+          : toPar === 0 ? "E" : (toPar > 0 ? `+${toPar}` : `${toPar}`);
+        return { period: r.number, value: strokes, displayValue, linescores: inner, playedHoles };
+      }).filter(r => r.playedHoles > 0);
     } else {
       // No detail (non-roster player or fetch failed): fall back to leaderboard
       // round totals so the team math still works even without hole detail.
@@ -1876,11 +1894,11 @@ function renderScorecard(player, pars) {
       </div>
       ${mcNote}
       <div class="scorecard-legend">
-        <span><span class="sc-mark sc-eagle">3</span>eagle+</span>
-        <span><span class="sc-mark sc-birdie">3</span>birdie</span>
-        <span><span class="sw">4</span>par</span>
-        <span><span class="sc-mark sc-bogey">5</span>bogey</span>
-        <span><span class="sc-mark sc-double">6</span>double+</span>
+        <span><span class="sc-mark sc-eagle"></span>eagle+</span>
+        <span><span class="sc-mark sc-birdie"></span>birdie</span>
+        <span>par</span>
+        <span><span class="sc-mark sc-bogey"></span>bogey</span>
+        <span><span class="sc-mark sc-double"></span>double+</span>
       </div>
     </div>`;
 }
