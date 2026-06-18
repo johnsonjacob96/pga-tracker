@@ -1502,17 +1502,20 @@ async function fetchScores() {
   // Pre-tournament: ESPN sometimes reports phantom linescores from sectional qualifying.
   // Force everyone to madeCut=true at E so the live preview shows clean even-par teams.
   const preTournament = event.status?.type?.state === "pre";
+  // The cut is enforced after Round 2. Use Round 3 starting as the signal that
+  // the cut has been processed — until then every player still in the field is
+  // "in" (madeCut=true) and no penalty math applies.
+  const cutEnforced = competitors.some(c => (c.linescores || []).length >= 3);
   const players = {};
   for (const comp of competitors) {
     const name = comp.athlete?.fullName || comp.athlete?.displayName;
     if (!name) continue;
     const linescores = comp.linescores || [];
-    const statusName = comp.status?.type?.name || "";
-    const score = preTournament ? 0 : parseScore(comp.score);
-    const madeCut = preTournament ||
-                    linescores.length >= 3 ||
-                    statusName === "STATUS_ACTIVE" ||
-                    /STATUS_END_PERIOD/.test(statusName) && linescores.length >= 3;
+    // Player in the field but no score reported yet (hasn't teed off in R1):
+    // treat as E so they still count toward the team total like a live board.
+    const rawScore = preTournament ? 0 : parseScore(comp.score);
+    const score = (rawScore === null && !cutEnforced) ? 0 : rawScore;
+    const madeCut = preTournament || !cutEnforced || linescores.length >= 3;
     players[normalize(name)] = { name, score, madeCut, linescores: preTournament ? [] : linescores };
   }
 
@@ -1889,9 +1892,15 @@ async function refresh() {
         }
       }
       // Sync the live status line with a dot (in-play) or a clean tee-off message.
+      // Only surface the penalty value once the cut has actually been enforced and
+      // at least one team is taking a penalty — otherwise it's noise.
+      const penaltyApplied = state.teams.some(t => t.penaltyCount > 0);
+      const penaltyBit = penaltyApplied
+        ? ` · Penalty ${fmtScore(state.penalty).replace("-", "−")}`
+        : "";
       status.innerHTML = preTournament
         ? `Tees off ${formatDateRange(FOCUS.event)} &middot; Updated ${now}`
-        : `<span class="live-dot"></span>${eventStatus} &middot; Penalty ${fmtScore(state.penalty).replace("-", "−")}${winnerBit} &middot; Updated ${now}`;
+        : `<span class="live-dot"></span>${eventStatus}${penaltyBit}${winnerBit} &middot; Updated ${now}`;
       sub.innerHTML = preTournament
         ? `${eventStatus} · ${formatDateRange(FOCUS.event)} · Rosters set, scores at E until Thursday`
         : `<span class="live-dot"></span>${eventStatus} · Best Three Scores`;
