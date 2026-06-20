@@ -1703,7 +1703,12 @@ async function fetchScoresUSGA() {
       // round totals so the team math still works even without hole detail.
       linescores = (s.roundScores || []).filter(r => r?.score?.value != null);
     }
-    const madeCut = !cutEnforced || linescores.length >= 3;
+    // Authoritative cut survival comes from USGA themselves: missed-cut
+    // players carry position.displayValue === "MC". Anyone else still listed
+    // is in the field. Falling back to "linescores.length >= 3" was wrong
+    // because R3 doesn't exist for anyone until day 3 tees off.
+    const missedCutFlag = (s.position?.displayValue || "").toUpperCase() === "MC";
+    const madeCut = !cutEnforced || !missedCutFlag;
     players[norm] = { name, score, madeCut, linescores };
   }
 
