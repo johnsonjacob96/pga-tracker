@@ -1422,13 +1422,22 @@ function pickFocusEvent(season, today = new Date()) {
     const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(live.endDate + "T23:59:59"));
     return { event: live, mode: "live", nextEvent: next || null, season };
   }
-  // Live preview: roster drafted but tournament hasn't started yet. ESPN already has the field,
-  // so we render it live with all players at E (handled in fetchScores when status state === 'pre').
-  const upcomingDrafted = events.find(e =>
-    e.roster && !e.complete && new Date(e.startDate + "T00:00:00") > today);
-  if (upcomingDrafted) {
-    const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(upcomingDrafted.endDate + "T23:59:59"));
-    return { event: upcomingDrafted, mode: "live", nextEvent: next || null, season };
+  // Drafted but not finalized — covers two cases:
+  //   * Upcoming: ESPN already has the field, render at E (status state === 'pre').
+  //   * Just-ended-no-snapshot-baked: ESPN/USGA report Final state so the live
+  //     path renders it as the closing leaderboard until Jacob writes the snapshot.
+  // Pick whichever such event is closest to today so the Live tab always shows
+  // the most recent major instead of falling back to an older, snapshot-baked one.
+  const liveCandidates = events.filter(e => e.roster && !e.complete);
+  if (liveCandidates.length) {
+    liveCandidates.sort((a, b) => {
+      const da = Math.abs(new Date(a.startDate + "T12:00:00") - today);
+      const db = Math.abs(new Date(b.startDate + "T12:00:00") - today);
+      return da - db;
+    });
+    const pick = liveCandidates[0];
+    const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(pick.endDate + "T23:59:59"));
+    return { event: pick, mode: "live", nextEvent: next || null, season };
   }
   // Pending-draft: today is inside an event window but no roster yet
   const pendingDraft = events.find(e => inWindow(e) && !e.roster);

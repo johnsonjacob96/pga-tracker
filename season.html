@@ -426,23 +426,11 @@
 <main id="content"></main>
 
 <footer class="bottom">
-  Live PGA Championship feed via ESPN
+  Live feed via ESPN PGA scoreboard · U.S. Open via USGA
   <span class="colophon">Locks of the Day · MMXXVI</span>
 </footer>
 
 <script>
-const PGA_TEAMS = {
-  Fern:  ["Scottie Scheffler", "Chris Gotterup", "Tyrrell Hatton", "Keegan Bradley", "Sungjae Im"],
-  Troop: ["Cameron Young", "Rickie Fowler", "J.J. Spaun", "Harris English", "Ben Griffin"],
-  Ram:   ["Jon Rahm", "Min Woo Lee", "Adam Scott", "Alex Fitzpatrick", "Maverick McNealy"],
-  Bean:  ["Rory McIlroy", "Russell Henley", "Viktor Hovland", "Shane Lowry", "Austin Smotherman"],
-  Money: ["Xander Schauffele", "Patrick Cantlay", "Jordan Spieth", "Sam Burns", "Hideki Matsuyama"],
-  Gary:  ["Bryson DeChambeau", "Justin Thomas", "Patrick Reed", "Sam Stevens", "Max Homa"],
-  Taco:  ["Ludvig Aberg", "Justin Rose", "Robert MacIntyre", "Sepp Straka", "Matt McCarty"],
-  Cyc:   ["Brooks Koepka", "Collin Morikawa", "Si Woo Kim", "Akshay Bhatia", "Gary Woodland"],
-  Mags:  ["Matt Fitzpatrick", "Tommy Fleetwood", "Nicolai Hojgaard", "Kristoffer Reitan", "Jason Day"]
-};
-
 const EVENT_KEYS = ["Masters", "PGA Championship", "US Open", "Open Championship"];
 const SHORT_EVENT = { "Masters": "Masters", "PGA Championship": "PGA", "US Open": "U.S. Open", "Open Championship": "The Open" };
 
@@ -472,49 +460,133 @@ function parseScore(raw) {
   return parseInt(s, 10);
 }
 
-async function fetchLivePGA() {
+function applyTeamScoring(eventEntry, players, completed, winner) {
+  // Cut survival: if any player has played 3+ rounds the cut is enforced;
+  // anyone with fewer than 3 rounds AND no MC flag is treated as still in
+  // the field. USGA explicitly marks "MC" — we honor it when present.
+  const cutEnforced = Object.values(players).some(p => p.roundsPlayed >= 3);
+  for (const p of Object.values(players)) {
+    if (p.madeCut === undefined) {
+      p.madeCut = !cutEnforced || !p.missedCutFlag;
+    }
+  }
+  const made = Object.values(players).filter(p => p.madeCut && p.score !== null).map(p => p.score);
+  const penalty = (made.length ? Math.max(...made) : 0) + 2;
+  const winnerNorm = winner ? normalize(winner) : null;
+  const teamScores = {};
+  for (const [teamName, roster] of Object.entries(eventEntry.roster || {})) {
+    const ps = roster.map(rn => players[normalize(rn)] || { score: null, madeCut: false });
+    const sorted = ps.filter(p => p.madeCut && p.score !== null).sort((a, b) => a.score - b.score);
+    let total = 0;
+    for (let i = 0; i < Math.min(3, sorted.length); i++) total += sorted[i].score;
+    total += Math.max(0, 3 - sorted.length) * penalty;
+    if (winnerNorm && roster.some(rn => normalize(rn) === winnerNorm)) total -= 3;
+    teamScores[teamName] = total;
+  }
+  return teamScores;
+}
+
+async function fetchUSGAEvent(eventEntry) {
+  // Only the Cloudflare deployment has the worker; on GitHub Pages this 404s
+  // and we silently fall through to ESPN.
+  const year = new Date(eventEntry.startDate + "T12:00:00").getUTCFullYear();
+  const res = await fetch(`/api/usopen-scoreboard?year=${year}`);
+  if (!res.ok) return null;
+  const wrapper = await res.json();
+  if (!wrapper?.payload) return null;
+  const data = wrapper.payload;
+  const standings = data.standings || [];
+  if (!standings.length) return null;
+  const players = {};
+  for (const s of standings) {
+    const name = ((s.player?.firstName || "") + " " + (s.player?.lastName || "")).trim();
+    if (!name) continue;
+    const mc = (s.position?.displayValue || "").toUpperCase() === "MC";
+    players[normalize(name)] = {
+      name,
+      score: typeof s.toPar?.value === "number" ? s.toPar.value : null,
+      roundsPlayed: (s.roundScores || []).length,
+      missedCutFlag: mc,
+    };
+  }
+  const completed = data.round >= 4 && standings.every(s => /^F/i.test(s.holesThrough?.displayValue || ""));
+  let winner = null;
+  if (completed) {
+    const top = standings.find(s => s.position?.value === 1);
+    if (top) winner = ((top.player.firstName || "") + " " + (top.player.lastName || "")).trim();
+  }
+  const teamScores = applyTeamScoring(eventEntry, players, completed, winner);
+  return {
+    status: completed ? "Final" : `Round ${data.round} · In Progress`,
+    complete: completed,
+    winner,
+    teamScores,
+  };
+}
+
+async function fetchESPNEvent(eventEntry) {
+  const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard");
+  if (!res.ok) throw new Error(`ESPN ${res.status}`);
+  const data = await res.json();
+  const eventKey = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const want = eventKey(eventEntry.name);
+  const event = (data.events || []).find(e => e.name && eventKey(e.name).includes(want));
+  if (!event) return null;
+  const competition = event.competitions?.[0];
+  if (!competition) return null;
+  const players = {};
+  for (const comp of competition.competitors || []) {
+    const name = comp.athlete?.fullName || comp.athlete?.displayName;
+    if (!name) continue;
+    players[normalize(name)] = {
+      name,
+      score: parseScore(comp.score),
+      roundsPlayed: (comp.linescores || []).length,
+    };
+  }
+  const completed = event.status?.type?.completed === true;
+  let winner = null;
+  if (completed) {
+    const finishers = (competition.competitors || [])
+      .filter(c => (c.linescores || []).length === 4)
+      .map(c => ({ name: c.athlete?.fullName || c.athlete?.displayName, score: parseScore(c.score) }))
+      .filter(c => c.name && c.score !== null)
+      .sort((a, b) => a.score - b.score);
+    if (finishers.length) winner = finishers[0].name;
+  }
+  const teamScores = applyTeamScoring(eventEntry, players, completed, winner);
+  return {
+    status: event.status?.type?.description || "In Progress",
+    complete: completed,
+    winner,
+    teamScores,
+  };
+}
+
+async function fetchLiveEvent(eventEntry) {
+  // U.S. Open prefers USGA (via our Cloudflare proxy) when available because
+  // ESPN's leaderboard updates lag. Every other major rides ESPN directly.
+  if (eventEntry.name === "US Open") {
+    try {
+      const usga = await fetchUSGAEvent(eventEntry);
+      if (usga) return usga;
+    } catch (e) {
+      console.warn("USGA proxy failed, falling back to ESPN:", e);
+    }
+  }
   try {
-    const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard");
-    if (!res.ok) throw new Error(`ESPN ${res.status}`);
-    const data = await res.json();
-    const event = (data.events || []).find(e => /PGA Championship/i.test(e.name));
-    if (!event) return null;
-    const competition = event.competitions?.[0];
-    if (!competition) return null;
-    const players = {};
-    for (const comp of competition.competitors || []) {
-      const name = comp.athlete?.fullName || comp.athlete?.displayName;
-      if (!name) continue;
-      players[normalize(name)] = { name, score: parseScore(comp.score), madeCut: (comp.linescores || []).length >= 3 };
-    }
-    const made = Object.values(players).filter(p => p.madeCut && p.score !== null).map(p => p.score);
-    const penalty = (made.length ? Math.max(...made) : 0) + 2;
-    const completed = event.status?.type?.completed === true;
-    let winner = null;
-    if (completed) {
-      const finishers = (competition.competitors || [])
-        .filter(c => (c.linescores || []).length === 4)
-        .map(c => ({ name: c.athlete?.fullName || c.athlete?.displayName, score: parseScore(c.score) }))
-        .filter(c => c.name && c.score !== null)
-        .sort((a, b) => a.score - b.score);
-      if (finishers.length) winner = finishers[0].name;
-    }
-    const winnerNorm = winner ? normalize(winner) : null;
-    const teamScores = {};
-    for (const [teamName, roster] of Object.entries(PGA_TEAMS)) {
-      const ps = roster.map(rn => players[normalize(rn)] || { score: null, madeCut: false });
-      const sorted = ps.filter(p => p.madeCut && p.score !== null).sort((a, b) => a.score - b.score);
-      let total = 0;
-      for (let i = 0; i < Math.min(3, sorted.length); i++) total += sorted[i].score;
-      total += Math.max(0, 3 - sorted.length) * penalty;
-      if (winnerNorm && roster.some(rn => normalize(rn) === winnerNorm)) total -= 3;
-      teamScores[teamName] = total;
-    }
-    return { status: event.status?.type?.description || "In Progress", complete: completed, winner, teamScores };
+    return await fetchESPNEvent(eventEntry);
   } catch (e) {
-    console.error("Live PGA fetch failed:", e);
+    console.error(`Live fetch failed for ${eventEntry.name}:`, e);
     return null;
   }
+}
+
+function findLiveEvents(seasonData) {
+  // Any event with a roster drafted but not yet marked complete is "live" —
+  // either ongoing or just-ended-no-snapshot-baked. ESPN/USGA report Final
+  // state automatically once the tournament is over.
+  return (seasonData.events || []).filter(e => e.roster && !e.complete);
 }
 
 async function loadSeason() {
@@ -530,12 +602,13 @@ function teamScoreForOwner(seasonData, eventName, owner) {
   return team ? team.score : null;
 }
 
-function computeCumulative(seasonData, livePGA) {
+function computeCumulative(seasonData, liveMap) {
   const owners = Object.entries(seasonData.owners).map(([owner, teamName]) => {
     const scores = {};
     for (const evKey of EVENT_KEYS) {
-      if (evKey === "PGA Championship" && livePGA) {
-        scores[evKey] = livePGA.teamScores[teamName] ?? null;
+      const live = liveMap[evKey];
+      if (live) {
+        scores[evKey] = live.teamScores[teamName] ?? null;
       } else {
         scores[evKey] = teamScoreForOwner(seasonData, evKey, owner);
       }
@@ -547,13 +620,13 @@ function computeCumulative(seasonData, livePGA) {
   return owners;
 }
 
-function renderCumulative(rows, livePGA) {
+function renderCumulative(rows, liveMap) {
   const heads = EVENT_KEYS.map(e => `<th>${SHORT_EVENT[e]}</th>`).join("");
   const body = rows.map((r, i) => {
     const scoreCells = EVENT_KEYS.map(e => {
       const s = r.scores[e];
       if (s === null || s === undefined) return '<td class="score-cell pending">—</td>';
-      const live = e === "PGA Championship" && livePGA && !livePGA.complete;
+      const live = liveMap[e] && !liveMap[e].complete;
       return `<td class="score-cell ${scoreClass(s)}${live ? " live" : ""}">${fmtScore(s)}</td>`;
     }).join("");
     return `
@@ -578,8 +651,9 @@ function renderCumulative(rows, livePGA) {
   `;
 }
 
-function renderEvent(event, livePGA, ownerMap) {
-  if (!event.complete && !(event.name === "PGA Championship" && livePGA)) {
+function renderEvent(event, liveMap, ownerMap) {
+  const live = liveMap[event.name];
+  if (!event.complete && !live) {
     return `
       <article class="event upcoming">
         <div class="event-header">
@@ -592,15 +666,21 @@ function renderEvent(event, livePGA, ownerMap) {
   }
   let teams = [];
   let isLive = false, isFinal = false, winnerLine = "";
-  if (event.name === "PGA Championship" && livePGA) {
-    isLive = !livePGA.complete;
-    isFinal = livePGA.complete;
-    teams = Object.entries(livePGA.teamScores)
+  if (live) {
+    isLive = !live.complete;
+    isFinal = live.complete;
+    teams = Object.entries(live.teamScores)
       .map(([teamName, score]) => {
         const owner = Object.entries(ownerMap).find(([o, t]) => t === teamName)?.[0] || "?";
         return { owner, teamName, score };
       })
       .sort((a, b) => a.score - b.score);
+    if (live.complete && live.winner) {
+      const winnerNorm = normalize(live.winner);
+      const winningTeam = Object.entries(event.roster || {}).find(([_, roster]) => roster.some(rn => normalize(rn) === winnerNorm));
+      const pickedBy = winningTeam ? `picked by ${Object.entries(ownerMap).find(([_, t]) => t === winningTeam[0])?.[0] || winningTeam[0]}` : "not on any roster";
+      winnerLine = `Winner — ${live.winner} <em>(${pickedBy})</em>`;
+    }
   } else {
     isFinal = true;
     teams = (event.teams || []).slice().sort((a, b) => a.score - b.score);
@@ -647,15 +727,6 @@ function renderEvent(event, livePGA, ownerMap) {
   `;
 }
 
-function pgacIsLive(seasonData, today = new Date()) {
-  const pgac = (seasonData.events || []).find(e => e.name === "PGA Championship");
-  if (!pgac || !pgac.startDate || !pgac.endDate) return false;
-  if (pgac.complete) return false;
-  const start = new Date(pgac.startDate + "T00:00:00");
-  const end = new Date(pgac.endDate + "T23:59:59");
-  return today >= start && today <= end;
-}
-
 function findNextUpcoming(seasonData, today = new Date()) {
   return (seasonData.events || []).find(e => {
     if (!e.startDate || e.complete) return false;
@@ -668,15 +739,16 @@ async function render() {
   const content = document.getElementById("content");
   try {
     const seasonData = await loadSeason();
-    const shouldFetchLive = pgacIsLive(seasonData);
-    let livePGA = null;
-    if (shouldFetchLive) {
-      status.textContent = "Pulling live PGA Championship scores…";
-      livePGA = await fetchLivePGA();
+    const liveEvents = findLiveEvents(seasonData);
+    const liveMap = {};
+    if (liveEvents.length) {
+      status.textContent = `Pulling live scores for ${liveEvents.map(e => e.name).join(", ")}…`;
+      const results = await Promise.all(liveEvents.map(e => fetchLiveEvent(e)));
+      liveEvents.forEach((e, i) => { if (results[i]) liveMap[e.name] = results[i]; });
     }
-    const cumulative = computeCumulative(seasonData, livePGA);
-    const cumHtml = renderCumulative(cumulative, livePGA);
-    const eventsHtml = seasonData.events.map(e => renderEvent(e, livePGA, seasonData.owners)).join("");
+    const cumulative = computeCumulative(seasonData, liveMap);
+    const cumHtml = renderCumulative(cumulative, liveMap);
+    const eventsHtml = seasonData.events.map(e => renderEvent(e, liveMap, seasonData.owners)).join("");
     content.innerHTML = `
       <div class="section-label">Cumulative Standings <em>lowest wins</em></div>
       ${cumHtml}
@@ -684,9 +756,10 @@ async function render() {
       ${eventsHtml}
     `;
     const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const liveNames = Object.keys(liveMap);
     let statusBit;
-    if (livePGA) {
-      statusBit = `PGA Championship · ${livePGA.status}`;
+    if (liveNames.length) {
+      statusBit = liveNames.map(n => `${n === "Open Championship" ? "The Open" : n} · ${liveMap[n].status}`).join(" · ");
     } else {
       const next = findNextUpcoming(seasonData);
       statusBit = next ? `Next: ${next.name === "Open Championship" ? "The Open" : next.name} · ${next.month}` : "All majors complete";
@@ -698,13 +771,13 @@ async function render() {
   }
 }
 
-// Poll every 60s only while the PGA Championship is live; otherwise this is a static page.
+// Poll every 60s while any major is live (or just-ended-no-snapshot); otherwise static.
 let seasonPollTimer = null;
 async function bootstrap() {
   await render();
   try {
     const s = await loadSeason();
-    if (pgacIsLive(s) && !seasonPollTimer) {
+    if (findLiveEvents(s).length && !seasonPollTimer) {
       seasonPollTimer = setInterval(render, 60000);
     }
   } catch (_) { /* ignore */ }
