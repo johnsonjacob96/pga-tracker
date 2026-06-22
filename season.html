@@ -509,7 +509,11 @@ async function fetchUSGAEvent(eventEntry) {
       missedCutFlag: mc,
     };
   }
-  const completed = data.round >= 4 && standings.every(s => /^F/i.test(s.holesThrough?.displayValue || ""));
+  // Missed-cut players have no holesThrough field, so filter to the active
+  // field before requiring every player to be marked "F". Otherwise the
+  // tournament would never flip to Final.
+  const activeField = standings.filter(s => s.holesThrough?.displayValue);
+  const completed = data.round >= 4 && activeField.length > 0 && activeField.every(s => /^F/i.test(s.holesThrough.displayValue));
   let winner = null;
   if (completed) {
     const top = standings.find(s => s.position?.value === 1);

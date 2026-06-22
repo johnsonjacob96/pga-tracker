@@ -1614,7 +1614,11 @@ async function fetchScoresUSGA() {
   // Authoritative cut signal from USGA. position > 0 with projected=false
   // means the line is set; until then every player in the field is "in".
   const cutEnforced = (data.cutLine?.position || 0) > 0 && data.cutLine.projected === false;
-  const completed = data.round >= 4 && standings.every(s => /^F/i.test(s.holesThrough?.displayValue || ""));
+  // Tournament is complete when round 4 is set AND every player still in the
+  // field has holesThrough = "F". Missed-cut players have no holesThrough, so
+  // filter them out before checking, otherwise we'd never flip to Final.
+  const activeField = standings.filter(s => s.holesThrough?.displayValue);
+  const completed = data.round >= 4 && activeField.length > 0 && activeField.every(s => /^F/i.test(s.holesThrough.displayValue));
 
   // Index standings by normalized name and collect player identifiers for the
   // drafted roster names — those are the ones we want hole-by-hole for.
