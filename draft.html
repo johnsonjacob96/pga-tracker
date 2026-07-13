@@ -275,7 +275,24 @@
 </main>
 
 <script>
-const EVENT_NAME = "Open Championship";
+// Target event: the first major that isn't complete and has no roster yet.
+// Resolved from season data at load so this page keeps working season after
+// season without edits; falls back to The Open if resolution fails.
+let EVENT_NAME = "Open Championship";
+fetch("./data/2026-season.json?v=" + Date.now())
+  .then((r) => r.json())
+  .then((season) => {
+    const next = (season.events || []).find((e) => !e.complete && !e.roster);
+    if (next) {
+      EVENT_NAME = next.name;
+      document.querySelector(".strip").textContent =
+        `Drop in a screenshot of the draft — publishes ${next.name === "Open Championship" ? "The Open" : next.name} rosters to the live site`;
+    } else {
+      document.querySelector(".strip").textContent =
+        "All majors drafted — publishing would overwrite an existing roster";
+    }
+  })
+  .catch(() => {});
 const keyInput = document.getElementById("key");
 const drop = document.getElementById("drop");
 const fileInput = document.getElementById("file");

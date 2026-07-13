@@ -1815,6 +1815,7 @@
   <a href="./" class="active">Live</a>
   <a href="./season.html">Season</a>
   <a href="./history.html">Archive</a>
+  <a href="https://locksoftheday.pages.dev/draft.html">Draft</a>
 </nav>
 
 <!-- Full-bleed U.S. Open championship rail. Only renders visually when
@@ -2419,12 +2420,16 @@ async function fetchScoresOpen() {
     players[normalize(name)] = { name, score, madeCut, linescores };
   }
 
-  // Complete when R4 is the current round and every player still standing has
-  // an R4 total posted. (A playoff doesn't change r4, so this flips at the
-  // right moment; the champion comes from the final position column below.)
+  // Complete when R4 is the current round, every player still standing has an
+  // R4 total posted, AND the lead is no longer tied. The tie guard matters:
+  // during a playoff all r4 totals exist but the champion isn't decided —
+  // flipping to Final then would pay the −3 winner bonus to the wrong team.
+  // The R&A drops the "T" from the leader's position once the playoff ends.
   const active = field.filter(p => p.status === 1);
+  const leader = field.find(p => p.position && p.position.sortValue === 1);
+  const tiedLead = (leader?.position?.displayValue || "").toUpperCase().startsWith("T");
   const completed = !preTournament && (data.currentRound || 0) >= 4 &&
-    active.length > 0 && active.every(p => p.r4 != null);
+    active.length > 0 && active.every(p => p.r4 != null) && !tiedLead;
 
   let winner = null;
   if (completed) {

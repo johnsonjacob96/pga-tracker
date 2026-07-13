@@ -400,6 +400,7 @@
   <a href="./">Live</a>
   <a href="./season.html" class="active">Season</a>
   <a href="./history.html">Archive</a>
+  <a href="https://locksoftheday.pages.dev/draft.html">Draft</a>
 </nav>
 
 <div class="masthead">
@@ -426,7 +427,7 @@
 <main id="content"></main>
 
 <footer class="bottom">
-  Live feed via ESPN PGA scoreboard · U.S. Open via USGA
+  Live feed via ESPN PGA scoreboard · U.S. Open via USGA · The Open via R&amp;A
   <span class="colophon">Locks of the Day · MMXXVI</span>
 </footer>
 
@@ -467,7 +468,11 @@ function applyTeamScoring(eventEntry, players, completed, winner) {
   const cutEnforced = Object.values(players).some(p => p.roundsPlayed >= 3);
   for (const p of Object.values(players)) {
     if (p.madeCut === undefined) {
-      p.madeCut = !cutEnforced || !p.missedCutFlag;
+      // Explicit MC flag (USGA) wins; otherwise infer from rounds played
+      // (ESPN: 3+ rounds means the player survived the cut). `!p.missedCutFlag`
+      // alone is wrong on the ESPN path — undefined would pass everyone.
+      p.madeCut = !cutEnforced ||
+        (p.missedCutFlag !== undefined ? !p.missedCutFlag : p.roundsPlayed >= 3);
     }
   }
   const made = Object.values(players).filter(p => p.madeCut && p.score !== null).map(p => p.score);
@@ -528,13 +533,62 @@ async function fetchUSGAEvent(eventEntry) {
   };
 }
 
+async function fetchRandAEvent(eventEntry) {
+  // The Open rides the R&A's own feed via our Cloudflare proxy (theopen.com's
+  // 20s feed). On GitHub Pages this 404s and we fall through to ESPN.
+  const res = await fetch("/api/open-scoreboard");
+  if (!res.ok) return null;
+  const wrapper = await res.json();
+  if (!wrapper?.payload) return null;
+  const data = wrapper.payload;
+  const field = data.players || [];
+  if (!field.length) return null;
+  const preTournament = field.every(p => p.toPar == null && p.r1 == null);
+  const players = {};
+  for (const p of field) {
+    const name = ((p.firstName || "") + " " + (p.lastName || "")).trim();
+    if (!name) continue;
+    const raw = typeof p.toPar === "number" ? p.toPar : parseScore(p.toPar);
+    players[normalize(name)] = {
+      name,
+      score: preTournament || raw === null ? 0 : raw,
+      // Status enum is authoritative: 1 ACTIVE, 2 CUT, 3 WD, 4 DQ, 5 NR, 6 RTD.
+      madeCut: p.status === 1 || p.status === undefined,
+      roundsPlayed: [p.r1, p.r2, p.r3, p.r4].filter(r => r != null).length,
+    };
+  }
+  const active = field.filter(p => p.status === 1);
+  // Tie guard: don't flip to Final mid-playoff (see index.html fetchScoresOpen).
+  const leader = field.find(p => p.position && p.position.sortValue === 1);
+  const tiedLead = (leader?.position?.displayValue || "").toUpperCase().startsWith("T");
+  const completed = !preTournament && (data.currentRound || 0) >= 4 &&
+    active.length > 0 && active.every(p => p.r4 != null) && !tiedLead;
+  let winner = null;
+  if (completed) {
+    const top = field.find(p => p.position && (p.position.sortValue === 1 || p.position.displayValue === "1"));
+    if (top) winner = ((top.firstName || "") + " " + (top.lastName || "")).trim();
+  }
+  const teamScores = applyTeamScoring(eventEntry, players, completed, winner);
+  return {
+    status: completed ? "Final" : preTournament ? "Practice Days" : `Round ${data.currentRound} · In Progress`,
+    complete: completed,
+    winner,
+    teamScores,
+  };
+}
+
+// Majors ESPN names differently from season.json — same aliases as index.html.
+const ESPN_ALIASES = {
+  "Open Championship": ["The Open", "British Open", "154th Open"],
+};
+
 async function fetchESPNEvent(eventEntry) {
   const res = await fetch("https://site.api.espn.com/apis/site/v2/sports/golf/pga/scoreboard");
   if (!res.ok) throw new Error(`ESPN ${res.status}`);
   const data = await res.json();
   const eventKey = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const want = eventKey(eventEntry.name);
-  const event = (data.events || []).find(e => e.name && eventKey(e.name).includes(want));
+  const wants = [eventEntry.name, ...(ESPN_ALIASES[eventEntry.name] || [])].map(eventKey);
+  const event = (data.events || []).find(e => e.name && wants.some(w => eventKey(e.name).includes(w)));
   if (!event) return null;
   const competition = event.competitions?.[0];
   if (!competition) return null;
@@ -568,14 +622,22 @@ async function fetchESPNEvent(eventEntry) {
 }
 
 async function fetchLiveEvent(eventEntry) {
-  // U.S. Open prefers USGA (via our Cloudflare proxy) when available because
-  // ESPN's leaderboard updates lag. Every other major rides ESPN directly.
+  // U.S. Open prefers USGA, The Open prefers the R&A (both via our Cloudflare
+  // proxies) because ESPN's leaderboard lags. Everything else rides ESPN.
   if (eventEntry.name === "US Open") {
     try {
       const usga = await fetchUSGAEvent(eventEntry);
       if (usga) return usga;
     } catch (e) {
       console.warn("USGA proxy failed, falling back to ESPN:", e);
+    }
+  }
+  if (eventEntry.name === "Open Championship") {
+    try {
+      const randa = await fetchRandAEvent(eventEntry);
+      if (randa) return randa;
+    } catch (e) {
+      console.warn("R&A proxy failed, falling back to ESPN:", e);
     }
   }
   try {
