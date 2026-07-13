@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Locks of the Day · Majors Tracker</title>
+<script>
+// The Cloudflare deployment is canonical (it runs the /api functions).
+// The old GitHub Pages host now just forwards there, preserving deep links.
+if (location.hostname === "johnsonjacob96.github.io")
+  location.replace("https://locksoftheday.pages.dev" + location.pathname.replace(/^\/pga-tracker/, "") + location.search);
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1768,6 +1774,92 @@
     body.theme-open .scorecards { padding: 10px 14px 14px 14px; }
   }
 
+  /* =====================================================================
+     LIVE INTEL — watch strip (bonus + projected cut), movement arrows,
+     cut-risk player markers. Base editorial styling with per-theme skins.
+     ===================================================================== */
+  .watch-strip {
+    padding: 10px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    font-family: 'Spectral', serif;
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule-soft);
+    line-height: 1.5;
+  }
+  .ws-seg em { color: var(--ink-soft); font-style: italic; }
+  .ws-tag {
+    font-family: 'Fraunces', serif;
+    font-weight: 700;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 9.5px;
+    margin-right: 8px;
+    color: var(--persimmon);
+  }
+  .rank-move {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0;
+    margin-left: 4px;
+    vertical-align: 3px;
+  }
+  .rank-move.up { color: var(--old-gold); }
+  .rank-move.down { color: var(--ink-soft); }
+  .pl.cut-risk {
+    border-bottom: 1px dotted var(--crimson);
+    padding-bottom: 1px;
+  }
+
+  body.theme-open .watch-strip {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--open-line);
+    padding: 11px 18px;
+  }
+  body.theme-open .ws-tag {
+    font-family: 'Hanken Grotesk', sans-serif;
+    letter-spacing: 0.22em;
+    color: var(--open-yellow);
+  }
+  body.theme-open .ws-seg em { color: var(--ink-soft); font-style: normal; }
+  body.theme-open .rank-move { font-family: 'Hanken Grotesk', sans-serif; }
+  body.theme-open .rank-move.up { color: var(--open-yellow); }
+  body.theme-open .rank-move.down { color: rgba(245,244,239,0.35); }
+  body.theme-open .pl.cut-risk { border-bottom-color: var(--open-red); }
+
+  body.theme-usopen .watch-strip {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    background: #fff;
+    color: #5a5345;
+    border-bottom: 1px solid #e7e3da;
+    padding: 11px 18px;
+  }
+  body.theme-usopen .ws-tag { font-family: 'Inter', sans-serif; letter-spacing: 0.22em; color: var(--usga-ribbon); }
+  /* USGA rank chip is a fixed square — hang the arrow underneath it */
+  body.theme-usopen .team-rank { position: relative; }
+  body.theme-usopen .rank-move {
+    position: absolute;
+    bottom: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+  }
+  body.theme-usopen .rank-move.up { color: var(--usga-gold); }
+  body.theme-usopen .rank-move.down { color: #a89e85; }
+  body.theme-usopen .pl.cut-risk { border-bottom-color: var(--usga-ribbon); }
+
+  @media (max-width: 700px) {
+    .watch-strip { font-size: 11px; gap: 6px 16px; padding: 8px 14px; }
+    .ws-tag { display: block; margin-bottom: 2px; }
+  }
+
   /* --- Mobile --- */
   @media (max-width: 700px) {
     .masthead { padding: 10px 14px 6px; }
@@ -2204,7 +2296,9 @@ async function fetchScoresESPN() {
       .sort((a, b) => a.score - b.score);
     if (finishers.length) winner = finishers[0].name;
   }
-  return { event: event.name, status: event.status, players, pars, completed, winner, sourceLabel: "ESPN" };
+  const maxRounds = Math.max(0, ...competitors.map(c => (c.linescores || []).length));
+  const cutWatch = event.status?.type?.state === "in" && !completed && maxRounds <= 2;
+  return { event: event.name, status: event.status, players, pars, completed, winner, cutWatch, sourceLabel: "ESPN" };
 }
 
 async function fetchScoresUSGA() {
@@ -2447,6 +2541,8 @@ async function fetchScoresOpen() {
     pars,
     completed,
     winner,
+    // Cut-watch is meaningful only while the cut can still move (R1–R2 in play)
+    cutWatch: !completed && !preTournament && (data.currentRound || 1) <= (data.cutRound || 2),
     sourceLabel: "R&A",
   };
 }
@@ -2527,7 +2623,52 @@ function computeStandings(data) {
   });
 
   teams.sort((a, b) => a.total - b.total);
-  return { teams, penalty, worstMadeCut, pars: data.pars, completed: data.completed, winner: data.winner, sourceLabel: data.sourceLabel };
+
+  // --- Cut-line watch (R1–R2 only): project the cut from the live field and
+  // flag rostered players currently on the wrong side of it. ---
+  const CUT_TOP = { "Masters": 50, "PGA Championship": 70, "US Open": 60, "Open Championship": 70 };
+  let cutInfo = null;
+  if (data.cutWatch) {
+    const top = CUT_TOP[FOCUS?.event?.name] || 70;
+    const fieldScores = Object.values(players)
+      .filter(p => p.madeCut && p.score !== null)
+      .map(p => p.score)
+      .sort((a, b) => a - b);
+    if (fieldScores.length > top) {
+      const line = fieldScores[top - 1];   // "top N and ties" — everyone ≤ line is in
+      const atRisk = [];
+      for (const [teamName, roster] of Object.entries(TEAMS)) {
+        for (const rn of roster) {
+          const p = players[normalize(rn)];
+          if (p && p.madeCut && p.score !== null && p.score > line) {
+            atRisk.push({ rosterName: rn, team: teamName, score: p.score });
+          }
+        }
+      }
+      atRisk.sort((a, b) => a.score - b.score);
+      cutInfo = { line, top, atRisk };
+    }
+  }
+
+  // --- Winner-bonus watch: while in play, note when the outright/co-leader
+  // sits on a roster, since that team collects −3 if the lead holds. ---
+  let bonusWatch = null;
+  if (!data.completed && data.status?.type?.state === "in") {
+    const made = Object.values(players).filter(p => p.madeCut && p.score !== null);
+    if (made.length) {
+      const lead = Math.min(...made.map(p => p.score));
+      const leaderNorms = new Set(made.filter(p => p.score === lead).map(p => normalize(p.name)));
+      const held = [];
+      for (const [teamName, roster] of Object.entries(TEAMS)) {
+        for (const rn of roster) {
+          if (leaderNorms.has(normalize(rn))) held.push({ rosterName: rn, team: teamName, score: lead });
+        }
+      }
+      if (held.length) bonusWatch = { score: lead, holders: held, shared: leaderNorms.size > 1 };
+    }
+  }
+
+  return { teams, penalty, worstMadeCut, pars: data.pars, completed: data.completed, winner: data.winner, cutInfo, bonusWatch, sourceLabel: data.sourceLabel };
 }
 
 const expandedTeams = new Set();
@@ -2635,8 +2776,8 @@ function render(state) {
   const content = document.getElementById("content");
   const usopen = document.body.classList.contains("theme-usopen");
 
-  // Column header bar — only meaningful in the championship theme.
-  const colhead = usopen
+  // Column header bar — only meaningful in the championship themes.
+  const colhead = usopen || document.body.classList.contains("theme-open")
     ? `<div class="lb-colhead" role="row">
          <span class="col-pos">POS</span>
          <span class="col-team">TEAM</span>
@@ -2644,8 +2785,61 @@ function render(state) {
        </div>`
     : "";
 
-  content.innerHTML = colhead + teams.map((team, idx) => {
+  // Watch strip: winner-bonus + projected-cut intel while the round is live.
+  let watchStrip = "";
+  {
+    const bits = [];
+    if (state.bonusWatch) {
+      const names = state.bonusWatch.holders
+        .map(h => `${SHORT_NAMES[h.rosterName] || h.rosterName} <em>(${h.team})</em>`)
+        .join(", ");
+      const lead = state.bonusWatch.shared ? "co-leads" : "leads";
+      bits.push(`<span class="ws-seg"><span class="ws-tag">Bonus watch</span>${names} ${lead} at ${fmtScore(state.bonusWatch.score).replace("-", "−")} — that team collects −3 if it holds</span>`);
+    }
+    if (state.cutInfo) {
+      const MAX_RISK = 12;
+      const shown = state.cutInfo.atRisk.slice(0, MAX_RISK);
+      const extra = state.cutInfo.atRisk.length - shown.length;
+      const risk = shown.length
+        ? shown.map(r => `${SHORT_NAMES[r.rosterName] || r.rosterName} ${fmtScore(r.score).replace("-", "−")} <em>(${r.team})</em>`).join(", ")
+          + (extra > 0 ? ` <em>+${extra} more</em>` : "")
+        : "every rostered player is inside the line";
+      bits.push(`<span class="ws-seg"><span class="ws-tag">Projected cut ${fmtScore(state.cutInfo.line).replace("-", "−")}</span>top ${state.cutInfo.top} &amp; ties · outside: ${risk}</span>`);
+    }
+    if (bits.length) watchStrip = `<div class="watch-strip">${bits.join("")}</div>`;
+  }
+
+  // Movement arrows: remember the last standings order per event and show the
+  // most recent move next to the position until the order changes again.
+  let moves = {};
+  if (FOCUS?.mode === "live" && !state.completed) {
+    try {
+      const evKey = "lotd-ranks-" + (FOCUS?.event?.name || "");
+      const stored = JSON.parse(localStorage.getItem(evKey) || "{}");
+      const ranks = {};
+      teams.forEach((t, i) => { ranks[t.teamName] = i + 1; });
+      if (stored.ranks) {
+        const changed = teams.some(t => stored.ranks[t.teamName] !== ranks[t.teamName]);
+        if (changed) {
+          for (const t of teams) {
+            const prev = stored.ranks[t.teamName];
+            const d = (prev || ranks[t.teamName]) - ranks[t.teamName];
+            if (d) moves[t.teamName] = d;
+          }
+        } else {
+          moves = stored.moves || {};
+        }
+      }
+      localStorage.setItem(evKey, JSON.stringify({ ranks, moves }));
+    } catch (_) { /* private mode etc. — arrows are decoration */ }
+  }
+
+  content.innerHTML = colhead + watchStrip + teams.map((team, idx) => {
     const rank = ordinal(idx + 1);
+    const move = moves[team.teamName];
+    const moveHtml = move
+      ? `<span class="rank-move ${move > 0 ? "up" : "down"}">${move > 0 ? "▲" : "▼"}${Math.abs(move)}</span>`
+      : "";
     const isLeader = idx === 0;
     const isExpanded = expandedTeams.has(team.teamName);
     const players = team.players.map(p => {
@@ -2655,6 +2849,7 @@ function render(state) {
       else if (!p.madeCut) cls += " missed-cut";
       else if (p.counting) cls += " counting";
       else cls += " bench";
+      if (state.cutInfo && p.madeCut && p.score !== null && p.score > state.cutInfo.line) cls += " cut-risk";
       const sc = fmtScore(p.score);
       const sCls = p.madeCut ? scoreClass(p.score) : "";
       return `<span class="${cls}">${short}<span class="pl-score ${sCls}">${sc}</span></span>`;
@@ -2673,7 +2868,7 @@ function render(state) {
     return `
       <article class="team${isLeader ? " leader" : ""}${isExpanded ? " expanded" : ""}" data-team="${team.teamName}">
         <div class="team-grid">
-          <div class="team-rank">${rank}</div>
+          <div class="team-rank">${rank}${moveHtml}</div>
           <div class="team-identity">
             <div class="team-eyebrow">${owner}${expandChevron}</div>
             <h2 class="team-name">${team.teamName}${winnerTag}</h2>

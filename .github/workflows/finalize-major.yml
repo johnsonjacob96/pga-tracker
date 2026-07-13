@@ -1,0 +1,35 @@
+# Bakes final results into data/2026-season.json after each major ends.
+# Runs Monday and Tuesday mornings (covers Monday playoff finishes); exits
+# quietly when there's nothing to finalize. Can also be run manually from
+# the Actions tab.
+name: Finalize major
+
+on:
+  schedule:
+    - cron: "0 13 * * 1,2"   # Mon+Tue 13:00 UTC (8am CT)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Finalize completed majors
+        run: node finalize.mjs
+      - name: Commit if changed
+        run: |
+          if git diff --quiet data/2026-season.json; then
+            echo "No changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/2026-season.json
+          git commit -m "Auto-finalize major results"
+          git push
