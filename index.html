@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Locks of the Day · Majors Tracker</title>
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta name="theme-color" content="#0e2818">
+<script>
+if ("serviceWorker" in navigator && location.protocol === "https:")
+  navigator.serviceWorker.register("/sw.js").catch(() => {});
+</script>
 <script>
 // The Cloudflare deployment is canonical (it runs the /api functions).
 // The old GitHub Pages host now just forwards there, preserving deep links.
