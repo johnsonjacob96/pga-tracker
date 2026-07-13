@@ -6,7 +6,7 @@
 <title>Locks of the Day · Majors Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Spectral:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --paper:        #f1ebdd;
@@ -1237,6 +1237,537 @@
     color: var(--ink-mute);
   }
 
+  /* =====================================================================
+     THE OPEN CHAMPIONSHIP THEME
+     ---------------------------------------------------------------------
+     Styled on theopen.com's own leaderboard: full midnight-ink page
+     (#06051e), hairline row dividers, letterspaced serif caps for names
+     (Cardinal ≈ Cormorant Garamond, Founders Grotesk ≈ Hanken Grotesk),
+     and the R&A's signature yellow (#ffba00) used sparingly — the venue
+     strip, the leader, the live accents. All gated behind body.theme-open;
+     the U.S. Open keeps theme-usopen, Masters/PGA keep the editorial mast.
+     ===================================================================== */
+  body.theme-open {
+    --paper:        #06051e;      /* midnight ink page */
+    --ink:          #f5f4ef;
+    --ink-mute:     rgba(245,244,239,0.55);
+    --ink-soft:     rgba(245,244,239,0.38);
+    --rule:         rgba(255,255,255,0.12);
+    --rule-soft:    rgba(255,255,255,0.07);
+    --open-ink:     #06051e;
+    --open-raised:  #0c0b2a;      /* cards a half-step off the page */
+    --open-yellow:  #ffba00;      /* R&A pin-flag yellow */
+    --open-red:     #ff5f56;      /* under par, lifted for dark ground */
+    --open-green:   #8ab598;      /* over par */
+    --open-line:    rgba(255,255,255,0.10);
+    /* renderScorecard writes inline var(--persimmon) for round to-par; keep
+       every red on this theme the same lifted red. */
+    --persimmon:        #ff5f56;
+    --persimmon-bright: #ff5f56;
+    background-image: none;
+    font-family: 'Hanken Grotesk', 'Helvetica Neue', Helvetica, sans-serif;
+  }
+
+  /* Top nav — theopen.com treatment: letterspaced serif caps on midnight,
+     thin yellow keyline under the active item. */
+  body.theme-open nav.topnav {
+    background: var(--open-ink);
+    border-bottom: 1px solid var(--open-line);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    padding: 12px 0;
+  }
+  body.theme-open nav.topnav a { color: rgba(245,244,239,0.78); padding: 4px 26px; }
+  body.theme-open nav.topnav a + a { border-left-color: rgba(255,255,255,0.10); }
+  body.theme-open nav.topnav a:hover,
+  body.theme-open nav.topnav a.active { color: #fff; }
+  body.theme-open nav.topnav a.active::after {
+    background: var(--open-yellow);
+    height: 2px;
+    bottom: -12px;
+  }
+
+  /* Championship rail — midnight, wordmark left, restrained center titles */
+  .open-rail { display: none; }
+  body.theme-open .open-rail {
+    display: block;
+    background: var(--open-ink);
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .open-rail-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 20px 22px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 28px;
+  }
+  .open-wordmark {
+    height: 58px;
+    width: auto;
+    display: block;
+  }
+  .open-rail-center { text-align: center; }
+  .open-rail-eyebrow {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--open-yellow);
+    margin-bottom: 6px;
+  }
+  .open-rail-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 21px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .open-rail-right { display: flex; align-items: center; }
+  .open-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    padding: 8px 15px;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    line-height: 1;
+  }
+  .open-status-pill .pill-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--open-red);
+    box-shadow: 0 0 0 3px rgba(255,95,86,0.18);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .open-status-pill.upcoming .pill-dot {
+    background: var(--open-yellow);
+    box-shadow: 0 0 0 3px rgba(255,186,0,0.16);
+    animation: none;
+  }
+  .open-status-pill.final .pill-dot {
+    background: #8ab598;
+    box-shadow: none;
+    animation: none;
+  }
+
+  /* Venue strip — the R&A's yellow alpha-row, carrying course facts */
+  .open-subrail { display: none; }
+  body.theme-open .open-subrail {
+    display: block;
+    background: var(--open-yellow);
+    color: #2a2a2a;
+  }
+  .open-subrail-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 8px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+  .open-subrail-left { display: flex; align-items: center; gap: 12px; }
+  .open-subrail-venue {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #06051e;
+  }
+  .open-subrail-divider {
+    width: 1px; height: 14px;
+    background: rgba(6,5,30,0.35);
+    display: inline-block;
+  }
+  .open-subrail-meta { font-weight: 600; color: rgba(6,5,30,0.75); }
+  .open-subrail-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(6,5,30,0.7);
+  }
+  .open-subrail-right strong { color: #06051e; font-weight: 800; }
+
+  /* The rail replaces the editorial masthead */
+  body.theme-open .masthead { display: none; }
+  body.theme-open .status-bar {
+    max-width: 1180px;
+    font-family: 'Hanken Grotesk', sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-bottom: none;
+    padding: 16px 22px 8px;
+    color: var(--ink-mute);
+    font-size: 10.5px;
+    font-weight: 600;
+    background: var(--open-ink);
+  }
+  body.theme-open .status-bar #status .live-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--open-red);
+    margin-right: 8px;
+    vertical-align: middle;
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  body.theme-open .refresh-btn {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    border: 1px solid rgba(255,255,255,0.28);
+    color: #fff;
+    background: transparent;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 10px;
+  }
+  body.theme-open .refresh-btn:hover {
+    background: var(--open-yellow);
+    border-color: var(--open-yellow);
+    color: #06051e;
+  }
+
+  /* Column headers — hairline-framed, letterspaced, no fill */
+  body.theme-open .lb-colhead {
+    display: grid;
+    grid-template-columns: 56px 1fr 90px;
+    align-items: center;
+    background: transparent;
+    color: var(--ink-mute);
+    padding: 12px 18px;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    border-top: 1px solid var(--open-line);
+    border-bottom: 1px solid var(--open-line);
+  }
+  body.theme-open .lb-colhead .col-pos { text-align: center; }
+  body.theme-open .lb-colhead .col-team { padding-left: 12px; }
+  body.theme-open .lb-colhead .col-total { text-align: right; }
+
+  /* Team rows — dark, hairline-separated, like the R&A leaderboard */
+  body.theme-open main {
+    max-width: 1180px;
+    padding: 0 0 36px;
+    background: var(--open-ink);
+  }
+  body.theme-open .team {
+    background: transparent;
+    border-top: 1px solid var(--rule-soft);
+    padding: 0;
+    transition: background 0.12s;
+  }
+  body.theme-open .team:first-of-type { border-top: none; }
+  body.theme-open .team:hover { background: rgba(255,255,255,0.03); }
+  body.theme-open .team:last-of-type { border-bottom: 1px solid var(--open-line); }
+  body.theme-open .team.leader {
+    background: linear-gradient(90deg, rgba(255,186,0,0.10) 0%, rgba(255,186,0,0.035) 55%, transparent 100%);
+    border-top: 1px solid rgba(255,186,0,0.35);
+    box-shadow: inset 3px 0 0 var(--open-yellow);
+  }
+  body.theme-open .team.leader:hover {
+    background: linear-gradient(90deg, rgba(255,186,0,0.14) 0%, rgba(255,186,0,0.05) 55%, transparent 100%);
+  }
+  body.theme-open .team.leader + .team { border-top-color: rgba(255,186,0,0.35); }
+
+  body.theme-open .team-grid {
+    grid-template-columns: 56px 1fr 90px;
+    align-items: center;
+    gap: 0;
+    padding: 16px 18px;
+  }
+
+  /* Position — plain lightweight numeral, gold for the leader */
+  body.theme-open .team-rank {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    color: var(--ink-mute);
+    text-align: center;
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  body.theme-open .team.leader .team-rank {
+    color: var(--open-yellow);
+    font-weight: 700;
+  }
+
+  /* Identity — SURNAME-style serif caps, like BALDWIN, Matthew */
+  body.theme-open .team-identity { padding-left: 14px; min-width: 0; }
+  body.theme-open .team-eyebrow {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 9.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  body.theme-open .team.leader .team-eyebrow { color: rgba(255,186,0,0.8); }
+  body.theme-open .team-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    line-height: 1.05;
+    color: #fff;
+    margin: 0;
+  }
+  body.theme-open .team-name em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--open-yellow);
+  }
+  /* Leader-scoped resets — the base editorial theme paints .team.leader with
+     paper-on-forest colors that turn invisible on midnight, and those
+     selectors out-rank the theme's generics. Match their specificity. */
+  body.theme-open .team.leader .team-name { color: #fff; }
+  body.theme-open .team.leader .roster-line { color: var(--ink-mute); }
+  body.theme-open .team.leader .pl.counting { color: var(--ink); font-weight: 600; }
+  body.theme-open .team.leader .pl-score { color: var(--ink-soft); opacity: 1; }
+  body.theme-open .team.leader .pl.counting .pl-score.s-under { color: var(--open-red); }
+  body.theme-open .team.leader .pl.counting .pl-score.s-even  { color: var(--ink); }
+  body.theme-open .team.leader .pl.counting .pl-score.s-over  { color: var(--open-green); }
+  body.theme-open .team.leader .pl.missed-cut { color: rgba(245,244,239,0.28); }
+  body.theme-open .team.leader .pl.penalty { color: var(--open-red); }
+  body.theme-open .team.leader .s-under { color: var(--open-red); }
+  body.theme-open .team.leader .s-over  { color: var(--open-green); }
+  body.theme-open .team.leader .scorecards { border-top-color: rgba(255,186,0,0.22); }
+  body.theme-open .team.leader .scorecards-label { color: var(--open-yellow); }
+
+  /* Total — light tabular sans, golf convention colors on midnight */
+  body.theme-open .team-score {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    text-align: right;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    padding-right: 4px;
+  }
+  body.theme-open .team-score.s-under { color: var(--open-red); }
+  body.theme-open .team-score.s-even  { color: var(--ink); }
+  body.theme-open .team-score.s-over  { color: var(--open-green); }
+  body.theme-open .team.leader .team-score { font-size: 30px; }
+  body.theme-open .team.leader .team-score.s-even { color: #fff; }
+
+  body.theme-open .winner-tag {
+    background: var(--open-yellow);
+    color: #06051e;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 8.5px;
+    letter-spacing: 0.18em;
+    padding: 3px 8px;
+    border-radius: 999px;
+    top: -3px;
+  }
+
+  body.theme-open .team-expand {
+    font-size: 9px;
+    color: var(--ink-soft);
+  }
+  body.theme-open .team.expanded .team-expand { color: var(--open-yellow); }
+
+  /* Roster line — face-up, quiet, yellow tick on the counting three */
+  body.theme-open .roster-line {
+    display: flex;
+    margin-top: 0;
+    padding: 11px 18px 15px 88px;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.015);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: var(--ink-mute);
+    line-height: 1.55;
+    gap: 4px 18px;
+  }
+  body.theme-open .team.leader .roster-line {
+    background: rgba(255,186,0,0.04);
+    border-top-color: rgba(255,186,0,0.22);
+  }
+  body.theme-open .pl { gap: 6px; }
+  body.theme-open .pl-score {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: var(--ink-soft);
+  }
+  body.theme-open .pl.counting { color: var(--ink); font-weight: 600; }
+  body.theme-open .pl.counting::before {
+    content: "";
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--open-yellow);
+    margin-right: 5px;
+    position: relative;
+    top: -2px;
+    border-radius: 50%;
+  }
+  body.theme-open .pl.counting .pl-score.s-under { color: var(--open-red); }
+  body.theme-open .pl.counting .pl-score.s-even  { color: var(--ink); }
+  body.theme-open .pl.counting .pl-score.s-over  { color: var(--open-green); }
+  body.theme-open .pl.bench { color: var(--ink-soft); font-style: normal; opacity: 1; }
+  body.theme-open .pl.bench .pl-score { color: var(--ink-soft); font-weight: 500; }
+  body.theme-open .pl.missed-cut {
+    color: rgba(245,244,239,0.28);
+    text-decoration: line-through;
+    text-decoration-color: rgba(245,244,239,0.28);
+    opacity: 1;
+  }
+  body.theme-open .pl.penalty {
+    color: var(--open-red);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Scorecards — raised midnight cards, hairline grids */
+  body.theme-open .scorecards {
+    padding: 12px 18px 18px 88px;
+    border-top: 1px solid var(--rule-soft);
+    background: rgba(255,255,255,0.015);
+    margin-top: 0;
+  }
+  body.theme-open .scorecards-label {
+    font-family: 'Hanken Grotesk', sans-serif;
+    color: var(--open-yellow);
+    letter-spacing: 0.3em;
+    font-size: 9.5px;
+    font-weight: 700;
+  }
+  body.theme-open .scorecard {
+    border-color: var(--open-line);
+    background: var(--open-raised);
+    color: var(--ink);
+  }
+  body.theme-open .scorecard-head {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--open-line);
+  }
+  body.theme-open .scorecard-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  body.theme-open .scorecard-meta {
+    color: var(--open-yellow);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+  }
+  body.theme-open .scorecard th,
+  body.theme-open .scorecard td { border-color: rgba(255,255,255,0.09); }
+  body.theme-open .scorecard th {
+    background: rgba(255,255,255,0.05);
+    color: var(--ink-mute);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  body.theme-open .scorecard .row-label {
+    background: rgba(255,255,255,0.05);
+    color: var(--ink);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-weight: 700;
+  }
+  body.theme-open .scorecard .par-row { background: rgba(255,255,255,0.025); color: var(--ink-mute); }
+  body.theme-open .scorecard .tot { background: rgba(255,255,255,0.05); color: var(--ink); }
+  body.theme-open .scorecard .sc-birdie,
+  body.theme-open .scorecard .sc-eagle { color: var(--open-red); }
+  body.theme-open .scorecard .sc-bogey,
+  body.theme-open .scorecard .sc-double { color: var(--open-green); }
+  body.theme-open .scorecard .sc-eagle,
+  body.theme-open .scorecard .sc-double { box-shadow: 0 0 0 1.5px var(--open-raised), 0 0 0 3px currentColor; }
+  body.theme-open .scorecard .pending { color: rgba(245,244,239,0.25); }
+  body.theme-open .scorecard-mc {
+    color: var(--open-red);
+    background: rgba(255,95,86,0.07);
+  }
+  body.theme-open .scorecard-legend {
+    background: rgba(255,255,255,0.03);
+    border-top-color: var(--open-line);
+    color: var(--ink-mute);
+    font-family: 'Hanken Grotesk', sans-serif;
+  }
+
+  /* Legend + footer on midnight */
+  body.theme-open .legend {
+    border-top-color: var(--open-line);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-style: normal;
+    color: var(--ink-mute);
+  }
+  body.theme-open .legend .hint {
+    font-family: 'Hanken Grotesk', sans-serif;
+    color: var(--open-yellow);
+  }
+  body.theme-open footer.bottom {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-style: normal;
+    color: var(--ink-soft);
+  }
+  body.theme-open footer.bottom .colophon { color: var(--ink-soft); }
+
+  @media (max-width: 700px) {
+    .open-rail-inner {
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      padding: 14px 14px;
+    }
+    .open-wordmark { height: 40px; }
+    .open-rail-center { text-align: left; }
+    .open-rail-eyebrow { font-size: 8.5px; letter-spacing: 0.28em; margin-bottom: 3px; }
+    .open-rail-title { font-size: 14px; letter-spacing: 0.14em; }
+    .open-rail-right { display: none; }
+    .open-subrail-inner { padding: 7px 14px; gap: 8px; }
+    .open-subrail-right { display: none; }
+    .open-subrail-venue { font-size: 10.5px; }
+    .open-subrail-meta { font-size: 10.5px; }
+    body.theme-open .status-bar { padding: 10px 14px 6px; }
+    body.theme-open .team-grid { grid-template-columns: 34px 1fr auto; padding: 12px 14px; gap: 0; }
+    body.theme-open .team-rank { font-size: 15px; }
+    body.theme-open .team-identity { padding-left: 10px; }
+    body.theme-open .team-name { font-size: 19px; }
+    body.theme-open .team-score { font-size: 21px; }
+    body.theme-open .team.leader .team-score { font-size: 23px; }
+    body.theme-open .roster-line { padding: 9px 14px 12px 44px; }
+    body.theme-open .scorecards { padding: 10px 14px 14px 14px; }
+  }
+
   /* --- Mobile --- */
   @media (max-width: 700px) {
     .masthead { padding: 10px 14px 6px; }
@@ -1297,9 +1828,9 @@
       <div class="usga-rail-title" id="rail-title">Locks of the Day Draft</div>
     </div>
     <div class="usga-rail-right">
-      <span class="usga-status-pill" id="rail-pill">
+      <span class="usga-status-pill rail-pill" id="rail-pill">
         <span class="pill-dot"></span>
-        <span id="rail-pill-text">Live</span>
+        <span class="rail-pill-text" id="rail-pill-text">Live</span>
       </span>
     </div>
   </div>
@@ -1319,6 +1850,41 @@
       <span>Par <strong>70</strong></span>
       <span>Yds <strong>7,488</strong></span>
       <span>First Tee <strong>6:45 AM</strong></span>
+    </div>
+  </div>
+</div>
+
+<!-- Full-bleed The Open championship rail (R&A style). Only renders visually
+     when body.theme-open is on; the JS toggles that class for the focus event. -->
+<header class="open-rail" aria-label="The Open Championship">
+  <div class="open-rail-inner">
+    <img class="open-wordmark" src="./assets/open-wordmark.svg"
+         alt="The Open" width="123" height="58">
+    <div class="open-rail-center">
+      <div class="open-rail-eyebrow">The 154th Open</div>
+      <div class="open-rail-title">Locks of the Day Draft</div>
+    </div>
+    <div class="open-rail-right">
+      <span class="open-status-pill rail-pill">
+        <span class="pill-dot"></span>
+        <span class="rail-pill-text">Live</span>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- Venue strip — the R&A's yellow alpha-row -->
+<div class="open-subrail">
+  <div class="open-subrail-inner">
+    <div class="open-subrail-left">
+      <span class="open-subrail-venue">Royal Birkdale</span>
+      <span class="open-subrail-divider"></span>
+      <span class="open-subrail-meta">Southport, England &middot; July 16&ndash;19, 2026</span>
+    </div>
+    <div class="open-subrail-right">
+      <span>Par <strong>70</strong></span>
+      <span>Yds <strong>7,223</strong></span>
+      <span>First Tee <strong>6:35 AM</strong></span>
     </div>
   </div>
 </div>
@@ -1397,6 +1963,23 @@ let SHORT_NAMES = {};
 let FOCUS = null;   // { event, mode: "live" | "final" | "none", nextEvent, season }
 
 const SEASON_LABELS = { 1: "Spring Major", 2: "Spring Major", 3: "Summer Major", 4: "Summer Major" };
+
+// Which body.theme-* class each major activates. Majors not listed here keep
+// the base editorial masthead. Past designs stay in the stylesheet forever —
+// the season rolling forward just changes which class is toggled on.
+const EVENT_THEMES = {
+  "US Open": "theme-usopen",
+  "Open Championship": "theme-open",
+};
+
+// Update every themed rail's status pill in one pass (each rail has its own).
+function setRailPill(state, label) {
+  document.querySelectorAll(".rail-pill").forEach(p => {
+    p.classList.remove("upcoming", "final");
+    if (state) p.classList.add(state);
+  });
+  document.querySelectorAll(".rail-pill-text").forEach(t => { t.textContent = label; });
+}
 const ORDINAL_VOL = (n) => `Vol. ${String(n).padStart(2, "0")}`;
 const MONTH_FROM_ISO = (iso) => {
   const m = new Date(iso + "T12:00:00").toLocaleString("en-US", { month: "long", year: "numeric" });
@@ -1411,6 +1994,18 @@ async function loadSeason() {
 
 function pickFocusEvent(season, today = new Date()) {
   const events = (season.events || []).filter(e => e.startDate && e.endDate);
+  // Dev/preview override: ?focus=Open Championship forces that event into
+  // focus (live if a roster exists, pending otherwise) so any major's design
+  // can be reviewed outside its date window.
+  const forced = new URLSearchParams(location.search).get("focus");
+  if (forced) {
+    const key = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const ev = events.find(e => key(e.name).includes(key(forced)));
+    if (ev) {
+      const next = events.find(e => new Date(e.startDate + "T00:00:00") > new Date(ev.endDate + "T23:59:59"));
+      return { event: ev, mode: ev.complete ? "final" : ev.roster ? "live" : "pending", nextEvent: next || null, season };
+    }
+  }
   const inWindow = (e) => {
     const start = new Date(e.startDate + "T00:00:00");
     const end = new Date(e.endDate + "T23:59:59");
@@ -1540,6 +2135,15 @@ async function fetchScores() {
       console.warn("USGA path failed, falling back to ESPN:", e);
     }
   }
+  // The Open: prefer the R&A's own feed (the one theopen.com polls every 20s)
+  // via our Cloudflare proxy, fall back to ESPN on any failure.
+  if (FOCUS.event.name === "Open Championship") {
+    try {
+      return await fetchScoresOpen();
+    } catch (e) {
+      console.warn("R&A path failed, falling back to ESPN:", e);
+    }
+  }
   return await fetchScoresESPN();
 }
 
@@ -1554,9 +2158,14 @@ async function fetchScoresESPN() {
 
   const focusName = FOCUS.event.name;
   // Punctuation-tolerant match: ESPN uses "U.S. Open" while our key is "US Open".
+  // Aliases cover majors ESPN names differently from season.json — e.g. our
+  // "Open Championship" appears on ESPN as "The Open" / "The 154th Open".
+  const ESPN_ALIASES = {
+    "Open Championship": ["The Open", "British Open", "154th Open"],
+  };
   const eventKey = s => s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  const focusKey = eventKey(focusName);
-  const event = (data.events || []).find(e => e.name && eventKey(e.name).includes(focusKey));
+  const keys = [focusName, ...(ESPN_ALIASES[focusName] || [])].map(eventKey);
+  const event = (data.events || []).find(e => e.name && keys.some(k => eventKey(e.name).includes(k)));
   if (!event) throw new Error(`ESPN scoreboard did not return "${focusName}"`);
 
   const competition = event.competitions?.[0];
@@ -1740,6 +2349,100 @@ async function fetchScoresUSGA() {
     completed,
     winner,
     sourceLabel: "USGA",
+  };
+}
+
+async function fetchScoresOpen() {
+  // Cloudflare Pages Function that proxies scoring.theopen.com — the same feed
+  // theopen.com's own leaderboard polls every 20 seconds. Returns
+  // { fetchedAt, source, upstream, payload } where payload is the raw R&A shape:
+  // { cutRound, cutLine, currentRound, players: [{ firstName, lastName,
+  //   position, toPar, r1..r4, status, rounds: [{ id, teeTime,
+  //   info: [{ holeId, holePar, playerStrokes }] }] }] }.
+  const res = await fetch("/api/open-scoreboard");
+  if (!res.ok) throw new Error(`R&A proxy returned ${res.status}`);
+  const wrapper = await res.json();
+  if (!wrapper.payload) throw new Error("R&A proxy had no payload");
+  const data = wrapper.payload;
+  const field = data.players || [];
+  if (!field.length) throw new Error("R&A leaderboard empty");
+
+  // Pre-tournament: nobody has a to-par score or an R1 total yet.
+  const preTournament = field.every(p => p.toPar == null && p.r1 == null);
+
+  // Derive course pars from any player's round map — the feed ships all 18
+  // holes with holePar for every player even before a shot is hit.
+  let pars = Array(18).fill(4);
+  const r1info = field[0]?.rounds?.[0]?.info || [];
+  if (r1info.length === 18) pars = r1info.map(h => h.holePar || 4);
+
+  const players = {};
+  for (const p of field) {
+    const name = ((p.firstName || "") + " " + (p.lastName || "")).trim();
+    if (!name) continue;
+
+    // toPar arrives as a number once play starts; be tolerant of a string.
+    const rawScore = typeof p.toPar === "number" ? p.toPar : parseScore(p.toPar);
+    const score = preTournament || rawScore === null ? 0 : rawScore;
+
+    // Status enum from theopen.com's own bundle:
+    // 1 ACTIVE · 2 CUT · 3 WD · 4 DQ · 5 NR · 6 RTD. The feed is authoritative,
+    // so unlike the ESPN path there's no cut-round inference needed — a player
+    // counts until the R&A itself says otherwise.
+    const madeCut = p.status === 1 || p.status === undefined;
+
+    // Convert R&A rounds → ESPN-shaped linescores so renderScorecard works
+    // unchanged. Unplayed holes carry playerStrokes 0 → null so the scorecard
+    // renders "—", and round to-par only accumulates over holes actually played.
+    let linescores = (p.rounds || []).map(r => {
+      const holes = r.info || [];
+      let strokes = 0;
+      let parSum = 0;
+      let playedHoles = 0;
+      const inner = holes.map(h => {
+        const played = typeof h.playerStrokes === "number" && h.playerStrokes > 0;
+        if (played) {
+          strokes += h.playerStrokes;
+          parSum += h.holePar || 0;
+          playedHoles += 1;
+        }
+        return { period: h.holeId, value: played ? h.playerStrokes : null };
+      });
+      const toPar = strokes - parSum;
+      const displayValue = playedHoles === 0
+        ? "-"
+        : toPar === 0 ? "E" : (toPar > 0 ? `+${toPar}` : `${toPar}`);
+      return { period: r.id, value: strokes, displayValue, linescores: inner, playedHoles };
+    }).filter(r => r.playedHoles > 0);
+    if (preTournament) linescores = [];
+
+    players[normalize(name)] = { name, score, madeCut, linescores };
+  }
+
+  // Complete when R4 is the current round and every player still standing has
+  // an R4 total posted. (A playoff doesn't change r4, so this flips at the
+  // right moment; the champion comes from the final position column below.)
+  const active = field.filter(p => p.status === 1);
+  const completed = !preTournament && (data.currentRound || 0) >= 4 &&
+    active.length > 0 && active.every(p => p.r4 != null);
+
+  let winner = null;
+  if (completed) {
+    const top = field.find(p => p.position && (p.position.sortValue === 1 || p.position.displayValue === "1"));
+    if (top) winner = ((top.firstName || "") + " " + (top.lastName || "")).trim();
+  }
+
+  const roundLabel = completed
+    ? "Final"
+    : preTournament ? "Practice Days" : `Round ${data.currentRound} · In Progress`;
+  return {
+    event: "Open Championship",
+    status: { type: { description: roundLabel, shortDetail: roundLabel, state: completed ? "post" : (preTournament ? "pre" : "in"), completed } },
+    players,
+    pars,
+    completed,
+    winner,
+    sourceLabel: "R&A",
   };
 }
 
@@ -1999,26 +2702,22 @@ function updateMasthead(focus) {
   const rightLabel = document.getElementById("mast-label-right");
   const events = focus.season.events || [];
 
-  // Per-major theme. Currently only the U.S. Open has a championship treatment;
-  // future majors can opt in by adding their own body.theme-* class.
-  document.body.classList.toggle("theme-usopen", !!ev && ev.name === "US Open");
+  // Per-major theme. Each championship keeps its own design layer, gated by a
+  // body class — the focus event picks which one wakes up. Masters and PGA
+  // Championship fall through to the base "Locks of the Day" editorial mast.
+  for (const [name, cls] of Object.entries(EVENT_THEMES)) {
+    document.body.classList.toggle(cls, !!ev && ev.name === name);
+  }
 
-  // U.S. Open rail status pill — broadcast-style indicator (LIVE / UPCOMING / FINAL).
-  // Mirrors the focus mode so the rail reads correctly before, during, and after the event.
-  const pill = document.getElementById("rail-pill");
-  const pillText = document.getElementById("rail-pill-text");
-  if (pill && pillText) {
-    pill.classList.remove("upcoming", "final");
-    if (focus.mode === "final") {
-      pill.classList.add("final");
-      pillText.textContent = "Final";
-    } else if (focus.mode === "live") {
-      // We can't tell live-vs-preview here — refresh() refines this once ESPN responds.
-      pillText.textContent = "Live";
-    } else {
-      pill.classList.add("upcoming");
-      pillText.textContent = "Upcoming";
-    }
+  // Championship rail status pill — broadcast-style indicator (LIVE / UPCOMING /
+  // FINAL). Every themed rail carries a .rail-pill; update them all in step.
+  if (focus.mode === "final") {
+    setRailPill("final", "Final");
+  } else if (focus.mode === "live") {
+    // We can't tell live-vs-preview here — refresh() refines this once scores respond.
+    setRailPill(null, "Live");
+  } else {
+    setRailPill("upcoming", "Upcoming");
   }
 
   if (ev) {
@@ -2092,19 +2791,11 @@ async function refresh() {
     const legendHint = document.getElementById("legend-hint");
     if (FOCUS.mode === "live") {
       const preTournament = data.status?.type?.state === "pre";
-      // Refine the championship rail pill now that ESPN has told us whether we're
-      // pre-tournament or actually in play. Pre → gold UPCOMING pill, in-play → red LIVE.
-      const pill = document.getElementById("rail-pill");
-      const pillText = document.getElementById("rail-pill-text");
-      if (pill && pillText) {
-        pill.classList.remove("upcoming", "final");
-        if (preTournament) {
-          pill.classList.add("upcoming");
-          pillText.textContent = "Upcoming";
-        } else {
-          pillText.textContent = "Live";
-        }
-      }
+      // Refine the championship rail pill now that the feed has told us whether
+      // we're pre-tournament or actually in play. Pre → UPCOMING, in-play → LIVE.
+      if (preTournament) setRailPill("upcoming", "Upcoming");
+      else if (data.completed) setRailPill("final", "Final");
+      else setRailPill(null, "Live");
       // Sync the live status line with a dot (in-play) or a clean tee-off message.
       // Only surface the penalty value once the cut has actually been enforced and
       // at least one team is taking a penalty — otherwise it's noise.
@@ -2117,6 +2808,8 @@ async function refresh() {
       if (colophon) {
         colophon.textContent = state.sourceLabel === "USGA"
           ? "Source · USGA Championship Scoring"
+          : state.sourceLabel === "R&A"
+          ? "Source · R&A Live Scoring · theopen.com"
           : "Source · ESPN PGA Scoreboard";
       }
       status.innerHTML = preTournament
