@@ -2917,6 +2917,12 @@ function updateMasthead(focus) {
     document.body.classList.toggle(cls, !!ev && ev.name === name);
   }
 
+  // Keep the browser/PWA chrome color in step with the active theme.
+  const THEME_COLORS = { "theme-open": "#06051e", "theme-usopen": "#0a2240" };
+  const activeCls = ev ? EVENT_THEMES[ev.name] : null;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute("content", THEME_COLORS[activeCls] || "#0e2818");
+
   // Championship rail status pill — broadcast-style indicator (LIVE / UPCOMING /
   // FINAL). Every themed rail carries a .rail-pill; update them all in step.
   if (focus.mode === "final") {
