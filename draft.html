@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draft Room · Locks of the Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Hanken+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #06051e;
+    --raised: #0c0b2a;
+    --text: #f5f4ef;
+    --dim: rgba(245,244,239,0.55);
+    --soft: rgba(245,244,239,0.35);
+    --line: rgba(255,255,255,0.12);
+    --yellow: #ffba00;
+    --red: #ff5f56;
+    --green: #8ab598;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: 'Hanken Grotesk', 'Helvetica Neue', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--yellow); }
+
+  header.rail {
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .rail-left { display: flex; align-items: center; gap: 18px; }
+  .rail-left img { height: 44px; }
+  .rail-eyebrow {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.34em; text-transform: uppercase;
+    color: var(--yellow); margin-bottom: 4px;
+  }
+  .rail-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600; font-size: 19px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .rail-back {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--dim); text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 999px; padding: 8px 15px;
+  }
+  .rail-back:hover { color: var(--yellow); border-color: var(--yellow); }
+
+  .strip {
+    background: var(--yellow); color: #06051e;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: center; padding: 7px 14px;
+  }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 28px 22px 60px; }
+
+  .step {
+    margin-bottom: 28px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.015);
+  }
+  .step-head {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1px solid var(--yellow); color: var(--yellow);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+  }
+  .step-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600; font-size: 17px;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .step-body { padding: 18px; }
+
+  input[type="password"], input[type="text"] {
+    background: var(--raised);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    width: 280px;
+    max-width: 100%;
+  }
+  input:focus { outline: none; border-color: var(--yellow); }
+  .hint { font-size: 12px; color: var(--soft); margin-top: 8px; line-height: 1.5; }
+
+  .drop {
+    border: 1.5px dashed rgba(255,255,255,0.25);
+    border-radius: 4px;
+    padding: 44px 20px;
+    text-align: center;
+    color: var(--dim);
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .drop.over { border-color: var(--yellow); background: rgba(255,186,0,0.05); }
+  .drop strong { color: var(--text); }
+  .drop input { display: none; }
+  .drop img.preview { max-width: 100%; max-height: 300px; border-radius: 3px; margin-top: 14px; }
+
+  button.primary {
+    background: var(--yellow); color: #06051e;
+    border: none; border-radius: 999px;
+    font-family: inherit; font-weight: 800;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 12px 26px; cursor: pointer;
+    transition: transform 0.1s;
+  }
+  button.primary:hover { transform: translateY(-1px); }
+  button.primary:disabled { background: rgba(255,255,255,0.12); color: var(--soft); cursor: not-allowed; transform: none; }
+  button.ghost {
+    background: transparent; color: var(--dim);
+    border: 1px solid rgba(255,255,255,0.22); border-radius: 999px;
+    font-family: inherit; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 10px 20px; cursor: pointer;
+  }
+  button.ghost:hover { color: var(--yellow); border-color: var(--yellow); }
+
+  .status { font-size: 13px; color: var(--dim); margin-top: 12px; line-height: 1.5; }
+  .status.err { color: var(--red); }
+  .status.ok { color: var(--green); }
+  .spin {
+    display: inline-block; width: 12px; height: 12px;
+    border: 2px solid rgba(255,186,0,0.3); border-top-color: var(--yellow);
+    border-radius: 50%; margin-right: 8px; vertical-align: -2px;
+    animation: rot 0.8s linear infinite;
+  }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  .teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+  .team-card {
+    border: 1px solid var(--line); border-radius: 4px;
+    background: var(--raised); overflow: hidden;
+  }
+  .team-card.bad { border-color: rgba(255,95,86,0.5); }
+  .team-card-head {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .team-card-head .alias {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600; font-size: 18px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .team-card-head .owner {
+    font-size: 9.5px; font-weight: 700;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--soft);
+  }
+  .team-card-head .as-written {
+    margin-left: auto; font-size: 10px; color: var(--soft); font-style: italic;
+  }
+  .slots { padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 7px; }
+  .slot { display: flex; align-items: center; gap: 8px; }
+  .slot select {
+    flex: 1;
+    background: var(--ink);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-radius: 3px;
+    padding: 7px 8px;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .slot select:focus { outline: none; border-color: var(--yellow); }
+  .slot .flag { width: 14px; text-align: center; font-size: 11px; flex-shrink: 0; }
+  .slot.exact .flag { color: var(--green); }
+  .slot.fuzzy .flag { color: var(--yellow); }
+  .slot.unmatched .flag { color: var(--red); }
+  .slot.unmatched select { border-color: rgba(255,95,86,0.5); }
+  .slot .orig { font-size: 10px; color: var(--soft); max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .publish-bar {
+    margin-top: 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .success-panel {
+    border: 1px solid rgba(138,181,152,0.4);
+    background: rgba(138,181,152,0.06);
+    border-radius: 4px; padding: 18px; margin-top: 20px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .hidden { display: none; }
+  @media (max-width: 620px) {
+    header.rail { padding: 14px; }
+    .rail-title { font-size: 14px; letter-spacing: 0.1em; }
+    main { padding: 18px 14px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="rail">
+  <div class="rail-left">
+    <img src="./assets/open-wordmark.svg" alt="The Open">
+    <div>
+      <div class="rail-eyebrow">The 154th Open</div>
+      <div class="rail-title">Draft Room</div>
+    </div>
+  </div>
+  <a class="rail-back" href="./">← Leaderboard</a>
+</header>
+<div class="strip">Drop in a screenshot of the draft — rosters publish to the live site</div>
+
+<main>
+
+  <section class="step" id="step-key">
+    <div class="step-head"><span class="step-num">1</span><span class="step-title">Draft Key</span></div>
+    <div class="step-body">
+      <input type="password" id="key" placeholder="League passphrase" autocomplete="off">
+      <div class="hint">Set once — it's remembered on this device. This gates who can publish rosters.</div>
+    </div>
+  </section>
+
+  <section class="step" id="step-image">
+    <div class="step-head"><span class="step-num">2</span><span class="step-title">Draft Screenshot</span></div>
+    <div class="step-body">
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="image/*">
+        <div id="drop-text"><strong>Drop, paste, or tap</strong> to add the draft screenshot<br>
+        <span style="font-size:12px;">group text, spreadsheet, whiteboard photo — anything readable</span></div>
+      </label>
+      <div style="margin-top:14px;">
+        <button class="primary" id="parse-btn" disabled>Read the Draft</button>
+      </div>
+      <div class="status" id="parse-status"></div>
+    </div>
+  </section>
+
+  <section class="step hidden" id="step-review">
+    <div class="step-head"><span class="step-num">3</span><span class="step-title">Confirm Rosters</span></div>
+    <div class="step-body">
+      <div class="hint" style="margin: 0 0 14px;">
+        <span style="color:var(--green)">●</span> exact match &nbsp;
+        <span style="color:var(--yellow)">●</span> best guess — double-check &nbsp;
+        <span style="color:var(--red)">●</span> couldn't match — pick from the field
+      </div>
+      <div class="teams" id="teams"></div>
+      <div class="publish-bar">
+        <button class="primary" id="publish-btn">Publish to the Site</button>
+        <button class="ghost" id="reset-btn">Start Over</button>
+        <span class="status" id="publish-status" style="margin:0;"></span>
+      </div>
+      <div class="success-panel hidden" id="success"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const EVENT_NAME = "Open Championship";
+const keyInput = document.getElementById("key");
+const drop = document.getElementById("drop");
+const fileInput = document.getElementById("file");
+const dropText = document.getElementById("drop-text");
+const parseBtn = document.getElementById("parse-btn");
+const parseStatus = document.getElementById("parse-status");
+const stepReview = document.getElementById("step-review");
+const teamsEl = document.getElementById("teams");
+const publishBtn = document.getElementById("publish-btn");
+const publishStatus = document.getElementById("publish-status");
+const successEl = document.getElementById("success");
+
+let imageData = null;   // { base64, mediaType }
+let parseResult = null; // response from /api/parse-draft
+
+keyInput.value = localStorage.getItem("draftKey") || "";
+keyInput.addEventListener("input", () => localStorage.setItem("draftKey", keyInput.value));
+
+// --- image intake: drop / paste / file picker, downscaled via canvas ---
+async function acceptFile(file) {
+  if (!file || !file.type.startsWith("image/")) return;
+  const bitmap = await createImageBitmap(file);
+  const MAX = 2000;
+  const scale = Math.min(1, MAX / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bitmap.width * scale);
+  canvas.height = Math.round(bitmap.height * scale);
+  canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  const dataUrl = canvas.toDataURL("image/jpeg", 0.92);
+  imageData = { base64: dataUrl.split(",")[1], mediaType: "image/jpeg" };
+  dropText.innerHTML = `<strong>${file.name || "pasted image"}</strong> — ready<br><img class="preview" src="${dataUrl}">`;
+  parseBtn.disabled = false;
+  parseStatus.textContent = "";
+}
+
+drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", (e) => {
+  e.preventDefault(); drop.classList.remove("over");
+  acceptFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener("change", () => acceptFile(fileInput.files[0]));
+document.addEventListener("paste", (e) => {
+  const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith("image/"));
+  if (item) acceptFile(item.getAsFile());
+});
+
+// --- parse ---
+parseBtn.addEventListener("click", async () => {
+  if (!imageData) return;
+  if (!keyInput.value) { parseStatus.className = "status err"; parseStatus.textContent = "Enter the draft key first (step 1)."; return; }
+  parseBtn.disabled = true;
+  parseStatus.className = "status";
+  parseStatus.innerHTML = '<span class="spin"></span>Claude is reading the draft… (10–30 seconds)';
+  try {
+    const res = await fetch("/api/parse-draft", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-draft-key": keyInput.value },
+      body: JSON.stringify({ image: imageData.base64, mediaType: imageData.mediaType }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    parseResult = data;
+    parseStatus.className = "status ok";
+    parseStatus.textContent = "Draft read." + (data.notes ? ` Note from the reader: ${data.notes}` : "");
+    renderReview();
+  } catch (e) {
+    parseStatus.className = "status err";
+    parseStatus.textContent = `Couldn't read the draft: ${e.message}`;
+  } finally {
+    parseBtn.disabled = false;
+  }
+});
+
+// --- review grid ---
+function renderReview() {
+  const { rosters, field, owners } = parseResult;
+  const aliasToOwner = {};
+  for (const [o, t] of Object.entries(owners)) aliasToOwner[t] = o;
+
+  // one card per league team; attach the parsed roster if the identifier resolved
+  const byAlias = {};
+  for (const r of rosters) if (r.teamName) byAlias[r.teamName] = r;
+  const unassigned = rosters.filter((r) => !r.teamName);
+
+  teamsEl.innerHTML = "";
+  for (const alias of Object.values(owners)) {
+    const r = byAlias[alias];
+    const card = document.createElement("div");
+    card.className = "team-card";
+    card.dataset.alias = alias;
+    const asWritten = r && r.identifier && r.identifier !== alias ? `<span class="as-written">"${r.identifier}"</span>` : "";
+    card.innerHTML = `<div class="team-card-head">
+        <span class="alias">${alias}</span>
+        <span class="owner">${aliasToOwner[alias] || ""}</span>${asWritten}
+      </div><div class="slots"></div>`;
+    const slots = card.querySelector(".slots");
+    for (let i = 0; i < 5; i++) {
+      const p = r?.players?.[i];
+      const slot = document.createElement("div");
+      const status = p ? p.status : "unmatched";
+      slot.className = `slot ${status}`;
+      const sel = document.createElement("select");
+      sel.innerHTML = `<option value="">— pick a player —</option>` +
+        field.map((f) => `<option value="${f}"${p?.matched === f ? " selected" : ""}>${f}</option>`).join("");
+      sel.addEventListener("change", () => {
+        slot.className = "slot " + (sel.value ? "exact" : "unmatched");
+        slot.querySelector(".flag").textContent = sel.value ? "●" : "○";
+        refreshPublishState();
+      });
+      slot.innerHTML = `<span class="flag">${p?.matched ? "●" : "○"}</span>`;
+      slot.appendChild(sel);
+      if (p && p.status !== "exact") {
+        const orig = document.createElement("span");
+        orig.className = "orig";
+        orig.title = `read as: ${p.input}`;
+        orig.textContent = p.input;
+        slot.appendChild(orig);
+      }
+      slots.appendChild(slot);
+    }
+    teamsEl.appendChild(card);
+  }
+  if (unassigned.length) {
+    parseStatus.className = "status err";
+    parseStatus.textContent = `Couldn't match ${unassigned.map((r) => `"${r.identifier}"`).join(", ")} to a team — assign those players manually below.`;
+  }
+  stepReview.classList.remove("hidden");
+  successEl.classList.add("hidden");
+  refreshPublishState();
+  stepReview.scrollIntoView({ behavior: "smooth" });
+}
+
+function collectRoster() {
+  const roster = {};
+  const problems = [];
+  const seen = new Map();
+  for (const card of teamsEl.querySelectorAll(".team-card")) {
+    const alias = card.dataset.alias;
+    const picks = [...card.querySelectorAll("select")].map((s) => s.value);
+    if (picks.some((v) => !v)) problems.push(`${alias} has empty slots`);
+    for (const p of picks.filter(Boolean)) {
+      if (seen.has(p)) problems.push(`${p} is on both ${seen.get(p)} and ${alias}`);
+      seen.set(p, alias);
+    }
+    roster[alias] = picks;
+    card.classList.toggle("bad", picks.some((v) => !v));
+  }
+  return { roster, problems };
+}
+
+function refreshPublishState() {
+  const { problems } = collectRoster();
+  publishBtn.disabled = problems.length > 0;
+  publishStatus.className = "status";
+  publishStatus.textContent = problems.length ? problems[0] : "All 45 picks set.";
+}
+
+// --- publish ---
+publishBtn.addEventListener("click", async () => {
+  const { roster, problems } = collectRoster();
+  if (problems.length) return;
+  publishBtn.disabled = true;
+  publishStatus.className = "status";
+  publishStatus.innerHTML = '<span class="spin"></span>Committing rosters…';
+  try {
+    const res = await fetch("/api/commit-roster", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-draft-key": keyInput.value },
+      body: JSON.stringify({ eventName: EVENT_NAME, roster }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+    publishStatus.textContent = "";
+    successEl.classList.remove("hidden");
+    successEl.innerHTML = `<strong style="color:var(--green)">Rosters published.</strong><br>
+      The site rebuilds in about a minute, then the <a href="./">leaderboard</a> flips to live-preview mode on its own — everyone at E until Thursday's first tee.<br>
+      <span style="font-size:12px;color:var(--soft)">Commit: <a href="${data.commitUrl}" target="_blank">${(data.commit || "").slice(0, 7)}</a></span>`;
+  } catch (e) {
+    publishStatus.className = "status err";
+    publishStatus.textContent = `Publish failed: ${e.message}`;
+    publishBtn.disabled = false;
+  }
+});
+
+document.getElementById("reset-btn").addEventListener("click", () => location.reload());
+</script>
+</body>
+</html>
