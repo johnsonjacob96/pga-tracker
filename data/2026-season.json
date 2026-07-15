@@ -1100,7 +1100,119 @@
       "month": "July",
       "startDate": "2026-07-16",
       "endDate": "2026-07-19",
-      "complete": false
+      "complete": false,
+      "roster": {
+        "Fern": [
+          "Cameron Young",
+          "Viktor Hovland",
+          "Shane Lowry",
+          "Patrick Cantlay",
+          "Maverick McNealy"
+        ],
+        "Troop": [
+          "Wyndham Clark",
+          "Chris Gotterup",
+          "Harris English",
+          "Alex Fitzpatrick",
+          "Jake Knapp"
+        ],
+        "Ram": [
+          "Matthew Fitzpatrick",
+          "Si Woo Kim",
+          "Russell Henley",
+          "Kurt Kitayama",
+          "Lev Grinberg"
+        ],
+        "Bean": [
+          "Rory McIlroy",
+          "Justin Rose",
+          "Min Woo Lee",
+          "Akshay Bhatia",
+          "Ben Griffin"
+        ],
+        "Money": [
+          "Tommy Fleetwood",
+          "Tyrrell Hatton",
+          "Brooks Koepka",
+          "Patrick Reed",
+          "Hideki Matsuyama"
+        ],
+        "Gary": [
+          "Xander Schauffele",
+          "Robert MacIntyre",
+          "Jordan Spieth",
+          "Aaron Rai",
+          "Rickie Fowler"
+        ],
+        "Taco": [
+          "Scottie Scheffler",
+          "Justin Thomas",
+          "Tom Kim",
+          "Brian Harman",
+          "Kristoffer Reitan"
+        ],
+        "Cyc": [
+          "Jon Rahm",
+          "Ludvig Åberg",
+          "Bryson DeChambeau",
+          "Nicolai Højgaard",
+          "Gary Woodland"
+        ],
+        "Mags": [
+          "Sam Burns",
+          "Collin Morikawa",
+          "Joaquin Niemann",
+          "Sam Stevens",
+          "JT Poston"
+        ]
+      },
+      "shortNames": {
+        "Cameron Young": "Young",
+        "Viktor Hovland": "Hovland",
+        "Shane Lowry": "Lowry",
+        "Patrick Cantlay": "Cantlay",
+        "Maverick McNealy": "McNealy",
+        "Wyndham Clark": "Clark",
+        "Chris Gotterup": "Gotterup",
+        "Harris English": "English",
+        "Alex Fitzpatrick": "A. Fitzpatrick",
+        "Jake Knapp": "Knapp",
+        "Matthew Fitzpatrick": "M. Fitzpatrick",
+        "Si Woo Kim": "Woo Kim",
+        "Russell Henley": "Henley",
+        "Kurt Kitayama": "Kitayama",
+        "Lev Grinberg": "Grinberg",
+        "Rory McIlroy": "McIlroy",
+        "Justin Rose": "Rose",
+        "Min Woo Lee": "Woo Lee",
+        "Akshay Bhatia": "Bhatia",
+        "Ben Griffin": "Griffin",
+        "Tommy Fleetwood": "Fleetwood",
+        "Tyrrell Hatton": "Hatton",
+        "Brooks Koepka": "Koepka",
+        "Patrick Reed": "Reed",
+        "Hideki Matsuyama": "Matsuyama",
+        "Xander Schauffele": "Schauffele",
+        "Robert MacIntyre": "MacIntyre",
+        "Jordan Spieth": "Spieth",
+        "Aaron Rai": "Rai",
+        "Rickie Fowler": "Fowler",
+        "Scottie Scheffler": "Scheffler",
+        "Justin Thomas": "Thomas",
+        "Tom Kim": "Kim",
+        "Brian Harman": "Harman",
+        "Kristoffer Reitan": "Reitan",
+        "Jon Rahm": "Rahm",
+        "Ludvig Åberg": "Åberg",
+        "Bryson DeChambeau": "DeChambeau",
+        "Nicolai Højgaard": "Højgaard",
+        "Gary Woodland": "Woodland",
+        "Sam Burns": "Burns",
+        "Collin Morikawa": "Morikawa",
+        "Joaquin Niemann": "Niemann",
+        "Sam Stevens": "Stevens",
+        "JT Poston": "Poston"
+      }
     }
   ]
 }
