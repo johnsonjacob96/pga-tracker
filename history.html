@@ -76,6 +76,12 @@ if ("serviceWorker" in navigator && location.protocol === "https:")
     content: ""; position: absolute; bottom: -9px; left: 22px; right: 22px; height: 2px;
     background: var(--persimmon);
   }
+  /* Mobile: shrink tab padding/tracking so all four fit without clipping. */
+  @media (max-width: 700px) {
+    nav.topnav { font-size: 10px; letter-spacing: 0.1em; }
+    nav.topnav a { padding: 4px 12px; }
+    nav.topnav a.active::after { left: 12px; right: 12px; }
+  }
   .masthead {
     padding: 28px 24px 22px;
     max-width: 1080px;
