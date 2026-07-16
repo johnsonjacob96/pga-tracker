@@ -113,14 +113,6 @@ if (location.hostname === "johnsonjacob96.github.io")
     height: 2px;
     background: var(--persimmon);
   }
-  /* Mobile: shrink tab padding/tracking so all four fit without clipping. */
-  @media (max-width: 700px) {
-    nav.topnav { font-size: 10px; letter-spacing: 0.1em; }
-    nav.topnav a,
-    body.theme-open nav.topnav a { padding: 4px 12px; }
-    nav.topnav a.active::after { left: 12px; right: 12px; }
-  }
-
   /* --- Masthead --- */
   .masthead {
     padding: 28px 24px 22px;
@@ -1914,6 +1906,19 @@ if (location.hostname === "johnsonjacob96.github.io")
     .legend span { margin: 0 2px; }
     footer.bottom { padding: 12px 14px 22px; font-size: 9px; }
     footer.bottom .colophon { font-size: 8px; }
+  }
+
+  /* Mobile nav fix. Both major themes widen the tabs to 4px 26px, which overflows
+     a phone and clips LIVE / DRAFT. This lives after every theme block so it wins
+     the cascade regardless of which theme is active. */
+  @media (max-width: 700px) {
+    nav.topnav,
+    body.theme-open nav.topnav,
+    body.theme-usopen nav.topnav { font-size: 10px; letter-spacing: 0.1em; }
+    nav.topnav a,
+    body.theme-open nav.topnav a,
+    body.theme-usopen nav.topnav a { padding: 4px 12px; }
+    nav.topnav a.active::after { left: 12px; right: 12px; }
   }
 </style>
 </head>
