@@ -2507,21 +2507,30 @@ async function fetchScoresOpen() {
     const madeCut = p.status === 1 || p.status === undefined;
 
     // Convert R&A rounds → ESPN-shaped linescores so renderScorecard works
-    // unchanged. Unplayed holes carry playerStrokes 0 → null so the scorecard
-    // renders "—", and round to-par only accumulates over holes actually played.
+    // unchanged. The authoritative per-hole stroke count is `playerPar` (badly
+    // named — it is the player's strokes on the hole, not a par), which the feed
+    // sets only once a hole is official and leaves at 0 otherwise. `playerStrokes`
+    // is unreliable: it carries a phantom value on the hole *ahead* of a player
+    // still on the course (a player standing on 15 shows a stray 2–3 on 16, which
+    // cards a bogus eagle/birdie) and is occasionally off by a stroke even on
+    // completed holes. Reading playerPar instead is exact — across a full live
+    // field it reproduces every player's official round to-par with zero
+    // mismatches, where playerStrokes missed on ~1 in 5 players. Unplayed holes
+    // (playerPar 0) render "—" and only real holes accumulate into round to-par.
     let linescores = (p.rounds || []).map(r => {
       const holes = r.info || [];
       let strokes = 0;
       let parSum = 0;
       let playedHoles = 0;
       const inner = holes.map(h => {
-        const played = typeof h.playerStrokes === "number" && h.playerStrokes > 0;
+        const holeScore = h.playerPar || 0;
+        const played = holeScore > 0;
         if (played) {
-          strokes += h.playerStrokes;
+          strokes += holeScore;
           parSum += h.holePar || 0;
           playedHoles += 1;
         }
-        return { period: h.holeId, value: played ? h.playerStrokes : null };
+        return { period: h.holeId, value: played ? holeScore : null };
       });
       const toPar = strokes - parSum;
       const displayValue = playedHoles === 0
