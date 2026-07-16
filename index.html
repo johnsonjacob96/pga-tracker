@@ -113,6 +113,13 @@ if (location.hostname === "johnsonjacob96.github.io")
     height: 2px;
     background: var(--persimmon);
   }
+  /* Mobile: shrink tab padding/tracking so all four fit without clipping. */
+  @media (max-width: 700px) {
+    nav.topnav { font-size: 10px; letter-spacing: 0.1em; }
+    nav.topnav a,
+    body.theme-open nav.topnav a { padding: 4px 12px; }
+    nav.topnav a.active::after { left: 12px; right: 12px; }
+  }
 
   /* --- Masthead --- */
   .masthead {
@@ -1422,7 +1429,6 @@ if (location.hostname === "johnsonjacob96.github.io")
     color: rgba(6,5,30,0.7);
   }
   .open-subrail-right strong { color: #06051e; font-weight: 800; }
-  .open-subrail-alt { color: rgba(6,5,30,0.55); font-weight: 700; }
 
   /* The rail replaces the editorial masthead */
   body.theme-open .masthead { display: none; }
@@ -1986,7 +1992,7 @@ if (location.hostname === "johnsonjacob96.github.io")
     <div class="open-subrail-right">
       <span>Par <strong>70</strong></span>
       <span>Yds <strong>7,223</strong></span>
-      <span>First Tee <strong>6:35 AM BST</strong> <span class="open-subrail-alt">12:35 AM CT</span></span>
+      <span>First Tee <strong>12:35 AM CT</strong></span>
     </div>
   </div>
 </div>
