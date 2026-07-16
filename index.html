@@ -1920,30 +1920,6 @@ if (location.hostname === "johnsonjacob96.github.io")
     body.theme-usopen nav.topnav a { padding: 4px 12px; }
     nav.topnav a.active::after { left: 12px; right: 12px; }
   }
-
-  /* Auto-fit board. When board-fit is on, fitBoard() has measured the viewport
-     and pinned each team to a computed row height (inline) so all nine fit on one
-     screen without scrolling. This block only handles the structural collapse:
-     kill the generous row padding, vertically center the content, and keep the
-     roster to a single clipped line. Font sizes are set inline by fitBoard() so
-     they beat every per-theme rule without a specificity fight. Expanding a team
-     turns board-fit off (see fitBoard) and the page scrolls normally again. */
-  body.board-fit .team {
-    padding-top: 0;
-    padding-bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-  }
-  body.board-fit .team-grid { align-items: center; }
-  body.board-fit .roster-line {
-    margin-top: 3px;
-    padding-top: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 </style>
 </head>
 <body>
@@ -2924,68 +2900,7 @@ function render(state) {
       </article>
     `;
   }).join("");
-
-  fitBoard();
 }
-
-// Size the nine team rows so the whole board fills the viewport without
-// scrolling, on any screen. We measure the space between the top of the first
-// team row and the footer, divide it across the rows, and write the row height
-// plus proportional font sizes as inline styles — inline beats every per-theme
-// stylesheet rule, so this works identically on the base, US Open, and Open
-// themes. If a team is expanded (hole-by-hole open) we bail and let the page
-// scroll normally so the detail is reachable. Re-runs on every render, on
-// resize, and once web fonts settle (their metrics shift the layout).
-function fitBoard() {
-  const teams = [...document.querySelectorAll("#content .team")];
-  // Always clear prior sizing first so measurements reflect the natural layout.
-  document.body.classList.remove("board-fit");
-  teams.forEach((t) => {
-    t.style.height = "";
-    t.querySelectorAll(".team-name, .team-score, .team-rank, .team-eyebrow, .roster-line, .pl-score")
-      .forEach((el) => (el.style.fontSize = ""));
-  });
-  if (!teams.length || expandedTeams.size) return;
-
-  // Reserve the chrome above the rows (nav + masthead + column head) and
-  // everything below them (footer plus any padding/legend gap) by measuring
-  // absolute positions in the natural layout, so the rows get exactly the
-  // leftover height. scrollY keeps it correct even if the page isn't pinned.
-  const naturalH = teams[0].getBoundingClientRect().height;
-  const firstTop = teams[0].getBoundingClientRect().top + window.scrollY;
-  const lastBottom = teams[teams.length - 1].getBoundingClientRect().bottom + window.scrollY;
-  const belowRows = document.body.scrollHeight - lastBottom;
-  const avail = window.innerHeight - firstTop - belowRows - 6;
-  const rowH = avail / teams.length;
-  // Already fits (few teams / tall screen): leave the spacious layout alone.
-  if (rowH >= naturalH) return;
-
-  document.body.classList.add("board-fit");
-  const clamp = (min, v, max) => Math.max(min, Math.min(max, v));
-  const nameSize = clamp(14, rowH * 0.32, 30);
-  const scoreSize = clamp(14, rowH * 0.32, 28);
-  const rankSize = clamp(15, rowH * 0.34, 26);
-  const eyebrowSize = clamp(8, rowH * 0.13, 11);
-  const rosterSize = clamp(8, rowH * 0.15, 11);
-  const h = Math.max(38, rowH);
-  teams.forEach((t) => {
-    t.style.height = h + "px";
-    const set = (sel, size) => t.querySelectorAll(sel).forEach((el) => (el.style.fontSize = size + "px"));
-    set(".team-name", nameSize);
-    set(".team-score", scoreSize);
-    set(".team-rank", rankSize);
-    set(".team-eyebrow", eyebrowSize);
-    set(".roster-line", rosterSize);
-    set(".pl-score", rosterSize);
-  });
-}
-
-let fitRaf = null;
-window.addEventListener("resize", () => {
-  cancelAnimationFrame(fitRaf);
-  fitRaf = requestAnimationFrame(fitBoard);
-});
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitBoard);
 
 document.getElementById("content").addEventListener("click", (e) => {
   if (e.target.closest(".scorecards")) return;
