@@ -2724,8 +2724,43 @@ function scoreCell(strokes, par) {
     : `<td>${strokes}</td>`;
 }
 
+// Guardrail so we never display a live hole score that doesn't add up, no matter
+// which feed ("connection") or theme ("style") is active. The per-hole grid and
+// the player's total come from independent parts of every feed — the grid from
+// the round's hole array, the total from the feed's own to-par — so a phantom or
+// mis-mapped hole (as the R&A feed's playerStrokes once produced) makes the two
+// disagree. We sum the carded holes' to-par and compare it to the authoritative
+// score; if they drift we hide the in-progress round's hole detail (the correct
+// total still shows in the card header) and warn loudly. When adapters map holes
+// correctly this never fires, so it costs nothing in the happy path and turns any
+// future regression from a silent wrong number into a caught, logged degradation.
+function scorecardReconciles(player, pars) {
+  const rounds = player.linescores || [];
+  if (!rounds.length || typeof player.score !== "number") return true;
+  let holeToPar = 0;
+  let carded = 0;
+  for (const round of rounds) {
+    for (const h of round.linescores || []) {
+      if (h.value == null) continue;
+      holeToPar += h.value - (pars[h.period - 1] || 0);
+      carded += 1;
+    }
+  }
+  if (carded === 0) return true;
+  if (holeToPar !== player.score) {
+    console.warn(
+      `[scorecard-guard] ${player.name}: hole-by-hole totals ${fmtScore(holeToPar)} but the ` +
+      `authoritative score is ${fmtScore(player.score)}. Hiding in-progress hole detail — ` +
+      `check the active feed adapter's per-hole mapping.`
+    );
+    return false;
+  }
+  return true;
+}
+
 function renderScorecard(player, pars) {
   const linescores = player.linescores || [];
+  const reconciled = scorecardReconciles(player, pars);
   if (player.notFound) {
     return `<div class="scorecard"><div class="scorecard-head"><span class="scorecard-name">${player.name}</span><span class="scorecard-meta">not found</span></div></div>`;
   }
@@ -2743,13 +2778,17 @@ function renderScorecard(player, pars) {
     const round = linescores[r];
     const holes = round.linescores || [];
     if (holes.length === 0 && (!round.displayValue || round.displayValue === "-")) continue;
+    // On a reconciliation failure, distrust the in-progress round's hole detail
+    // (the last round) — that's where a phantom lands — while still showing any
+    // completed earlier rounds, which have their own honest totals.
+    const trustHoles = reconciled || r < linescores.length - 1;
     const byHole = {};
     for (const h of holes) byHole[h.period] = h;
     const cells = [];
     let frontStrokes = 0, frontDone = 0;
     for (let h = 1; h <= 9; h++) {
       const hole = byHole[h];
-      if (hole && hole.value != null) {
+      if (trustHoles && hole && hole.value != null) {
         cells.push(scoreCell(hole.value, pars[h - 1]));
         frontStrokes += hole.value;
         frontDone++;
@@ -2759,7 +2798,7 @@ function renderScorecard(player, pars) {
     let backStrokes = 0, backDone = 0;
     for (let h = 10; h <= 18; h++) {
       const hole = byHole[h];
-      if (hole && hole.value != null) {
+      if (trustHoles && hole && hole.value != null) {
         cells.push(scoreCell(hole.value, pars[h - 1]));
         backStrokes += hole.value;
         backDone++;
