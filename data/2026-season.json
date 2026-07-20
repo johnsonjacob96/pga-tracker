@@ -1100,7 +1100,7 @@
       "month": "July",
       "startDate": "2026-07-16",
       "endDate": "2026-07-19",
-      "complete": false,
+      "complete": true,
       "roster": {
         "Fern": [
           "Cameron Young",
@@ -1212,7 +1212,369 @@
         "Joaquin Niemann": "Niemann",
         "Sam Stevens": "Stevens",
         "JT Poston": "Poston"
-      }
+      },
+      "snapshot": {
+        "pars": [
+          4,
+          4,
+          4,
+          3,
+          4,
+          4,
+          3,
+          4,
+          4,
+          4,
+          4,
+          3,
+          4,
+          5,
+          3,
+          4,
+          5,
+          4
+        ],
+        "worstMadeCut": 9,
+        "players": {
+          "cameronyoung": {
+            "name": "Cameron Young",
+            "score": -9,
+            "madeCut": true
+          },
+          "viktorhovland": {
+            "name": "Viktor Hovland",
+            "score": null,
+            "madeCut": false
+          },
+          "shanelowry": {
+            "name": "Shane Lowry",
+            "score": -2,
+            "madeCut": true
+          },
+          "patrickcantlay": {
+            "name": "Patrick Cantlay",
+            "score": -2,
+            "madeCut": true
+          },
+          "maverickmcnealy": {
+            "name": "Maverick McNealy",
+            "score": null,
+            "madeCut": false
+          },
+          "wyndhamclark": {
+            "name": "Wyndham Clark",
+            "score": null,
+            "madeCut": false
+          },
+          "chrisgotterup": {
+            "name": "Chris Gotterup",
+            "score": -3,
+            "madeCut": true
+          },
+          "harrisenglish": {
+            "name": "Harris English",
+            "score": null,
+            "madeCut": false
+          },
+          "alexfitzpatrick": {
+            "name": "Alex Fitzpatrick",
+            "score": 6,
+            "madeCut": true
+          },
+          "jakeknapp": {
+            "name": "Jake Knapp",
+            "score": null,
+            "madeCut": false
+          },
+          "matthewfitzpatrick": {
+            "name": "Matthew Fitzpatrick",
+            "score": null,
+            "madeCut": false
+          },
+          "siwookim": {
+            "name": "Si Woo Kim",
+            "score": -6,
+            "madeCut": true
+          },
+          "russellhenley": {
+            "name": "Russell Henley",
+            "score": -5,
+            "madeCut": true
+          },
+          "kurtkitayama": {
+            "name": "Kurt Kitayama",
+            "score": -1,
+            "madeCut": true
+          },
+          "levgrinberg": {
+            "name": "Lev Grinberg",
+            "score": null,
+            "madeCut": false
+          },
+          "rorymcilroy": {
+            "name": "Rory McIlroy",
+            "score": -1,
+            "madeCut": true
+          },
+          "justinrose": {
+            "name": "Justin Rose",
+            "score": null,
+            "madeCut": false
+          },
+          "minwoolee": {
+            "name": "Min Woo Lee",
+            "score": 2,
+            "madeCut": true
+          },
+          "akshaybhatia": {
+            "name": "Akshay Bhatia",
+            "score": null,
+            "madeCut": false
+          },
+          "bengriffin": {
+            "name": "Ben Griffin",
+            "score": 2,
+            "madeCut": true
+          },
+          "tommyfleetwood": {
+            "name": "Tommy Fleetwood",
+            "score": -7,
+            "madeCut": true
+          },
+          "tyrrellhatton": {
+            "name": "Tyrrell Hatton",
+            "score": 5,
+            "madeCut": true
+          },
+          "brookskoepka": {
+            "name": "Brooks Koepka",
+            "score": -2,
+            "madeCut": true
+          },
+          "patrickreed": {
+            "name": "Patrick Reed",
+            "score": 0,
+            "madeCut": true
+          },
+          "hidekimatsuyama": {
+            "name": "Hideki Matsuyama",
+            "score": -4,
+            "madeCut": true
+          },
+          "xanderschauffele": {
+            "name": "Xander Schauffele",
+            "score": -3,
+            "madeCut": true
+          },
+          "robertmacintyre": {
+            "name": "Robert MacIntyre",
+            "score": -2,
+            "madeCut": true
+          },
+          "jordanspieth": {
+            "name": "Jordan Spieth",
+            "score": null,
+            "madeCut": false
+          },
+          "aaronrai": {
+            "name": "Aaron Rai",
+            "score": null,
+            "madeCut": false
+          },
+          "rickiefowler": {
+            "name": "Rickie Fowler",
+            "score": -3,
+            "madeCut": true
+          },
+          "scottiescheffler": {
+            "name": "Scottie Scheffler",
+            "score": -7,
+            "madeCut": true
+          },
+          "justinthomas": {
+            "name": "Justin Thomas",
+            "score": 3,
+            "madeCut": true
+          },
+          "tomkim": {
+            "name": "Tom Kim",
+            "score": null,
+            "madeCut": false
+          },
+          "brianharman": {
+            "name": "Brian Harman",
+            "score": null,
+            "madeCut": false
+          },
+          "kristofferreitan": {
+            "name": "Kristoffer Reitan",
+            "score": -3,
+            "madeCut": true
+          },
+          "jonrahm": {
+            "name": "Jon Rahm",
+            "score": 0,
+            "madeCut": true
+          },
+          "ludvigaberg": {
+            "name": "Ludvig Åberg",
+            "score": -5,
+            "madeCut": true
+          },
+          "brysondechambeau": {
+            "name": "Bryson DeChambeau",
+            "score": -4,
+            "madeCut": true
+          },
+          "nicolaihojgaard": {
+            "name": "Nicolai Højgaard",
+            "score": null,
+            "madeCut": false
+          },
+          "garywoodland": {
+            "name": "Gary Woodland",
+            "score": null,
+            "madeCut": false
+          },
+          "samburns": {
+            "name": "Sam Burns",
+            "score": -8,
+            "madeCut": true
+          },
+          "collinmorikawa": {
+            "name": "Collin Morikawa",
+            "score": -3,
+            "madeCut": true
+          },
+          "joaquinniemann": {
+            "name": "Joaquin Niemann",
+            "score": null,
+            "madeCut": false
+          },
+          "samstevens": {
+            "name": "Sam Stevens",
+            "score": null,
+            "madeCut": false
+          },
+          "jtposton": {
+            "name": "JT Poston",
+            "score": null,
+            "madeCut": false
+          }
+        }
+      },
+      "teams": [
+        {
+          "owner": "Emery",
+          "teamName": "Fern",
+          "score": -13,
+          "players": [
+            "Cameron Young",
+            "Viktor Hovland",
+            "Shane Lowry",
+            "Patrick Cantlay",
+            "Maverick McNealy"
+          ]
+        },
+        {
+          "owner": "Kellen",
+          "teamName": "Money",
+          "score": -13,
+          "players": [
+            "Tommy Fleetwood",
+            "Tyrrell Hatton",
+            "Brooks Koepka",
+            "Patrick Reed",
+            "Hideki Matsuyama"
+          ]
+        },
+        {
+          "owner": "Miles",
+          "teamName": "Ram",
+          "score": -12,
+          "players": [
+            "Matthew Fitzpatrick",
+            "Si Woo Kim",
+            "Russell Henley",
+            "Kurt Kitayama",
+            "Lev Grinberg"
+          ]
+        },
+        {
+          "owner": "Dylan",
+          "teamName": "Cyc",
+          "score": -9,
+          "players": [
+            "Jon Rahm",
+            "Ludvig Åberg",
+            "Bryson DeChambeau",
+            "Nicolai Højgaard",
+            "Gary Woodland"
+          ]
+        },
+        {
+          "owner": "Garrett",
+          "teamName": "Gary",
+          "score": -8,
+          "players": [
+            "Xander Schauffele",
+            "Robert MacIntyre",
+            "Jordan Spieth",
+            "Aaron Rai",
+            "Rickie Fowler"
+          ]
+        },
+        {
+          "owner": "Jared",
+          "teamName": "Taco",
+          "score": -7,
+          "players": [
+            "Scottie Scheffler",
+            "Justin Thomas",
+            "Tom Kim",
+            "Brian Harman",
+            "Kristoffer Reitan"
+          ]
+        },
+        {
+          "owner": "Alex",
+          "teamName": "Mags",
+          "score": 0,
+          "players": [
+            "Sam Burns",
+            "Collin Morikawa",
+            "Joaquin Niemann",
+            "Sam Stevens",
+            "JT Poston"
+          ]
+        },
+        {
+          "owner": "Jacob",
+          "teamName": "Bean",
+          "score": 3,
+          "players": [
+            "Rory McIlroy",
+            "Justin Rose",
+            "Min Woo Lee",
+            "Akshay Bhatia",
+            "Ben Griffin"
+          ]
+        },
+        {
+          "owner": "Austin",
+          "teamName": "Troop",
+          "score": 14,
+          "players": [
+            "Wyndham Clark",
+            "Chris Gotterup",
+            "Harris English",
+            "Alex Fitzpatrick",
+            "Jake Knapp"
+          ]
+        }
+      ],
+      "winner": "Ryan Fox",
+      "winnerPickedBy": null
     }
   ]
 }
