@@ -1576,5 +1576,20 @@
       "winner": "Ryan Fox",
       "winnerPickedBy": null
     }
-  ]
+  ],
+  "seasonComplete": true,
+  "champion": {
+    "total": -29,
+    "scores": {
+      "Masters": -19,
+      "PGA Championship": -8,
+      "US Open": 10,
+      "Open Championship": -12
+    },
+    "margin": 9,
+    "runnerUp": "Money",
+    "crownedAt": "2026-08-06",
+    "owner": "Miles",
+    "teamName": "Ram"
+  }
 }

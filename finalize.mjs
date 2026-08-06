@@ -171,18 +171,81 @@ function buildSnapshot(ev, final, worstMadeCut) {
   return { pars: final.pars, worstMadeCut, players };
 }
 
+// ---------------------------------------------------------------------------
+// Season championship. Once every major carries baked team scores the season is
+// over: crown the lowest four-major cumulative as the official champion. Runs
+// independent of whether an event finalized this pass and is idempotent, so the
+// scheduled job self-heals even if the final major baked before this logic
+// existed. Mirrors the cumulative math in season.html / history.html (sum of
+// each team's per-major score, which already folds in cut penalties + bonuses).
+
+const MAJORS = ["Masters", "PGA Championship", "US Open", "Open Championship"];
+
+function crownSeasonChampion(season) {
+  const events = season.events || [];
+  const majors = MAJORS.map((n) => events.find((e) => e.name === n)).filter(Boolean);
+  const allBaked = majors.length === MAJORS.length &&
+    majors.every((e) => e.complete && Array.isArray(e.teams) && e.teams.length);
+  if (!allBaked) return false;
+
+  const totals = {};
+  for (const ev of majors) {
+    for (const t of ev.teams) {
+      if (t.score == null) continue;
+      const key = t.teamName || t.owner;
+      if (!totals[key]) totals[key] = { teamName: key, owner: t.owner, total: 0, scores: {} };
+      totals[key].total += t.score;
+      totals[key].scores[ev.name] = t.score;
+    }
+  }
+  const rows = Object.values(totals).sort((a, b) => a.total - b.total);
+  if (!rows.length) return false;
+
+  const best = rows[0].total;
+  const winners = rows.filter((r) => r.total === best);
+  const runnerUp = rows.find((r) => r.total > best) || null;
+
+  const champion = {
+    total: best,
+    scores: winners[0].scores,
+    margin: runnerUp ? runnerUp.total - best : null,
+    runnerUp: runnerUp ? runnerUp.teamName : null,
+    crownedAt: process.env.TODAY || new Date().toISOString().slice(0, 10),
+  };
+  if (winners.length > 1) {
+    champion.tie = true;
+    champion.coChampions = winners.map((w) => ({ owner: w.owner, teamName: w.teamName }));
+  } else {
+    champion.owner = winners[0].owner;
+    champion.teamName = winners[0].teamName;
+  }
+
+  // Preserve the first crownedAt so repeat runs don't churn the date, then bail
+  // if nothing actually changed.
+  const prev = season.champion;
+  if (prev && prev.crownedAt) champion.crownedAt = prev.crownedAt;
+  if (season.seasonComplete && prev && JSON.stringify(prev) === JSON.stringify(champion)) {
+    return false;
+  }
+
+  season.seasonComplete = true;
+  season.champion = champion;
+  const label = champion.tie
+    ? champion.coChampions.map((c) => `${c.teamName} (${c.owner})`).join(" & ")
+    : `${champion.teamName} (${champion.owner})`;
+  const fmt = champion.total > 0 ? `+${champion.total}` : `${champion.total}`;
+  console.log(`Season complete — champion: ${label} at ${fmt}${champion.margin != null ? `, ${champion.margin} clear` : ""}.`);
+  return true;
+}
+
 const season = JSON.parse(readFileSync(SEASON_PATH, "utf8"));
 const today = process.env.TODAY || new Date().toISOString().slice(0, 10);
 
 const candidates = (season.events || []).filter(
   (e) => e.roster && !e.complete && e.endDate && e.endDate < today
 );
-if (!candidates.length) {
-  console.log("Nothing to finalize.");
-  process.exit(0);
-}
-
 let changed = false;
+if (!candidates.length) console.log("Nothing to finalize.");
 for (const ev of candidates) {
   console.log(`Finalizing ${ev.name}…`);
   let final;
@@ -217,9 +280,13 @@ for (const ev of candidates) {
   console.log(`  ${ev.name}: winner ${final.winner}${ev.winnerPickedBy ? ` (picked by ${ev.winnerPickedBy})` : " (not on any roster)"}, champion team ${teams[0].teamName} at ${teams[0].score}`);
 }
 
+// Crown the season champion once every major is baked — runs whether or not an
+// event finalized this pass, so the scheduled job self-heals.
+if (crownSeasonChampion(season)) changed = true;
+
 if (changed) {
   writeFileSync(SEASON_PATH, JSON.stringify(season, null, 2) + "\n");
   console.log(`Wrote ${SEASON_PATH}`);
 } else {
-  console.log("No events finalized.");
+  console.log("No changes.");
 }

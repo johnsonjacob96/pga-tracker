@@ -262,6 +262,68 @@ if ("serviceWorker" in navigator && location.protocol === "https:")
   .cum tr.leader .s-under { color: var(--persimmon-bright); }
   .cum tr.leader .s-even  { color: var(--paper); }
   .cum tr.leader .s-over  { color: var(--old-gold); }
+  /* Crown the leader once the season is officially over */
+  .cum tr.leader.champ .name::after { content: " ♛"; color: var(--old-gold); font-size: 0.82em; }
+
+  /* --- Season champion plaque (rendered when all four majors are final) --- */
+  .champion {
+    background: var(--forest);
+    color: var(--paper);
+    padding: 26px 28px 24px;
+    margin-bottom: 22px;
+    border: 1px solid var(--forest);
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+  }
+  .champion::before, .champion::after {
+    content: "";
+    position: absolute;
+    left: 14px; right: 14px;
+    height: 1px;
+    background: var(--old-gold);
+  }
+  .champion::before { top: 8px; }
+  .champion::after { bottom: 8px; }
+  .champion .crest {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--old-gold);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .champion .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 58px;
+    color: var(--paper);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin: 10px 0 4px;
+  }
+  .champion .owner {
+    font-family: 'Fraunces', serif;
+    font-size: 12px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--old-gold);
+    font-weight: 500;
+  }
+  .champion .stat {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--paper-deep);
+    font-size: 13px;
+    margin-top: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .champion .stat b { color: var(--paper); font-weight: 700; }
+  @media (max-width: 640px) {
+    .champion { padding: 18px 14px 16px; }
+    .champion .name { font-size: 38px; }
+    .champion .crest, .champion .owner { font-size: 10px; letter-spacing: 0.26em; }
+  }
 
   /* --- Events --- */
   .event {
@@ -426,7 +488,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:")
   <div class="mast-row">
     <div class="mast-side">
       <div class="mast-issue">Vol. 09</div>
-      Year in Progress
+      <span id="season-phase">Year in Progress</span>
     </div>
     <div class="mast-paper">Locks <em>of the</em> Day</div>
     <div class="mast-side right">
@@ -437,7 +499,7 @@ if ("serviceWorker" in navigator && location.protocol === "https:")
   <hr class="mast-rule">
   <div class="event-bar">
     <h1 class="event-title">The 2026 Season</h1>
-    <div class="event-sub">Lowest Cumulative Wins · Best Three Per Major</div>
+    <div class="event-sub" id="season-sub">Lowest Cumulative Wins · Best Three Per Major</div>
   </div>
 </div>
 
@@ -704,7 +766,7 @@ function computeCumulative(seasonData, liveMap) {
   return owners;
 }
 
-function renderCumulative(rows, liveMap) {
+function renderCumulative(rows, liveMap, crowned) {
   const heads = EVENT_KEYS.map(e => `<th>${SHORT_EVENT[e]}</th>`).join("");
   const body = rows.map((r, i) => {
     const scoreCells = EVENT_KEYS.map(e => {
@@ -714,7 +776,7 @@ function renderCumulative(rows, liveMap) {
       return `<td class="score-cell ${scoreClass(s)}${live ? " live" : ""}">${fmtScore(s)}</td>`;
     }).join("");
     return `
-      <tr${i === 0 ? ' class="leader"' : ""}>
+      <tr${i === 0 ? ` class="leader${crowned ? " champ" : ""}"` : ""}>
         <td class="rank-cell">${String(i + 1).padStart(2, "0")}</td>
         <td class="name-cell">
           <span class="name">${r.teamName}</span>
@@ -818,6 +880,52 @@ function findNextUpcoming(seasonData, today = new Date()) {
   });
 }
 
+// The season is officially over once every major is complete and nothing is
+// live. Prefer the champion baked into the data by finalize.mjs; fall back to
+// the freshly computed cumulative so the crown appears the instant the last
+// major finalizes, before the next finalize run bakes it in.
+function resolveSeasonChampion(seasonData, cumulative, liveMap) {
+  const majors = EVENT_KEYS.map(k => (seasonData.events || []).find(e => e.name === k));
+  const allComplete = majors.every(e => e && e.complete);
+  const anyLive = Object.values(liveMap).some(l => l && !l.complete);
+  if (!allComplete || anyLive || !cumulative.length) return null;
+
+  const baked = seasonData.champion || null;
+  const top = cumulative[0];
+  const runnerUp = cumulative.find(r => r.total > top.total) || null;
+  const tied = cumulative.filter(r => r.total === top.total);
+  return {
+    teamName: baked?.teamName || top.teamName,
+    owner: baked?.owner || top.owner,
+    total: baked?.total ?? top.total,
+    margin: baked?.margin ?? (runnerUp ? runnerUp.total - top.total : null),
+    runnerUp: baked?.runnerUp || (runnerUp ? runnerUp.teamName : null),
+    coChampions: baked?.coChampions || (tied.length > 1 ? tied.map(t => ({ owner: t.owner, teamName: t.teamName })) : null),
+  };
+}
+
+function renderChampionPlaque(champ) {
+  if (champ.coChampions && champ.coChampions.length > 1) {
+    return `
+      <div class="champion">
+        <div class="crest">2026 Season · Co-Champions</div>
+        <div class="name">${champ.coChampions.map(c => c.teamName).join(" & ")}</div>
+        <div class="owner">${champ.coChampions.map(c => c.owner).join(" · ")}</div>
+        <div class="stat"><b>${fmtScore(champ.total)}</b> · four majors · tied at the top</div>
+      </div>`;
+  }
+  const marginBit = champ.margin != null && champ.margin > 0
+    ? ` · <b>${champ.margin}</b> clear of ${champ.runnerUp}`
+    : "";
+  return `
+    <div class="champion">
+      <div class="crest">2026 Season Champion</div>
+      <div class="name">${champ.teamName}</div>
+      <div class="owner">${champ.owner}</div>
+      <div class="stat"><b>${fmtScore(champ.total)}</b> · four majors${marginBit}</div>
+    </div>`;
+}
+
 async function render() {
   const status = document.getElementById("status");
   const content = document.getElementById("content");
@@ -831,14 +939,28 @@ async function render() {
       liveEvents.forEach((e, i) => { if (results[i]) liveMap[e.name] = results[i]; });
     }
     const cumulative = computeCumulative(seasonData, liveMap);
-    const cumHtml = renderCumulative(cumulative, liveMap);
+    const champ = resolveSeasonChampion(seasonData, cumulative, liveMap);
+    const cumHtml = renderCumulative(cumulative, liveMap, !!champ);
     const eventsHtml = seasonData.events.map(e => renderEvent(e, liveMap, seasonData.owners)).join("");
     content.innerHTML = `
-      <div class="section-label">Cumulative Standings <em>lowest wins</em></div>
+      ${champ ? renderChampionPlaque(champ) : ""}
+      <div class="section-label">${champ ? "Final Standings" : "Cumulative Standings"} <em>lowest wins</em></div>
       ${cumHtml}
       <div class="section-label">The Four Majors</div>
       ${eventsHtml}
     `;
+    // Flip the masthead from "Year in Progress" to the crowned season.
+    const phaseEl = document.getElementById("season-phase");
+    const subEl = document.getElementById("season-sub");
+    if (champ) {
+      if (phaseEl) phaseEl.textContent = "Season Complete";
+      if (subEl) subEl.textContent = champ.coChampions
+        ? "Co-Champions Crowned"
+        : `${champ.teamName} — ${champ.owner} — Champion`;
+    } else {
+      if (phaseEl) phaseEl.textContent = "Year in Progress";
+      if (subEl) subEl.textContent = "Lowest Cumulative Wins · Best Three Per Major";
+    }
     const now = new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     const liveNames = Object.keys(liveMap);
     let statusBit;

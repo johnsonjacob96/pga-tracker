@@ -880,6 +880,30 @@ if (location.hostname === "johnsonjacob96.github.io")
     padding: 18px 16px 32px;
   }
 
+  /* --- Season champion ribbon (shown on the landing page once all four
+     majors are final). Self-contained gold-on-dark plaque so it reads on the
+     editorial base as well as the midnight Open / navy U.S. Open themes. --- */
+  .season-champ-ribbon { display: none; max-width: 1080px; margin: 16px auto 0; padding: 0 16px; box-sizing: border-box; }
+  .season-champ-ribbon.show { display: block; }
+  .sc-plaque {
+    background: #14110b; border: 1px solid var(--old-gold); color: var(--paper);
+    text-align: center; padding: 16px 20px 14px; position: relative; overflow: hidden;
+  }
+  .sc-plaque::before, .sc-plaque::after {
+    content: ""; position: absolute; left: 12px; right: 12px; height: 1px; background: var(--old-gold); opacity: .55;
+  }
+  .sc-plaque::before { top: 6px; } .sc-plaque::after { bottom: 6px; }
+  .sc-crest {
+    font-family: 'Fraunces', serif; font-style: italic; color: var(--old-gold);
+    font-size: 10.5px; letter-spacing: 0.34em; text-transform: uppercase; font-weight: 500;
+  }
+  .sc-name { font-family: 'Fraunces', serif; font-weight: 900; font-size: 34px; line-height: 1; margin: 7px 0 3px; color: #fff; }
+  .sc-name .crown { color: var(--old-gold); font-weight: 400; }
+  .sc-owner { font-family: 'Fraunces', serif; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--old-gold); }
+  .sc-stat { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--paper-deep); margin-top: 9px; font-variant-numeric: tabular-nums; }
+  .sc-link { color: var(--old-gold); text-decoration: none; border-bottom: 1px solid rgba(176,136,64,.4); }
+  @media (max-width: 640px) { .sc-name { font-size: 26px; } .sc-crest, .sc-owner { letter-spacing: 0.24em; } }
+
   /* --- Team Card --- */
   .team {
     position: relative;
@@ -2052,6 +2076,8 @@ if (location.hostname === "johnsonjacob96.github.io")
   <button class="refresh-btn" id="refresh-btn" onclick="refresh()">Refresh</button>
 </div>
 
+<div class="season-champ-ribbon" id="season-champ-ribbon"></div>
+
 <main id="content"></main>
 
 <div class="legend">
@@ -3018,6 +3044,62 @@ function updateMasthead(focus) {
       ? `Next major: <strong>${next.name === "Open Championship" ? "The Open" : next.name}</strong> · ${formatDateRange(next)}`
       : "All majors complete — see /history.html";
   }
+
+  // Crown the season on the landing page once every major is final.
+  updateSeasonChampionRibbon(focus.season);
+}
+
+// Season champion for the landing ribbon. Returns null until every major is
+// final. Prefers the champion baked into the data by finalize.mjs; otherwise
+// derives it from the baked per-major team scores (same cumulative math as
+// season.html / history.html) so the crown shows the instant the last major
+// finalizes.
+function seasonChampion(season) {
+  const MAJORS = ["Masters", "PGA Championship", "US Open", "Open Championship"];
+  const events = season.events || [];
+  const majors = MAJORS.map(n => events.find(e => e.name === n));
+  if (!majors.every(e => e && e.complete && Array.isArray(e.teams) && e.teams.length)) return null;
+  if (season.champion && (season.champion.teamName || season.champion.coChampions)) return season.champion;
+
+  const totals = {};
+  for (const ev of majors) for (const t of ev.teams) {
+    if (t.score == null) continue;
+    const k = t.teamName || t.owner;
+    (totals[k] = totals[k] || { teamName: k, owner: t.owner, total: 0 }).total += t.score;
+  }
+  const rows = Object.values(totals).sort((a, b) => a.total - b.total);
+  if (!rows.length) return null;
+  const best = rows[0].total;
+  const winners = rows.filter(r => r.total === best);
+  const runnerUp = rows.find(r => r.total > best) || null;
+  if (winners.length > 1) return { coChampions: winners.map(w => ({ owner: w.owner, teamName: w.teamName })), total: best };
+  return { teamName: rows[0].teamName, owner: rows[0].owner, total: best, margin: runnerUp ? runnerUp.total - best : null, runnerUp: runnerUp ? runnerUp.teamName : null };
+}
+
+function updateSeasonChampionRibbon(season) {
+  const el = document.getElementById("season-champ-ribbon");
+  if (!el) return;
+  const champ = season ? seasonChampion(season) : null;
+  if (!champ) { el.classList.remove("show"); el.innerHTML = ""; return; }
+  const fmt = (n) => n === 0 ? "E" : (n > 0 ? `+${n}` : `${n}`).replace("-", "−");
+  let name, owner, stat;
+  if (champ.coChampions && champ.coChampions.length > 1) {
+    name = champ.coChampions.map(c => c.teamName).join(" & ");
+    owner = champ.coChampions.map(c => c.owner).join(" · ");
+    stat = `${fmt(champ.total)} · four majors · co-champions`;
+  } else {
+    name = champ.teamName; owner = champ.owner;
+    const marginBit = champ.margin != null && champ.margin > 0 ? ` · ${champ.margin} clear of ${champ.runnerUp}` : "";
+    stat = `${fmt(champ.total)} · four majors${marginBit}`;
+  }
+  el.innerHTML = `
+    <div class="sc-plaque">
+      <div class="sc-crest">2026 Season Champion</div>
+      <div class="sc-name"><span class="crown">♛</span> ${name}</div>
+      <div class="sc-owner">${owner}</div>
+      <div class="sc-stat">${stat} · <a class="sc-link" href="./season.html">full standings →</a></div>
+    </div>`;
+  el.classList.add("show");
 }
 
 function formatDateRange(ev) {
